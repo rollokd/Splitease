@@ -13,6 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { createTransaction } from "@/lib/actions";
 import { Input } from "@/components/ui/input";
 
 
@@ -20,8 +21,8 @@ const formSchema = z.object({
   name: z.string().min(3, {
     message: "Username must be at least 3 characters.",
   }),
-  amount: z.coerce.number(),
-  date: z.coerce.date(),
+  amount: z.coerce.number()
+  // date: z.coerce.date(),
 
 })
 
@@ -31,11 +32,12 @@ export function TransactionForm() {
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    createTransaction(values)
     console.log(values)
   }
 
   return (
-    <Form {...form}>
+    <Form {...form} >
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
@@ -69,7 +71,7 @@ export function TransactionForm() {
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name="date"
           render={({ field }) => (
@@ -84,7 +86,7 @@ export function TransactionForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <Button type="submit" className="flex flex-row self-center">Add Transaction</Button>
       </form>
     </Form>
