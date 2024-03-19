@@ -1,6 +1,6 @@
 import { sql } from "@vercel/postgres";
-import { GroupCard } from "@/components/group-card";
-import { GroupChart } from "@/components/bar-chart";
+import { GroupCard } from "@/components/ui/group-card";
+import { GroupChart } from "@/components/ui/bar-chart";
 import { fetchGroupTotals, fetchUserTransactionsAndGroups, getUsersbyGroup} from "@/lib/data";
 
 export async function gabe () {

@@ -2,16 +2,15 @@ import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
 import { Group, UserPaid, SplitToPay } from './definititions';
 
-export async function fetchUserTransactionsAndGroups() {
+export async function fetchUsersTransactionsOfGroups(groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
   try {
     // The query is already parameter-free, but ensure to escape or parameterize any dynamic values
     const data = await sql`
-    SELECT *
+    SELECT users.id, firstname, lastname, transactions.paid_by, transactions.amount, transactions.status AS status, transactions.group_id
     FROM users
-    JOIN user_groups ON users.id = user_groups.user_id
-    JOIN transactions ON transactions.paid_by = users.id
-    WHERE transactions.group_id = user_groups.group_id;
+    JOIN transactions ON users.id = transactions.paid_by
+    WHERE transactions.group_id = ${groupID} AND status = 'false';
     `;
     return data.rows;
   } catch (error) {

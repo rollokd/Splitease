@@ -3,6 +3,7 @@
 import React from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { UserProps } from "@/lib/definititions"
+import { fetchUsersTransactionsOfGroups } from "@/lib/data"
 
 const data = [
   {
@@ -55,7 +56,8 @@ const data = [
   },
 ]
 
-export const GroupChart: React.FC<UserProps> = async ({ userID, groupID }) => {
+export const GroupChart: React.FC<UserProps> = async ({ }) => {
+
   return (
     <ResponsiveContainer width="100%" height={350}>
       <BarChart data={data}>
