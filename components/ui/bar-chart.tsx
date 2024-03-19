@@ -56,7 +56,7 @@ const data = [
   },
 ]
 
-export const GroupChart: React.FC<UserProps> = async ({ }) => {
+export const GroupChart: React.FC = () => {
 
   return (
     <ResponsiveContainer width="100%" height={350}>
