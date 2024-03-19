@@ -1,6 +1,6 @@
-import React from 'react';
-import CreateGroupForm from '../ui/groups/create-form';
-import { fetchUsers } from '@/lib/data';
+import React from "react";
+import CreateGroupForm from "../../components/groups/create-form";
+import { fetchUsers } from "@/lib/data";
 
 const page = async () => {
   const users = await fetchUsers();

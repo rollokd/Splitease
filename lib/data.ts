@@ -1,6 +1,6 @@
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
-import { UserWJunction, UserPaid, SplitToPay, Group, Transaction, UserTransaction } from './definititions';
+import { UserWJunction, Group, UserTransaction, User } from './definititions';
 
 export async function fetchUsersTransactionsOfGroups(groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
@@ -99,12 +99,12 @@ export async function getNameGroup(userID: string = '9ec739f9-d23b-4410-8f1a-c29
   }
 }
 
-export type Group = {
-  id: string,
-  firstname: string,
-  amount?: number,
-  status?: true | false
-}
+// export type Group = {
+//   id: string,
+//   firstname: string,
+//   amount?: number,
+//   status?: true | false
+// }
 
 export async function getNamesOfUsersInAGroup(group_uuid = '20328e6f-167b-4fb9-bb5e-c71580f59cd5'): Promise<Group[]> {
   try {

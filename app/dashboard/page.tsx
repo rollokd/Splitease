@@ -1,12 +1,9 @@
+import Totals from "../../components/Totals";
 
-import Totals from './Totals';
-
-export default  function  Home() {
-   
-    return (
-      <>
-        <Totals />
-      </>
-    );
-  }
-
+export default function Home() {
+  return (
+    <>
+      <Totals />
+    </>
+  );
+}

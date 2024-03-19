@@ -1,10 +1,5 @@
-import { TransactionForm } from "../../components/ui/addTransactions/Form"
-
+import { TransactionForm } from "../../components/addTransactions/Form";
 
 export default function Page() {
-
-  return (
-
-    <TransactionForm></TransactionForm>
-  )
+  return <TransactionForm></TransactionForm>;
 }

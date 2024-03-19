@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import {
   Card,
   CardContent,
@@ -6,19 +6,18 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { fetchGroupTotals, getUsersbyGroup, getNameGroup } from "@/lib/data";
+} from "@/components/ui/card";
+import { fetchUserBalance, getUsersbyGroup, getNameGroup } from "@/lib/data";
 import { UserWJunction, UserProps } from "@/lib/definititions";
 
-
 const getUsers = (userByGroup: UserWJunction[]) => {
-  const firstnames = userByGroup.map(user => user.firstname);
+  const firstnames = userByGroup.map((user) => user.firstname);
   // console.log(firstnames);
   return firstnames;
 };
 
 export const GroupCard: React.FC<UserProps> = async ({ userID, groupID }) => {
-  const groupTotals = await fetchGroupTotals(userID, groupID);
+  const groupTotals = await fetchUserBalance(userID, groupID);
   const userByGroup = await getUsersbyGroup(groupID);
   const listOfUsers = getUsers(userByGroup || []);
   const groupName = await getNameGroup();
@@ -32,11 +31,13 @@ export const GroupCard: React.FC<UserProps> = async ({ userID, groupID }) => {
         </div>
       </CardHeader>
       <CardContent>
-        { listOfUsers.length <= 4 ? listOfUsers.join(', ') : `${listOfUsers.slice(0, 4).join(', ')}...` }
+        {listOfUsers.length <= 4
+          ? listOfUsers.join(", ")
+          : `${listOfUsers.slice(0, 4).join(", ")}...`}
       </CardContent>
       <CardFooter className="flex justify-between">
         nothing at the moment
       </CardFooter>
     </Card>
-  )
-}
+  );
+};
