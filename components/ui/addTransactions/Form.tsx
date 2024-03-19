@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { object, z } from "zod"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -46,7 +46,7 @@ export function TransactionForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const form_data = new FormData();
     for (let key in values) {
-      form_data.append(key, values[key])
+      form_data.append(key, values[key as keyof typeof object])
     }
     await createTransaction(form_data, whoPaid)
     console.log(values)
