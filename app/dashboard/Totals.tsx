@@ -71,7 +71,7 @@ export default async function Totals() {
           {svgIcon}
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">${own?.total/1000}</div>
+          <div className="text-2xl font-bold">$27</div>
           <p className="text-xs text-muted-foreground">
           3106eb8a-3288-4b62-a077-3b24bd640d9a
           </p>
