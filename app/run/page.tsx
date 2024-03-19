@@ -1,7 +1,6 @@
 import { sql } from "@vercel/postgres";
 import { GroupCard } from "@/components/ui/group-card";
 import { GroupChart } from "@/components/ui/bar-chart";
-import { fetchGroupTotals, fetchUserTransactionsAndGroups, getUsersbyGroup} from "@/lib/data";
 
 // export async function gabe () {
 //   const userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6';
