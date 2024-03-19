@@ -31,8 +31,12 @@ export function TransactionForm() {
     resolver: zodResolver(formSchema)
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    createTransaction(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const form_data = new FormData();
+    for (let key in values) {
+      form_data.append(key, values[key])
+    }
+    await createTransaction(form_data)
     console.log(values)
   }
 
