@@ -1,5 +1,5 @@
 "use client"
-
+import { useState, useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -15,30 +15,65 @@ import {
 } from "@/components/ui/form"
 import { createTransaction } from "@/lib/actions";
 import { Input } from "@/components/ui/input";
-
+import { DataTable } from "@/app/ui/addTransactions/SplittingTable/data-table"
+import { getNamesOfUsersInAGroup } from "@/lib/data";
+import { columns } from "./SplittingTable/columns"
 
 const formSchema = z.object({
   name: z.string().min(3, {
     message: "Username must be at least 3 characters.",
   }),
-  amount: z.coerce.number()
-  // date: z.coerce.date(),
+  amount: z.coerce.number(),
+  date: z.date()
 
 })
+type User = {
+  firstname: string,
+  amount: number,
+  id: string
+}
 
 export function TransactionForm() {
+
+  const [amountInput, setAmountInput] = useState(0);
+  const [tableData, setTableData] = useState<User[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema)
   })
+
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const form_data = new FormData();
     for (let key in values) {
       form_data.append(key, values[key])
     }
+
     await createTransaction(form_data)
     console.log(values)
   }
+
+
+  useEffect(() => {
+    async function helper() {
+      console.log("hwatever inside")
+      const value = await getNamesOfUsersInAGroup()
+      console.log(" Value ====> ", value)
+      const data = value.map((ele) => ({
+        ...ele,
+        amount: amountInput / value.length
+      }));
+      setTableData(data)
+    }
+    helper()
+  }, [])
+
+  useEffect(() => {
+    const data = tableData.map((ele) => ({
+      ...ele,
+      amount: amountInput / tableData.length
+    }));
+    setTableData(data)
+  }, [amountInput])
 
   return (
     <Form {...form} >
@@ -66,7 +101,7 @@ export function TransactionForm() {
             <FormItem>
               <FormLabel>amount</FormLabel>
               <FormControl>
-                <Input placeholder="type here..." {...field} />
+                <Input placeholder="type here..." {...field} onChange={(e) => setAmountInput(Number(e.target.value))} />
               </FormControl>
               <FormDescription>
                 This is the sum that will be split.
@@ -75,24 +110,29 @@ export function TransactionForm() {
             </FormItem>
           )}
         />
-        {/* <FormField
+        <FormField
           control={form.control}
           name="date"
           render={({ field }) => (
             <FormItem>
               <FormLabel>date</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input type="date" {...field} />
               </FormControl>
               <FormDescription>
-                This is a transaction creation date.
+                This is a transactions creation date.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
-        /> */}
-        <Button type="submit" className="flex flex-row self-center">Add Transaction</Button>
+        />
+
+
       </form>
+      <div className="container mx-auto py-10">
+        <DataTable columns={columns} data={tableData} />
+      </div>
+      <Button type="submit" className="flex flex-row self-center">Add Transaction</Button>
     </Form>
   )
 }

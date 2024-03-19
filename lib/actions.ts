@@ -14,22 +14,24 @@ const FormSchema = z.object({
   paid_by: z.string(),
   group_id: z.string()
 })
-const CreateTransaction = FormSchema.omit({ id: true, date: true, status: true, group_id: true, paid_by: true });
+const CreateTransaction = FormSchema.omit({ id: true, status: true, group_id: true, paid_by: true });
 
 export async function createTransaction(formData: FormData) {
-  const { name, amount } = CreateTransaction.parse({
+  const { name, amount, date } = CreateTransaction.parse({
     name: formData.get('name'),
-    amount: formData.get('amount')
+    amount: formData.get('amount'),
     // status: formData.get('status')
-    // date: formData.get('date')
+    date: formData.get('date')
   })
   const amountInPennies = amount * 100;
-  const date = new Date().toISOString().split('T')[0];
+  const dateConverted = date.toISOString().split('T')[0];
   const status = false;
   const paid_by = '410544b2-4001-4271-9855-fec4b6a6442a';
   const group_id = '20328e6f-167b-4fb9-bb5e-c71580f59cd5';
 
   await sql`INSERT INTO transactions (name, date, amount, status, paid_by, group_id)
-  VALUES (${name}, ${date}, ${amountInPennies}, ${status}, ${paid_by}, ${group_id})
+  VALUES (${name}, ${dateConverted}, ${amountInPennies}, ${status}, ${paid_by}, ${group_id})
   `
+  // revalidatePath()
+  // redirect()
 }
