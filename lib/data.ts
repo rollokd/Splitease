@@ -1,6 +1,6 @@
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
-import { Group, UserPaid, SplitToPay } from './definititions';
+import { UserWJunction, UserPaid, SplitToPay } from './definititions';
 
 export async function fetchUsersTransactionsOfGroups(groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
@@ -21,12 +21,12 @@ export async function fetchUsersTransactionsOfGroups(groupID: string = '5909a47f
 export async function fetchGroupTotals(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
   try {
-    const userPaid = await sql<UserPaid>`
+    const userPaid = await sql`
     SELECT SUM(amount) AS total_amount
     FROM transactions
     WHERE paid_by = ${userID} AND group_id = ${groupID};
     `;
-    const splitToPay = await sql<SplitToPay>`
+    const splitToPay = await sql`
     SELECT SUM(user_amount) AS total_user_amount
     FROM splits
     WHERE user_id = ${userID} AND group_id = ${groupID} AND paid = false;
@@ -40,10 +40,10 @@ export async function fetchGroupTotals(userID: string = '9ec739f9-d23b-4410-8f1a
 }
 
 // get all groups in a group
-export async function getUsersbyGroup(group_id: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
+export async function getUsersbyGroup(group_id: string) {
   noStore()
   try {
-    const { rows } = await sql<Group>`
+    const { rows } = await sql<UserWJunction>`
       SELECT * FROM users
       LEFT JOIN user_groups 
       ON users.id = user_groups.user_id

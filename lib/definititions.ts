@@ -8,6 +8,19 @@ export type Group = {
   group_id: string;
 };
 
+export type User = {
+  id: string
+  firstname: string
+  lastname: string
+  email: string
+  password: string
+}
+export type Junction = {
+  user_id: string
+  group_id: string
+}
+export type UserWJunction = User & Junction
+
 export type Field = {
   columnID: number;
   dataTypeID: number;
@@ -23,7 +36,7 @@ export type UserPaid = {
   fields: Field[];
   rowAsArray: boolean;
   rowCount: number;
-  rows: Array<{ [key: number]: string }>;
+  rows: Array<{ total_amount: string }>;
   viaNeonFetch: boolean;
 };
 

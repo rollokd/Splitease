@@ -8,19 +8,19 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { fetchGroupTotals, getUsersbyGroup, getNameGroup } from "@/lib/data";
-import { Group, UserProps } from "@/lib/definititions";
+import { UserWJunction, UserProps } from "@/lib/definititions";
 
 
-const getUsers = (userByGroup: Group[]) => {
+const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map(user => user.firstname);
   // console.log(firstnames);
   return firstnames;
 };
 
 export const GroupCard: React.FC<UserProps> = async ({ userID, groupID }) => {
-  const groupTotals: number | undefined = await fetchGroupTotals(userID, groupID);
-  const userByGroup: Group[] = await getUsersbyGroup(groupID);
-  const listOfUsers = getUsers(userByGroup);
+  const groupTotals = await fetchGroupTotals(userID, groupID);
+  const userByGroup = await getUsersbyGroup(groupID);
+  const listOfUsers = getUsers(userByGroup || []);
   const groupName = await getNameGroup();
 
   return (
@@ -28,7 +28,7 @@ export const GroupCard: React.FC<UserProps> = async ({ userID, groupID }) => {
       <CardHeader>
         <div className="flex justify-between">
           <CardTitle>{groupName?.name}</CardTitle>
-          <CardDescription>$ {(groupTotals / 1000)}</CardDescription>
+          <CardDescription>$ {groupTotals}</CardDescription>
         </div>
       </CardHeader>
       <CardContent>
