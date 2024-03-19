@@ -23,7 +23,7 @@ export type UserPaid = {
   fields: Field[];
   rowAsArray: boolean;
   rowCount: number;
-  rows: Array<{ [key: string]: string }>;
+  rows: Array<{ [key: number]: string }>;
   viaNeonFetch: boolean;
 };
 
@@ -35,3 +35,8 @@ export type SplitToPay = {
   rows: Array<{ total_user_amount: string }>;
   viaNeonFetch: boolean;
 };
+
+export interface UserProps {
+  userID: string;
+  groupID: string;
+}

@@ -7,29 +7,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { fetchGroupTotals, getUsersbyGroup } from "@/lib/data";
-import { Group } from "@/lib/definititions";
+import { fetchGroupTotals, getUsersbyGroup, getNameGroup } from "@/lib/data";
+import { Group, UserProps } from "@/lib/definititions";
 
-interface GroupCardProps {
-  groupID: string;
-}
 
 const getUsers = (userByGroup: Group[]) => {
   const firstnames = userByGroup.map(user => user.firstname);
-  console.log(firstnames);
+  // console.log(firstnames);
   return firstnames;
 };
 
-export const GroupCard: React.FC<GroupCardProps> = async ({ groupID }) => {
-  const groupTotals: number | undefined = await fetchGroupTotals();
-  const userByGroup = await getUsersbyGroup(groupID);
+export const GroupCard: React.FC<UserProps> = async ({ userID, groupID }) => {
+  const groupTotals: number | undefined = await fetchGroupTotals(userID, groupID);
+  const userByGroup: Group[] = await getUsersbyGroup(groupID);
   const listOfUsers = getUsers(userByGroup);
+  const groupName = await getNameGroup();
+
   return (
     <Card className="w-[350px]">
       <CardHeader>
         <div className="flex justify-between">
-          <CardTitle>Group Name</CardTitle>
-          <CardDescription>$ {groupTotals}</CardDescription>
+          <CardTitle>{groupName?.name}</CardTitle>
+          <CardDescription>$ {(groupTotals / 1000)}</CardDescription>
         </div>
       </CardHeader>
       <CardContent>

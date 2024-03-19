@@ -1,6 +1,8 @@
 "use client"
 
+import React from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { UserProps } from "@/lib/definititions"
 
 const data = [
   {
@@ -53,7 +55,7 @@ const data = [
   },
 ]
 
-export function GroupChart() {
+export const GroupChart: React.FC<UserProps> = async ({ userID, groupID }) => {
   return (
     <ResponsiveContainer width="100%" height={350}>
       <BarChart data={data}>

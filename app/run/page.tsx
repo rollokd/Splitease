@@ -26,10 +26,10 @@ export default async function  Home() {
   return (
     <>
     <div>
-      <GroupChart></GroupChart>
+      <GroupChart groupID={groupID} userID={userID} ></GroupChart>
     </div>
     <div>
-      <GroupCard groupID={groupID} />
+      <GroupCard groupID={groupID} userID={userID} />
     </div>
     {gabe()}
     </>
