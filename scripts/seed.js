@@ -1,6 +1,6 @@
 const { db } = require('@vercel/postgres');
 const bcrypt = require('bcrypt');
-const {users, groups, userGroups, transactions, splits} = require('../lib/placeholder-data');
+const { users, groups, userGroups, transactions, splits } = require('../lib/placeholder-data');
 
 async function seedUsers(client) {
   try {
@@ -20,7 +20,7 @@ async function seedUsers(client) {
 
     const insertedUsers = await Promise.all(
       users.map(async (user) => {
-        const hashedPassword = await bcrypt.hash(user.password,10);
+        const hashedPassword = await bcrypt.hash(user.password, 10);
         return client.sql`
         INSERT INTO users (id, firstName, lastName, email, password)
         VALUES (${user.id},${user.firstName}, ${user.lastName},${user.email},${hashedPassword})
@@ -98,7 +98,7 @@ async function seedJunction(client) {
       joinGroup,
       userGroups: insertJoins,
     };
-    
+
   } catch (error) {
     console.error('Error seeding junction:', error)
     throw error;
@@ -176,10 +176,10 @@ async function main() {
   const client = await db.connect()
   console.log(client)
 
-  // await seedUsers(client);
-  // await seedGroups(client);
-  // await seedJunction(client);
-  // await seedTransactions(client);
+  await seedUsers(client);
+  await seedGroups(client);
+  await seedJunction(client);
+  await seedTransactions(client);
   const output = await seedSplits(client);
   console.log('splits', output)
 
