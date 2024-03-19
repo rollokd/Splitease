@@ -21,7 +21,7 @@ export type State = {
 };
 
 const CreateGroup = FormSchema.omit({ id: true, date: true });
-const UpdateGroup = FormSchema.omit({ id: true, date: true });
+// const UpdateGroup = FormSchema.omit({ id: true, date: true });
 
 export async function createGroup(prevState: State, formData: FormData) {
   const { name, status } = CreateGroup.parse({
