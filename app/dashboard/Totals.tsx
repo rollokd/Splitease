@@ -1,8 +1,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
@@ -32,6 +30,7 @@ export default async function Totals() {
 
 
   console.log('obj: ', own?.paidbyMe);
+// extract component gabe :)
   return (
     <>
 
@@ -58,7 +57,7 @@ export default async function Totals() {
           {svgIcon}
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">${own?.myPortionOfBills/1000}</div>
+          <div className="text-2xl font-bold">$-{own?.myPortionOfBills/1000}</div>
           <p className="text-xs text-muted-foreground">
           3106eb8a-3288-4b62-a077-3b24bd640d9a
           </p>
