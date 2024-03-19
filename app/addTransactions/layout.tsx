@@ -1,4 +1,4 @@
-import TopNav from "../ui/addTransactions/TopNav";
+import TopNav from "../../components/ui/addTransactions/TopNav";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

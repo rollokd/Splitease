@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form"
 import { createTransaction } from "@/lib/actions";
 import { Input } from "@/components/ui/input";
-import { DataTable } from "@/app/ui/addTransactions/SplittingTable/data-table"
+import { DataTable } from "@/components/ui/addTransactions/SplittingTable/data-table"
 import { getNamesOfUsersInAGroup } from "@/lib/data";
 import { columns } from "./SplittingTable/columns"
 
@@ -37,27 +37,28 @@ export function TransactionForm() {
 
   const [amountInput, setAmountInput] = useState(0);
   const [tableData, setTableData] = useState<User[]>([]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema)
   })
-
+  let whoPaid: string[];
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const form_data = new FormData();
     for (let key in values) {
       form_data.append(key, values[key])
     }
-
-    await createTransaction(form_data)
+    await createTransaction(form_data, whoPaid)
     console.log(values)
   }
 
 
   useEffect(() => {
     async function helper() {
-      console.log("hwatever inside")
+      console.log("whatever inside")
       const value = await getNamesOfUsersInAGroup()
-      console.log(" Value ====> ", value)
+      console.log(" Value: what a thrill ====> ", value)
+      whoPaid = [value[0].firstname, value[0].id];
       const data = value.map((ele) => ({
         ...ele,
         amount: amountInput / value.length
