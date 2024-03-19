@@ -1,7 +1,7 @@
 const { sql } = require('@vercel/postgres');
 
 
-export async function OwnDashboard() {
+export async function fetchOwnDashboardData () {
 
   try {
     const paidbyMe = await   sql`SELECT SUM(amount) AS total_amount
@@ -13,7 +13,11 @@ export async function OwnDashboard() {
     console.log(paidbyMe.rows[0].total_amount);
     console.log(MyPortionofBills.rows[0].total_user_amount);
     
-    return (paidbyMe.rows[0].total_amount - MyPortionofBills.rows[0].total_user_amount)/1000;
+    return {
+      paidbyMe : paidbyMe.rows[0].total_amount,
+      myPortionOfBills : MyPortionofBills.rows[0].total_user_amount,
+      total: (paidbyMe.rows[0].total_amount - MyPortionofBills.rows[0].total_user_amount)
+    }
 
   } catch (error) {
     console.error('Error querying the database:', error);
