@@ -1,3 +1,4 @@
+
 import Totals from './Totals';
 
 export default  function  Home() {
@@ -8,3 +9,4 @@ export default  function  Home() {
       </>
     );
   }
+

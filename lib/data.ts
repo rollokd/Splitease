@@ -1,4 +1,6 @@
 import { sql } from '@vercel/postgres';
+import { User } from './definititions';
+
 
 
 export async function fetchOwnDashboardData () {
@@ -23,3 +25,18 @@ export async function fetchOwnDashboardData () {
     console.error('Error querying the database:', error);
   }
 }
+
+
+export async function fetchUsers() {
+  try {
+    const data = await sql<User>`
+      SELECT id,firstName,lastName FROM users;`;
+    const users = data.rows;
+
+    return users;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch users.');
+  }
+}
+
