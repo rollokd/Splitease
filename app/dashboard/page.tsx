@@ -1,7 +1,12 @@
-import React from 'react';
 
-const page = () => {
-  return <div>page</div>;
-};
+import Totals from './Totals';
 
-export default page;
+export default  function  Home() {
+   
+    return (
+      <>
+        <Totals />
+      </>
+    );
+  }
+
