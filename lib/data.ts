@@ -1,6 +1,22 @@
-import { sql } from '@vercel/postgres'
+import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
-import { Group, Transaction, UserTransaction, UserWJunction } from './definititions';
+import { UserWJunction, UserPaid, SplitToPay, Group, Transaction, UserTransaction } from './definititions';
+
+export async function fetchUsersTransactionsOfGroups(groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
+  noStore();
+  try {
+    // The query is already parameter-free, but ensure to escape or parameterize any dynamic values
+    const data = await sql`
+    SELECT users.id, firstname, lastname, transactions.paid_by, transactions.amount, transactions.status AS status, transactions.group_id
+    FROM users
+    JOIN transactions ON users.id = transactions.paid_by
+    WHERE transactions.group_id = ${groupID} AND status = 'false';
+    `;
+    return data.rows;
+  } catch (error) {
+    console.log('Database Error:', error);
+  }
+}
 
 // get group from group id
 export async function getGroupById(group_id: string) {
@@ -11,22 +27,6 @@ export async function getGroupById(group_id: string) {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch revenue data.');
-  }
-}
-
-// get all groups in a group
-export async function getUsersbyGroup(group_id: string) {
-  noStore()
-  try {
-    const { rows } = await sql<UserWJunction>`
-      SELECT * FROM users
-      LEFT JOIN user_groups 
-      ON users.id = user_groups.user_id
-      WHERE group_id = ${group_id}`
-    return rows
-  } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch user data.');
   }
 }
 
@@ -62,6 +62,38 @@ export async function fetchUserBalance(userID: string = '9ec739f9-d23b-4410-8f1a
     //Calculate the account
     const result = Number(userPaid.rows[0].total_amount) - Number( splitToPay.rows[0].total_user_amount);
     return result;
+  } catch (error) {
+    console.log('Database Error:', error);
+  }
+}
+
+// get all groups in a group
+export async function getUsersbyGroup(group_id: string) {
+  noStore()
+  try {
+    const { rows } = await sql<UserWJunction>`
+      SELECT * FROM users
+      LEFT JOIN user_groups 
+      ON users.id = user_groups.user_id
+      WHERE group_id = ${group_id}`
+    return rows
+  } catch (err) {
+    console.log('Database Error:', err);
+  }
+}
+
+export async function getNameGroup(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
+  noStore();
+  try {
+    const { rows } = await sql`
+    SELECT users.id, firstname, lastname, groups.id as group_id, groups.name
+    FROM users
+    JOIN user_groups ON users.id = user_groups.user_id
+    JOIN groups ON groups.id = user_groups.group_id
+    WHERE users.id = ${userID} and group_id = ${groupID}
+    `
+
+    return rows[0]
   } catch (error) {
     console.log('Database Error:', error);
   }

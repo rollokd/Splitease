@@ -30,4 +30,10 @@ export type Junction = {
 
 export type UserWJunction = User & Junction
 
+export interface UserProps {
+  userID: string;
+  groupID: string;
+}
+
 export type UserTransaction = Transaction & User
+
