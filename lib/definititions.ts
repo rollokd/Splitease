@@ -23,4 +23,11 @@ export type User = {
   password: string
 }
 
+export type Junction = {
+  user_id: string
+  group_id: string
+}
+
+export type UserWJunction = User & Junction
+
 export type UserTransaction = Transaction & User

@@ -1,6 +1,6 @@
 import { sql } from '@vercel/postgres'
 import { unstable_noStore as noStore } from 'next/cache';
-import { Group, Transaction, UserTransaction } from './definititions';
+import { Group, Transaction, UserTransaction, UserWJunction } from './definititions';
 
 // get group from group id
 export async function getGroupById(group_id: string) {
@@ -18,15 +18,15 @@ export async function getGroupById(group_id: string) {
 export async function getUsersbyGroup(group_id: string) {
   noStore()
   try {
-    const { rows } = await sql<Group>`
+    const { rows } = await sql<UserWJunction>`
       SELECT * FROM users
       LEFT JOIN user_groups 
       ON users.id = user_groups.user_id
-      WHERE group_id = '${group_id}'`
+      WHERE group_id = ${group_id}`
     return rows
   } catch (err) {
     console.error('Database Error:', err);
-    throw new Error('Failed to fetch revenue data.');
+    throw new Error('Failed to fetch user data.');
   }
 }
 
@@ -46,7 +46,7 @@ export async function getTransactionsByGroup(group_id: string) {
   }
 }
 
-export async function fetchGroupTotals(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
+export async function fetchUserBalance(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
   try {
     const userPaid = await sql`

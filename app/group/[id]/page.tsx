@@ -1,3 +1,4 @@
+import GroupBalances from "@/components/group-view/group-balances/group-balances";
 import TransactionList from "@/components/group-view/transaction-list";
 import {
   Breadcrumb,
@@ -7,13 +8,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { getGroupById } from "@/lib/data";
+import { getGroupById, getUsersbyGroup } from "@/lib/data";
 
 type Props = { params: { id: string } };
 
 const Page = async ({ params }: Props) => {
   const group_id = params.id;
   const group = await getGroupById(group_id);
+  // const users = await getUsersbyGroup(group_id);
   return (
     <div className="flex flex-col p-3 gap-4">
       <Breadcrumb>
@@ -28,6 +30,7 @@ const Page = async ({ params }: Props) => {
         </BreadcrumbList>
       </Breadcrumb>
       <div>Group name: {group?.name}</div>
+      <GroupBalances group_id={group_id} />
       <TransactionList group_id={group_id} />
     </div>
   );
