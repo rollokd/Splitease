@@ -12,28 +12,23 @@ const FormSchema = z.object({
   status: z.boolean(),
 });
 
-export type State = {
-  errors?: {
-    name?: string[];
-    status?: string[];
-  };
-  message?: string | null;
-};
-
-const CreateGroup = FormSchema.omit({ id: true, date: true });
+const CreateGroup = FormSchema.omit({ id: true, date: true, status: true });
 // const UpdateGroup = FormSchema.omit({ id: true, date: true });
 
-export async function createGroup(prevState: State, formData: FormData) {
-  const { name, status } = CreateGroup.parse({
+export async function createGroup(formData: FormData) {
+  const { name } = CreateGroup.parse({
     name: formData.get('name'),
-    status: formData.get('status'),
   });
+  const status = true;
   const date = new Date().toISOString().split('T')[0];
-
-  await sql`
+  try {
+    await sql`
     INSERT INTO groups (name,status,date)
     VALUES (${name}, ${status},${date})`;
-
-  revalidatePath('dashboard/create-group');
-  redirect('dashboard/groups');
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+  revalidatePath('/dashboard');
+  redirect('/dashboard');
 }

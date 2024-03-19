@@ -6,7 +6,7 @@ export async function fetchUsers() {
     const data = await sql<User>`
       SELECT id,firstName,lastName FROM users;`;
     const users = data.rows;
-    console.log(users);
+
     return users;
   } catch (error) {
     console.error('Database Error:', error);
