@@ -22,6 +22,23 @@ export type User = {
   email: string
   password: string
 }
+// transactions ===>
+export type GroupMembers = {
+  id: string
+  firstname: string
+  group_id: string
+}
+export type forNow = {
+  amount: number
+}
+export type SplitTable = {
+  user_amount: number
+  paid: boolean
+  trans_id: string
+}
+export type TableDataType = GroupMembers & forNow;
+export type Split = TableDataType & SplitTable;
+//<=== transactions
 
 export type Junction = {
   user_id: string
@@ -37,3 +54,21 @@ export interface UserProps {
 
 export type UserTransaction = Transaction & User
 
+export interface Own {
+  paidbyMe: number;
+  myPortionOfBills: number;
+  total: number;
+} 
+
+export type GroupMember = {
+  id: string;
+  firstname: string;
+  lastname: string;
+  group_id: string;
+  name: string;
+};
+
+export type DataBarChart = {
+  name: string,
+  total: number
+}
