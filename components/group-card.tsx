@@ -8,20 +8,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { fetchUserBalance, getUsersbyGroup, getNameGroup } from "@/lib/data";
-import { UserWJunction, UserProps } from "@/lib/definititions";
-
+import { UserWJunction, Junction } from "@/lib/definititions";
 const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map((user) => user.firstname);
   // console.log(firstnames);
   return firstnames;
 };
-
-export const GroupCard: React.FC<UserProps> = async ({ userID, groupID }) => {
-  const groupTotals = await fetchUserBalance(userID, groupID);
-  const userByGroup = await getUsersbyGroup(groupID);
+export const GroupCard: React.FC<Junction> = async ({ user_id, group_id }) => {
+  const groupTotals = await fetchUserBalance(user_id, group_id);
+  const userByGroup = await getUsersbyGroup(group_id);
   const listOfUsers = getUsers(userByGroup || []);
-  const groupName = await getNameGroup();
-
+  const groupName = await getNameGroup(user_id, group_id);
   return (
     <Card className="w-[350px]">
       <CardHeader>
@@ -35,9 +32,9 @@ export const GroupCard: React.FC<UserProps> = async ({ userID, groupID }) => {
           ? listOfUsers.join(", ")
           : `${listOfUsers.slice(0, 4).join(", ")}...`}
       </CardContent>
-      <CardFooter className="flex justify-between">
+      {/* <CardFooter className="flex justify-between">
         nothing at the moment
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 };
