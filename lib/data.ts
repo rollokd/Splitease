@@ -118,6 +118,16 @@ export async function getNamesOfUsersInAGroup(group_id: string = '20328e6f-167b-
   }
 }
 
+export async function getRecentlyAddedTransactionId() {
+  noStore()
+  try {
+
+  } catch (e) {
+    console.log("Database failed to fetch recent transaction id", e);
+    throw new Error('Failed to fetch the recent transaction id')
+  }
+}
+
 export async function fetchOwnDashboardData() {
 
   try {

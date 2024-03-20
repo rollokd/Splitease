@@ -37,17 +37,8 @@ export async function createTransaction(formData: FormData) {
   VALUES (${name}, ${dateConverted}, ${amountInPennies}, ${statusBla}, ${paid_by}, ${groupBla_id})
   `
   console.log("transInsert =====>", transInsert)
-  // const insertIntoSplitTable = sql`INSERT INto splits (id, amount, user_amount, paid, user_id, trans_id, group_id)
-  // VALUES (${}, ${}, ${}, ${}, ${}, ${}, ${group_id})
-  // `
-
-  //which user id (who paid initial amount ?)
-  //paid individual values=> status of a whole transaction?
-  //user_amount => should there be 4 user amounts or an array of user_amount?
 
 
-  // revalidatePath()
-  // redirect()
 }
 const FormSchemaSplit = z.object({
   id: z.string(),
@@ -62,14 +53,7 @@ const FormSchemaSplit = z.object({
 const CreateSplitTransaction = FormSchemaSplit.omit({ id: true, status: true, paid_by: true });
 
 export async function createSplit(tableData: TableDataType[], formData: FormData) {
-  // const { group_id, trans_id, user_id, amount, paid_by, user_amount } = CreateSplitTransaction.parse({
-  //   group_id: formData.get('group_id'),
-  //   trans_id: formData.get('trans_id'),
-  //   amount: formData.get('amount'),
-  //   paid_by: formData.get('paid_by'),
-  //   user_amount: formData.get('user_amount')
 
-  // })
   console.log("table data ===> ", tableData)
   console.log("form data ===> ", formData)
 
@@ -80,9 +64,11 @@ export async function createSplit(tableData: TableDataType[], formData: FormData
   const paidBy = '410544b2-4001-4271-9855-fec4b6a6442a';
   const group = '20328e6f-167b-4fb9-bb5e-c71580f59cd5';
 
-  await sql`INSERT INTO splits (group_id, trans_id, user_id, amount, paid_by, user_amount, status)
-  VALUES (${group}, ${transaction}, ${user_id}, ${amount}, ${paidBy}, ${user_amount}, ${status})
-  `
+  // await sql`INSERT INTO splits (group_id, trans_id, user_id, amount, paid_by, user_amount, status)
+  // VALUES (${group}, ${transaction}, ${user_id}, ${amount}, ${paidBy}, ${user_amount}, ${status})
+  // `
+  // revalidatePath('/Dashboard/viewGroup')
+  // redirect('/Dashboard/viewGroup')
 }
 const FormSchema = z.object({
   id: z.string(),
