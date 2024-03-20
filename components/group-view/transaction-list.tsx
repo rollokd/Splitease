@@ -7,8 +7,8 @@ const transactionList = async ({ group_id }: Props) => {
   const transactions = await getTransactionsByGroup(group_id);
   console.log(transactions);
   return (
-    <>
-      <div>transactionList</div>
+    <div>
+      <h2>transactionList</h2>
       <ol>
         {transactions.map((transaction) => (
           <li key={transaction.id}>
@@ -17,7 +17,7 @@ const transactionList = async ({ group_id }: Props) => {
           </li>
         ))}
       </ol>
-    </>
+    </div>
   );
 };
 

@@ -2,7 +2,7 @@ import React from "react";
 
 type Props = {};
 
-const transactionItem = (props: Props) => {
+const transactionItem = async (props: Props) => {
   return <div>transactionItem</div>;
 };
 
