@@ -10,3 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 export function extractIds(users: User[] | UserWJunction[] | UserTransaction[]) {
   return users.map((user) => user.id)
 }
+
+export function prettyMoney(amount: number) {
+  return '£' + (amount/100).toFixed(2)
+}
