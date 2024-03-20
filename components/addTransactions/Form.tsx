@@ -18,30 +18,27 @@ import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/addTransactions/SplittingTable/data-table";
 import { getNamesOfUsersInAGroup } from "@/lib/data";
 import { columns } from "./SplittingTable/columns";
+import { User, UserWJunction } from "@/lib/definititions";
+import { useParams } from "next/navigation";
 
-const formSchema = z.object({
+const formSchemaTransactions = z.object({
   name: z.string().min(3, {
     message: "Username must be at least 3 characters.",
   }),
   amount: z.coerce.number(),
-  date: z.date(),
+  date: z.string().datetime()
 });
-type User = {
-  firstname: string;
-  amount: number;
-  id: string;
-};
 
 export function TransactionForm() {
   const [amountInput, setAmountInput] = useState(0);
-  const [tableData, setTableData] = useState<User[]>([]);
+  const [tableData, setTableData] = useState<UserWJunction[]>([]);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof formSchemaTransactions>>({
+    resolver: zodResolver(formSchemaTransactions),
   });
   let whoPaid: string[];
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchemaTransactions>) {
     const form_data = new FormData();
     for (let key in values) {
       form_data.append(key, values[key as keyof typeof object]);
@@ -55,7 +52,6 @@ export function TransactionForm() {
       console.log("whatever inside");
       const value = await getNamesOfUsersInAGroup();
       console.log(" Value: what a thrill ====> ", value);
-      whoPaid = [value[0].firstname, value[0].id];
       const data = value.map((ele) => ({
         ...ele,
         amount: amountInput / value.length,
@@ -63,7 +59,7 @@ export function TransactionForm() {
       setTableData(data);
     }
     helper();
-  }, []);
+  });
 
   useEffect(() => {
     const data = tableData.map((ele) => ({
@@ -119,7 +115,10 @@ export function TransactionForm() {
             <FormItem>
               <FormLabel>date</FormLabel>
               <FormControl>
-                <Input type="date" {...field} />
+                <Input
+                  type="date"
+                  {...field}
+                />
               </FormControl>
               <FormDescription>
                 This is a transactions creation date.
