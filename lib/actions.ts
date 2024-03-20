@@ -11,13 +11,13 @@ const FormSchemaTransaction = z.object({
   name: z.string(),
   amount: z.coerce.number(),
   status: z.boolean(),
-  date: z.coerce.date(),
+  date: z.string().datetime(),
   paid_by: z.string(),
   group_id: z.string()
 })
 const CreateTransaction = FormSchemaTransaction.omit({ id: true, status: true, paid_by: true, group_id: true });
 
-export async function createTransaction(formData: FormData) {
+export async function createTransaction(tableData: TableDataType[], formData: FormData) {
   console.log("aloha..... ")
 
   const { name, amount, date } = CreateTransaction.parse({

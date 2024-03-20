@@ -23,12 +23,12 @@ import { FormFieldContext } from "@/components/ui/form";
 
 const formSchemaTransactions = z.object({
   name: z.string().min(3, {
-    message: "Username must be at least 3 characters.",
+    message: "Username must be at least 3 characters."
   })
   ,
   amount: z.number(),
-  // date: z.string().datetime() <=== problem here
-  date: z.coerce.date()
+  date: z.string().datetime()
+  // date: z.coerce.date()
 });
 
 export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[] }) {
@@ -45,10 +45,8 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
     for (let key in values) {
       form_data.append(key, values[key as keyof typeof object]);
     }
-    createTransaction(form_data);
-    console.log("item context", itemContext)
-    console.log("amount input", amountInput)
-    console.log("bal bla ", values);
+    const createTransactionAndData = createTransaction.bind(null, tableData)
+    createTransactionAndData(form_data)
   }
 
   useEffect(() => {
