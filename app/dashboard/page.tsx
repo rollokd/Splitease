@@ -1,4 +1,4 @@
-import Totals from "../../components/Totals";
+import Totals from "../../components/totals";
 
 export default function Home() {
   return (

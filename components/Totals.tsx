@@ -19,9 +19,11 @@ export default async function Totals() {
   );
 
   const own = await fetchOwnDashboardData();
-  console.log("here sebA: ", own);
+  
+  let paidbyMeMoney = (own?.paidbyMe ?? 0) / 1000;
+  let myPortionOfBillsMoney = (own?.myPortionOfBills ?? 0) / 1000;
+  let totalMoney = (own?.total ?? 0) / 1000;
 
-  console.log("obj: ", own?.paidbyMe);
   // extract component gabe :)
   return (
     <>
@@ -35,7 +37,7 @@ export default async function Totals() {
               {svgIcon}
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${own?.paidbyMe / 1000}</div>
+              <div className="text-2xl font-bold">${paidbyMeMoney}</div>
               <p className="text-xs text-muted-foreground">
                 3106eb8a-3288-4b62-a077-3b24bd640d9a
               </p>
@@ -52,7 +54,7 @@ export default async function Totals() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                $-{own?.myPortionOfBills / 1000}
+                $-{myPortionOfBillsMoney}
               </div>
               <p className="text-xs text-muted-foreground">
                 3106eb8a-3288-4b62-a077-3b24bd640d9a
@@ -67,7 +69,7 @@ export default async function Totals() {
               {svgIcon}
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$27</div>
+              <div className="text-2xl font-bold">${totalMoney}</div>
               <p className="text-xs text-muted-foreground">
                 3106eb8a-3288-4b62-a077-3b24bd640d9a
               </p>

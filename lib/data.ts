@@ -1,6 +1,7 @@
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
-import { UserWJunction, Group, UserTransaction, User } from './definititions';
+import { UserWJunction, Group, UserTransaction, User, Own } from './definititions';
+import { promises } from 'dns';
 
 export async function fetchUsersTransactionsOfGroups(groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
@@ -129,7 +130,7 @@ export async function getNamesOfUsersInAGroup(group_uuid = '20328e6f-167b-4fb9-b
  }
 }
 
-export async function fetchOwnDashboardData () {
+export async function fetchOwnDashboardData () : Promise<Own | undefined> {
 
   try {
     const paidbyMe = await   sql`SELECT SUM(amount) AS total_amount
@@ -140,6 +141,8 @@ export async function fetchOwnDashboardData () {
     const MyPortionofBills = await   sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id='3106eb8a-3288-4b62-a077-3b24bd640d9a' AND paid=false`;
     console.log(paidbyMe.rows[0].total_amount);
     console.log(MyPortionofBills.rows[0].total_user_amount);
+
+   
     
     return {
       paidbyMe : paidbyMe.rows[0].total_amount,

@@ -37,3 +37,10 @@ export interface UserProps {
 
 export type UserTransaction = Transaction & User
 
+export interface Own {
+  paidbyMe: number;
+  myPortionOfBills: number;
+  total: number;
+} 
+
+
