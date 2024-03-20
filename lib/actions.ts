@@ -1,4 +1,4 @@
-'use server'
+'use server';
 
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
@@ -12,17 +12,20 @@ const FormSchemaTransaction = z.object({
   status: z.boolean(),
   date: z.coerce.date(),
   paid_by: z.string(),
-  group_id: z.string()
-})
-const CreateTransaction = FormSchemaTransaction.omit({ id: true, status: true });
+  group_id: z.string(),
+});
+const CreateTransaction = FormSchemaTransaction.omit({
+  id: true,
+  status: true,
+});
 
 export async function createTransaction(formData: FormData, whoPaid: string[]) {
   const { name, amount, date } = CreateTransaction.parse({
     name: formData.get('name'),
     amount: formData.get('amount'),
     // status: formData.get('status')
-    date: formData.get('date')
-  })
+    date: formData.get('date'),
+  });
   const [firstname, id] = whoPaid;
   const amountInPennies = amount * 100;
   const dateConverted = date.toISOString().split('T')[0];
@@ -32,7 +35,7 @@ export async function createTransaction(formData: FormData, whoPaid: string[]) {
 
   await sql`INSERT INTO transactions (name, date, amount, status, paid_by, group_id)
   VALUES (${name}, ${dateConverted}, ${amountInPennies}, ${status}, ${id}, ${group_id})
-  `
+  `;
   // const insertIntoSplitTable = sql`INSERT INto splits (id, amount, user_amount, paid, user_id, trans_id, group_id)
   // VALUES (${}, ${}, ${}, ${}, ${}, ${}, ${group_id})
   // `
@@ -41,36 +44,53 @@ export async function createTransaction(formData: FormData, whoPaid: string[]) {
   //paid individual values=> status of a whole transaction?
   //user_amount => should there be 4 user amounts or an array of user_amount?
 
-
   // revalidatePath()
   // redirect()
 }
 
-   const FormSchema = z.object({
+const GroupFormSchema = z.object({
   id: z.string(),
   name: z.string(),
-  date: z.string(),
+  date: z.date(),
   status: z.boolean(),
 });
 
-const CreateGroup = FormSchema.omit({ id: true, date: true, status: true });
-// const UpdateGroup = FormSchema.omit({ id: true, date: true });
+const CreateGroup = GroupFormSchema.omit({
+  id: true,
+  date: true,
+  status: true,
+});
+// const UpdateGroup = GroupFormSchema.omit({ id: true, date: true });
 
-export async function createGroup(formData: FormData) {
+export async function createGroup(formData: FormData, userIds: string[]) {
   const { name } = CreateGroup.parse({
     name: formData.get('name'),
   });
   const status = true;
   const date = new Date().toISOString().split('T')[0];
+
+  const groupResult = await sql`
+      INSERT INTO groups (name, status, date)
+      VALUES (${name}, ${status}, ${date})
+      RETURNING id`;
+
+  const groupId = groupResult.rows[0].id;
+
+  for (const userId of userIds) {
+    await createJunction(userId, groupId);
+  }
+
+  revalidatePath('/dashboard');
+  redirect('/dashboard');
+}
+
+export async function createJunction(user_id: string, group_id: string) {
   try {
     await sql`
-    INSERT INTO groups (name,status,date)
-    VALUES (${name}, ${status},${date})`;
+    INSERT INTO user_groups (user_id, group_id)
+    VALUES (${user_id}, ${group_id})`;
   } catch (error) {
     console.error(error);
     throw error;
   }
-  revalidatePath('/dashboard');
-  redirect('/dashboard');
-
 }
