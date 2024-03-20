@@ -22,6 +22,23 @@ export type User = {
   email: string
   password: string
 }
+// transactions ===>
+export type GroupMembers = {
+  id: string
+  firstname: string
+  group_id: string
+}
+export type forNow = {
+  amount: number
+}
+export type SplitTable = {
+  user_amount: number
+  paid: boolean
+  trans_id: string
+}
+export type TableDataType = GroupMembers & forNow;
+export type Split = TableDataType & SplitTable;
+//<=== transactions
 
 export type Junction = {
   user_id: string
