@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { object, z } from "zod";
@@ -16,55 +16,60 @@ import {
 import { createTransaction } from "@/lib/actions";
 import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/addTransactions/SplittingTable/data-table";
-import { getNamesOfUsersInAGroup } from "@/lib/data";
 import { columns } from "./SplittingTable/columns";
-import { User, UserWJunction } from "@/lib/definititions";
+import { GroupMembers, User, UserWJunction } from "@/lib/definititions";
 import { useParams } from "next/navigation";
+import { FormFieldContext } from "@/components/ui/form";
 
 const formSchemaTransactions = z.object({
   name: z.string().min(3, {
     message: "Username must be at least 3 characters.",
-  }),
-  amount: z.coerce.number(),
-  date: z.string().datetime()
+  })
+  ,
+  amount: z.number(),
+  // date: z.string().datetime() <=== problem here
+  date: z.coerce.date()
 });
 
-export function TransactionForm() {
+export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[] }) {
   const [amountInput, setAmountInput] = useState(0);
   const [tableData, setTableData] = useState<UserWJunction[]>([]);
+  const itemContext = useContext(FormFieldContext)
 
   const form = useForm<z.infer<typeof formSchemaTransactions>>({
     resolver: zodResolver(formSchemaTransactions),
   });
-  let whoPaid: string[];
 
-  async function onSubmit(values: z.infer<typeof formSchemaTransactions>) {
+  const onSubmit = (values: z.infer<typeof formSchemaTransactions>) => {
     const form_data = new FormData();
     for (let key in values) {
       form_data.append(key, values[key as keyof typeof object]);
     }
-    await createTransaction(form_data, whoPaid);
-    console.log(values);
+    createTransaction(form_data);
+    console.log("item context", itemContext)
+    console.log("amount input", amountInput)
+    console.log("table data", tableData)
+    console.log("bal bla ", values);
   }
 
   useEffect(() => {
     async function helper() {
       console.log("whatever inside");
-      const value = await getNamesOfUsersInAGroup();
-      console.log(" Value: what a thrill ====> ", value);
-      const data = value.map((ele) => ({
+      // const value = await getNamesOfUsersInAGroup();
+      // console.log(" Value: what a thrill ====> ", value);
+      const data = groupMembers.map((ele) => ({
         ...ele,
-        amount: amountInput / value.length,
+        amount: amountInput / groupMembers.length,
       }));
       setTableData(data);
     }
     helper();
-  });
+  }, []);
 
   useEffect(() => {
-    const data = tableData.map((ele) => ({
+    const data = groupMembers.map((ele) => ({
       ...ele,
-      amount: amountInput / tableData.length,
+      amount: amountInput / groupMembers.length,
     }));
     setTableData(data);
   }, [amountInput]);
@@ -98,7 +103,12 @@ export function TransactionForm() {
                 <Input
                   placeholder="type here..."
                   {...field}
-                  onChange={(e) => setAmountInput(Number(e.target.value))}
+                  value={field.value}
+                  onChange={(e) => {
+                    const newAmount = Number(e.target.value)
+                    setAmountInput(newAmount)
+                    field.onChange(newAmount)
+                  }}
                 />
               </FormControl>
               <FormDescription>
@@ -127,13 +137,13 @@ export function TransactionForm() {
             </FormItem>
           )}
         />
+        <div className="container mx-auto py-10">
+          <DataTable columns={columns} data={tableData} />
+        </div>
+        <Button type="submit" className="flex flex-row self-center">
+          Add Transaction
+        </Button>
       </form>
-      <div className="container mx-auto py-10">
-        <DataTable columns={columns} data={tableData} />
-      </div>
-      <Button type="submit" className="flex flex-row self-center">
-        Add Transaction
-      </Button>
     </Form>
   );
 }
