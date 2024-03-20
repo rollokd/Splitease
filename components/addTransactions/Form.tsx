@@ -17,7 +17,7 @@ import { createTransaction } from "@/lib/actions";
 import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/addTransactions/SplittingTable/data-table";
 import { columns } from "./SplittingTable/columns";
-import { GroupMembers, User, UserWJunction } from "@/lib/definititions";
+import { GroupMembers, TableDataType, User, UserWJunction } from "@/lib/definititions";
 import { useParams } from "next/navigation";
 import { FormFieldContext } from "@/components/ui/form";
 
@@ -33,7 +33,7 @@ const formSchemaTransactions = z.object({
 
 export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[] }) {
   const [amountInput, setAmountInput] = useState(0);
-  const [tableData, setTableData] = useState<UserWJunction[]>([]);
+  const [tableData, setTableData] = useState<TableDataType[]>([]);
   const itemContext = useContext(FormFieldContext)
 
   const form = useForm<z.infer<typeof formSchemaTransactions>>({
@@ -48,7 +48,6 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
     createTransaction(form_data);
     console.log("item context", itemContext)
     console.log("amount input", amountInput)
-    console.log("table data", tableData)
     console.log("bal bla ", values);
   }
 
