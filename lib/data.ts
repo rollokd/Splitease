@@ -1,7 +1,6 @@
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
-import { UserWJunction, Group, UserTransaction, User, Own } from './definititions';
-import { promises } from 'dns';
+import { UserWJunction, Group, UserTransaction, User, Own, GroupMember } from './definititions';
 
 export async function fetchUsersTransactionsOfGroups(groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
@@ -166,6 +165,23 @@ export async function fetchUsers() {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch users.');
+  }
+}
+
+export async function getUserGroups(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6') {
+  noStore();
+  try {
+    const { rows } = await sql<GroupMember>`
+    SELECT users.id, firstname, lastname, groups.id as group_id, groups.name
+    FROM users
+    JOIN user_groups ON users.id = user_groups.user_id
+    JOIN groups ON groups.id = user_groups.group_id
+    WHERE users.id = ${userID}
+    `
+    // console.log('userGroups result: ', rows);
+    return rows
+  } catch (error) {
+    console.log('Database Error:', error);
   }
 }
 

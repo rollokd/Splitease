@@ -43,4 +43,15 @@ export interface Own {
   total: number;
 } 
 
+export type GroupMember = {
+  id: string;
+  firstname: string;
+  lastname: string;
+  group_id: string;
+  name: string;
+};
 
+export type DataBarChart = {
+  name: string,
+  total: number
+}
