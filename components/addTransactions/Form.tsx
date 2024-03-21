@@ -63,8 +63,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
   useEffect(() => {
     const data = groupMembers.map((ele) => ({
       ...ele,
-      amount: amountInput / groupMembers.length,
-      paid: false
+      amount: amountInput / groupMembers.length
     }));
     setTableData(data);
   }, [amountInput]);

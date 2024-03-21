@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { Split, TableDataType } from './definititions';
+import { Split, SplitTable, TableDataType, TransInsert, UserValues } from './definititions';
 
 const FormSchemaTransaction = z.object({
   id: z.string(),
@@ -18,7 +18,6 @@ const FormSchemaTransaction = z.object({
 const CreateTransaction = FormSchemaTransaction.omit({ id: true, status: true, paid_by: true, group_id: true });
 
 export async function createTransaction(tableData: TableDataType[], formData: FormData) {
-  console.log("aloha..... ")
 
   const { name, amount, date } = CreateTransaction.parse({
     name: formData.get('name'),
@@ -31,52 +30,38 @@ export async function createTransaction(tableData: TableDataType[], formData: Fo
   const dateConverted = date.toISOString().split('T')[0];
   const statusBla = false;
   const paid_by = '410544b2-4001-4271-9855-fec4b6a6442a';
-  const groupBla_id = '20328e6f-167b-4fb9-bb5e-c71580f59cd5';
+  const groupBla_id = 'c0bc7c72-2ecc-4326-8507-db9df51ca310';
 
   const transInsert = await sql`INSERT INTO transactions (name, date, amount, status, paid_by, group_id)
   VALUES (${name}, ${dateConverted}, ${amountInPennies}, ${statusBla}, ${paid_by}, ${groupBla_id})
   RETURNING id, amount, group_id
   `
+  //second insert data prep
   let transactionId = transInsert.rows[0].id
   let totalAmountPaid = transInsert.rows[0].amount
   let groupId = transInsert.rows[0].group_id
-  let tableDataValues = tableData.map((ele) => {
-
-    if (ele.amount && ele.id) return [ele.amount, ele.id];
-
-
+  let bundledUpTransactionValues: TransInsert = { trans_id: transactionId, amount: totalAmountPaid, group_id: groupId }
+  let bundledUpTableData: UserValues;
+  tableData.map((ele) => {
+    if (ele.amount && ele.id) {
+      bundledUpTableData = { user_amount: ele.amount, user_id: ele.id, paid: false }
+      createSplit(bundledUpTableData, bundledUpTransactionValues)
+    }
   })
-  console.log(tableDataValues)
-  // createSplit(tableData, transInsert)
-
 }
-const FormSchemaSplit = z.object({
-  id: z.string(),
-  group_id: z.string(),
-  trans_id: z.string(),
-  user_id: z.string(),
-  amount: z.coerce.number(),
-  paid: z.boolean(),
-  user_amount: z.number(),
-})
 
-const CreateSplitTransaction = FormSchemaSplit.omit({ id: true, paid: true });
 
-export async function createSplit(tableData: TableDataType[], transInsert) {
-  let tableDataArray = tableData.forEach((x) => {
-    return x
-  })
-  let transInsertArray = transInsert.forEach((x) => {
-    return x
-  })
-  console.log(" ** <3 ** arrays of tableData and transInsert =====> ", tableDataArray, transInsertArray)
-
-  // await sql`INSERT INTO splits (id, amount, user_amount, paid, user_id, trans_id, group_id)
-  // VALUES (${id}, ${amount}, ${user_amount}, ${paid}, ${user_id}, ${trans_id}, ${group_id})
-  // `
-  // revalidatePath('/Dashboard/viewGroup')
-  // redirect('/Dashboard/viewGroup')
+export async function createSplit(userValues: UserValues, transInsert: TransInsert) {
+  const { user_id, user_amount, paid } = userValues;
+  const { trans_id, amount, group_id } = transInsert;
+  await sql<SplitTable>`INSERT INTO splits (amount, user_amount, paid, user_id, trans_id, group_id)
+  VALUES (${amount}, ${user_amount}, ${paid}, ${user_id}, ${trans_id}, ${group_id})
+  `
+  console.log("6 values to add to the split table", { transInsert, userValues })
+  // revalidatePath('/viewGroup')
+  // redirect('/viewGroup')
 }
+
 const FormSchema = z.object({
   id: z.string(),
   name: z.string(),

@@ -6,6 +6,6 @@ import { getNamesOfUsersInAGroup } from "@/lib/data";
 
 
 export default async function Page() {
-  const groupMembers: GroupMembers[] = await getNamesOfUsersInAGroup()
+  const groupMembers = await getNamesOfUsersInAGroup()
   return <TransactionForm groupMembers={groupMembers}></TransactionForm>;
 }

@@ -52,8 +52,13 @@ export type SplitTable = {
 }
 export type UserValues = {
   user_id: string
-  group_id: string
+  user_amount: number
   paid: boolean
+}
+export type TransInsert = {
+  trans_id: string
+  amount: number
+  group_id: string
 }
 export type TableDataType = GroupMembers & forNow;
 
