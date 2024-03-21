@@ -17,6 +17,7 @@ const EditUserSelector = ({
   selectedUsers: User[];
   handleRemoveUser: (userId: string) => void;
 }) => {
+  const currUser = '410544b2-4001-4271-9855-fec4b6a6442a';
   return (
     <>
       {/* * Add users */}
@@ -63,13 +64,15 @@ const EditUserSelector = ({
                 <span>
                   {user.firstname} {user.lastname}
                 </span>
-                <button
-                  type='button'
-                  onClick={() => handleRemoveUser(user.id)}
-                  className='ml-2 rounded bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2'
-                >
-                  -
-                </button>
+                {user.id !== currUser && (
+                  <button
+                    type='button'
+                    onClick={() => handleRemoveUser(user.id)}
+                    className='ml-2 rounded bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2'
+                  >
+                    -
+                  </button>
+                )}
               </li>
             ))}
           </ul>
