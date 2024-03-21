@@ -212,3 +212,40 @@ export async function getUserGroups(userID: string = '9ec739f9-d23b-4410-8f1a-c2
   }
 }
 
+type Debts = {
+  paid_by: string,
+  user_id: string,
+  sum: number
+}
+export async function getDebts(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6') {
+  noStore();
+  try {
+    const { rows } = await sql<Debts>`
+    SELECT paid_by, SUM(user_amount) FROM public.transactions
+    JOIN splits ON transactions.id = splits.trans_id
+    WHERE user_id = ${userID} AND paid=false
+    GROUP BY paid_by;
+    `
+    // console.log('getDebts result: ', rows);
+    return rows
+  } catch (error) {
+    console.log('Database Error:', error);
+  }
+}
+export async function getSpecificDebt(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', paid_by: string = '410544b2-4001-4271-9855-fec4b6a6442a') {
+  noStore();
+  try {
+    const { rows } = await sql<Debts>`
+    SELECT paid_by, user_id, SUM(user_amount) FROM public.transactions
+    JOIN splits
+    ON transactions.id = splits.trans_id
+    WHERE transactions.paid_by = ${userID} AND splits.user_id = ${paid_by} AND paid=false
+    GROUP BY paid_by, user_id;
+    `
+    console.log('getSpecificDebt result: ', rows[0].sum);
+    return Number(rows[0].sum)
+  } catch (error) {
+    console.log('Database Error:', error);
+  }
+}
+

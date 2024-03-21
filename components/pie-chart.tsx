@@ -13,27 +13,39 @@ import { CustomizedLabelProps, DataItem, GroupPieChartProps } from '@/lib/defini
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: CustomizedLabelProps) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-  return (
-    <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-      {`${(percent * 100).toFixed(0)}%`}
-    </text>
-  );
-};
 
 export default class GroupPieChart extends PureComponent<GroupPieChartProps> {
   render() {
     const { data } = this.props;
+    const renderCustomizedLabel = ({
+      cx,
+      cy,
+      midAngle,
+      innerRadius,
+      outerRadius,
+      percent,
+      index
+    }: CustomizedLabelProps) => {
+      const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+      const x = cx + radius * Math.cos(-midAngle * RADIAN);
+      const y = cy + radius * Math.sin(-midAngle * RADIAN);
+      const name = filteredData[index].name;
+
+      return (
+        <text x={x} y={y} fill="black" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+          {`${name}: ${(percent * 100).toFixed(0)}%`}
+        </text>
+      );
+    };
+
+    const filteredData = data.filter(item => item.value !== 0);
+
 
     return (
       <ResponsiveContainer width="100%" height="100%">
         <PieChart width={400} height={400}>
           <Pie
-            data={data}
+            data={filteredData}
             cx="50%"
             cy="50%"
             labelLine={false}
@@ -42,7 +54,7 @@ export default class GroupPieChart extends PureComponent<GroupPieChartProps> {
             fill="#8884d8"
             dataKey="value"
           >
-            {data.map((entry, index) => (
+            {filteredData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>

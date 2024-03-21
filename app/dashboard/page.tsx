@@ -3,10 +3,6 @@ import { GroupChart } from "../../components/bar-chart";
 import { getUserGroups, fetchUserAndBalance, fetchOwnDashboardData } from "@/lib/data";
 import Totals from "../../components/Totals";
 import GroupPieChart from "@/components/pie-chart";
-// import dynamic from 'next/dynamic';
-// const GroupPieChart = dynamic(() => import('@/components/pie-chart'), {
-//   ssr: false,
-// });
 
 export default async function Home() {
   const userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6';
@@ -24,20 +20,26 @@ export default async function Home() {
     return { group_id: group.group_id };
   }));
 
-  const own = await fetchOwnDashboardData();
-  let paidbyMeMoney = (own?.paidbyMe ?? 0) / 1000;
-  let myPortionOfBillsMoney = (own?.myPortionOfBills ?? 0) / 1000;
-  let totalMoney = (own?.total ?? 0) / 1000;
-  const pieChartData = [
-    {
-    name: 'paidbyMeMoney',
-    value: paidbyMeMoney
-    },
-    {
-    name: 'totalMoney',
-    value: totalMoney
-    }
-  ]
+  // const own = await fetchOwnDashboardData();
+  // let paidbyMeMoney = (own?.paidbyMe ?? 0) / 1000;
+  // let myPortionOfBillsMoney = (own?.myPortionOfBills ?? 0) / 1000;
+  // let totalMoney = (own?.total ?? 0) / 1000;
+  // const pieChartData = [
+  //   {
+  //   name: 'paidbyMeMoney',
+  //   value: paidbyMeMoney
+  //   },
+  //   {
+  //   name: 'totalMoney',
+  //   value: totalMoney
+  //   }
+  // ]
+
+  const pieChartData = await Promise.all(userGroups.map(async (group) => {
+    let data = await fetchUserAndBalance(userID, group.group_id);
+    if (data === undefined) data = 0;
+    return { name: group.name, value: Math.abs(data) };
+  }));
 
   return (
     <>
