@@ -16,3 +16,6 @@ export function moneyFormat(n: number | undefined) : string {
   return (n / 100).toFixed(2)
 
 }
+export function prettyMoney(amount: number) {
+  return '£' + (amount/100).toFixed(2)
+}

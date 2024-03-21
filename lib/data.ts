@@ -64,6 +64,28 @@ export async function fetchUserBalance(userID: string = '9ec739f9-d23b-4410-8f1a
     return result;
   } catch (error) {
     console.log('Database Error:', error);
+    throw new Error('Failed to fetch balance data.');
+  }
+}
+export async function fetchUserAndBalance(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
+  noStore();
+  try {
+    const userPaid = await sql`
+    SELECT SUM(amount) AS total_amount
+    FROM transactions
+    WHERE paid_by = ${userID} AND group_id = ${groupID};
+    `;
+    const splitToPay = await sql`
+    SELECT SUM(user_amount) AS total_user_amount
+    FROM splits
+    WHERE user_id = ${userID} AND group_id = ${groupID} AND paid = false;
+    `;
+    //Calculate the account
+    const result = Number(userPaid.rows[0].total_amount) - Number( splitToPay.rows[0].total_user_amount);
+    return {user: userID, result};
+  } catch (error) {
+    console.log('Database Error:', error);
+    throw new Error('Failed to fetch balance data.');
   }
 }
 
@@ -72,13 +94,14 @@ export async function getUsersbyGroup(group_id: string) {
   noStore()
   try {
     const { rows } = await sql<UserWJunction>`
-      SELECT * FROM users
-      LEFT JOIN user_groups 
-      ON users.id = user_groups.user_id
-      WHERE group_id = ${group_id}`
+    SELECT * FROM users
+    LEFT JOIN user_groups 
+    ON users.id = user_groups.user_id
+    WHERE group_id = ${group_id}`
     return rows
   } catch (err) {
     console.log('Database Error:', err);
+    throw new Error('Failed to fetch group data.');
   }
 }
 
