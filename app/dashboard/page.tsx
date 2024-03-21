@@ -15,6 +15,7 @@ export default async function Home() {
     if (balance === undefined) balance = 0;
     return { name: group.name, total: balance };
   }));
+  console.log('Balances response: ', balances);
   const groups = await Promise.all(userGroups.map(async (group) => {
     // console.log('Group ID: ', group.group_id);
     return { group_id: group.group_id };
