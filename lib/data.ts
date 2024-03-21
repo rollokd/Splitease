@@ -249,3 +249,18 @@ export async function getSpecificDebt(userID: string = '9ec739f9-d23b-4410-8f1a-
   }
 }
 
+export async function getName(userID: string) {
+  noStore();
+  try {
+    const { rows } = await sql`
+    SELECT users.firstname
+    FROM users
+    WHERE users.id = ${userID}
+    `
+    console.log('getName Result: ', rows[0].firstname);
+    return rows[0].firstname
+  } catch (error) {
+    console.log('Database Error:', error);
+  }
+}
+

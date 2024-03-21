@@ -20,21 +20,6 @@ export default async function Home() {
     return { group_id: group.group_id };
   }));
 
-  // const own = await fetchOwnDashboardData();
-  // let paidbyMeMoney = (own?.paidbyMe ?? 0) / 1000;
-  // let myPortionOfBillsMoney = (own?.myPortionOfBills ?? 0) / 1000;
-  // let totalMoney = (own?.total ?? 0) / 1000;
-  // const pieChartData = [
-  //   {
-  //   name: 'paidbyMeMoney',
-  //   value: paidbyMeMoney
-  //   },
-  //   {
-  //   name: 'totalMoney',
-  //   value: totalMoney
-  //   }
-  // ]
-
   const pieChartData = await Promise.all(userGroups.map(async (group) => {
     let data = await fetchUserAndBalance(userID, group.group_id);
     if (data === undefined) data = 0;
@@ -49,11 +34,13 @@ export default async function Home() {
         <GroupCard key={group.group_id} group_id={group.group_id} user_id={userID} />
       ))}
     </div>
-    <div>
-      <GroupChart data={balances}></GroupChart>
-    </div>
-    <div style={{ width: '100%', height: 400 }}>
-      <GroupPieChart data={pieChartData} />
+    <div className="flex flex-col items-center justify-center">
+      <div style={{ width: '80%', height: '100%' }}>
+        <GroupChart data={balances}></GroupChart>
+      </div>
+      <div style={{ width: '100%', height: 400 }}>
+        <GroupPieChart data={pieChartData} />
+      </div>
     </div>
     </>
   );

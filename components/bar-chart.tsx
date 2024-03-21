@@ -5,7 +5,9 @@ import {
   BarChart, 
   ResponsiveContainer, 
   XAxis, 
-  YAxis } from "recharts"
+  YAxis,
+  Cell 
+} from "recharts"
 import { DataBarChart } from "@/lib/definititions"
 interface GroupChartProps {
   data: DataBarChart[];
@@ -36,12 +38,16 @@ export const GroupChart: React.FC<GroupChartProps> = ({data}) => {
           axisLine={false}
           tickFormatter={(value) => `$${value}`}
         />
-        <Bar
+         <Bar
           dataKey="total"
-          fill="currentColor"
-          radius={[10, 10, 10, 10]}
-          className="fill-primary"
-        />
+          radius={[10, 10, 0, 0]}
+        >
+          {
+            data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.total < 0 ? "#EF4444" : "#10B981"} />
+            ))
+          }
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   )

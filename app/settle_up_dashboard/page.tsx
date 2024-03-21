@@ -1,10 +1,12 @@
 import { DashboardCard } from "@/components/settleDashboardCard";
 import { getSpecificDebt, getDebts } from "@/lib/data";
+import GroupCrumbs from "@/components/group-view/breadcrumbs";
 
-export default async function Home() {
+type Props = { params: { id: string } };
+
+export default async function SettleUpDashBoard({ params }: Props) {
   const userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6';
   // const userID: string = '410544b2-4001-4271-9855-fec4b6a6442a';
-  const groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267';
 
   let debts = await getDebts(userID);
   if (debts === undefined) debts = [];
@@ -20,9 +22,15 @@ export default async function Home() {
 
   return (
     <>
-    <div>
+    <div className="p-5">
+      <GroupCrumbs name={'SettleUp'} />
+    </div>
+    <div className="flex flex-col items-center justify-center p-10">
+      <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+        Balances
+      </h4>
       {balances.map((balance, index) => (
-        <DashboardCard key={index} name = {balance.name} debt={balance.total} />
+        <DashboardCard key={index} user_id = {balance.name} debt={balance.total} />
       ))}
     </div>
     </>
