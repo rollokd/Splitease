@@ -72,3 +72,47 @@ export type DataBarChart = {
   name: string,
   total: number
 }
+
+type SqlField = {
+  columnID: number;
+  dataTypeID: number;
+  dataTypeModifier: number;
+  dataTypeSize: number;
+  format: string;
+  name: string;
+  tableID: number;
+};
+type SqlResult<T> = {
+  command: string;
+  fields: SqlField[];
+  rowAsArray: boolean;
+  rowCount: number;
+  rows: T[];
+  viaNeonFetch: boolean;
+};
+type UserPaidRow = {
+  total_amount: string | null;
+};
+type SplitToPayRow = {
+  total_user_amount: string | null;
+};
+
+export type UserPaidResult = SqlResult<UserPaidRow>;
+export type SplitToPayResult = SqlResult<SplitToPayRow>;
+
+export interface CustomizedLabelProps {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  percent: number;
+  index: number;
+}
+export interface DataItem {
+  name: string;
+  value: number;
+}
+export interface GroupPieChartProps {
+  data: DataItem[];
+}

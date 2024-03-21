@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { fetchUserBalance, getUsersbyGroup, getNameGroup } from "@/lib/data";
+import { fetchUserAndBalance, getUsersbyGroup, getNameGroup } from "@/lib/data";
 import { UserWJunction, Junction } from "@/lib/definititions";
 const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map((user) => user.firstname);
@@ -15,10 +15,11 @@ const getUsers = (userByGroup: UserWJunction[]) => {
   return firstnames;
 };
 export const GroupCard: React.FC<Junction> = async ({ user_id, group_id }) => {
-  const groupTotals = await fetchUserBalance(user_id, group_id);
+  const groupTotals = await fetchUserAndBalance(user_id, group_id);
   const userByGroup = await getUsersbyGroup(group_id);
   const listOfUsers = getUsers(userByGroup || []);
   const groupName = await getNameGroup(user_id, group_id);
+
   return (
     <Card className="w-[350px]">
       <CardHeader>

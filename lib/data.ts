@@ -1,6 +1,6 @@
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
-import { UserWJunction, Group, UserTransaction, User, Own, GroupMember } from './definititions';
+import { UserWJunction, Group, UserTransaction, User, Own, GroupMember, UserPaidResult, SplitToPayResult } from './definititions';
 
 export async function fetchUsersTransactionsOfGroups(groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
@@ -46,28 +46,36 @@ export async function getTransactionsByGroup(group_id: string) {
   }
 }
 
-export async function fetchUserBalance(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
+export async function fetchUserAndBalance(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
   try {
-    const userPaid = await sql`
+    const userPaidResponse = await sql`
     SELECT SUM(amount) AS total_amount
     FROM transactions
     WHERE paid_by = ${userID} AND group_id = ${groupID};
     `;
-    const splitToPay = await sql`
+    const splitToPayResponse = await sql`
     SELECT SUM(user_amount) AS total_user_amount
     FROM splits
     WHERE user_id = ${userID} AND group_id = ${groupID} AND paid = false;
     `;
-    //Calculate the account
-    const result = Number(userPaid.rows[0].total_amount) - Number(splitToPay.rows[0].total_user_amount);
+    // Type assertion
+    const userPaid: UserPaidResult = userPaidResponse as unknown as UserPaidResult;
+    const splitToPay: SplitToPayResult = splitToPayResponse as unknown as SplitToPayResult;
+
+    const totalAmount = userPaid.rows[0]?.total_amount ? Number(userPaid.rows[0].total_amount) : 0;
+    const totalUserAmount = splitToPay.rows[0]?.total_user_amount ? Number(splitToPay.rows[0].total_user_amount) : 0;
+    const result = totalAmount - totalUserAmount;
+ 
+    // console.log('userPaid: ', userPaid);
+    // console.log('splitToPay: ', splitToPay);
+    // const result = Number(userPaid.rows[0].total_amount) - Number( splitToPay.rows[0].total_user_amount);
     return result;
   } catch (error) {
     console.log('Database Error:', error);
-    throw new Error('Failed to fetch balance data.');
   }
 }
-export async function fetchUserAndBalance(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
+export async function fetchUserBalance(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
   try {
     const userPaid = await sql`
@@ -108,14 +116,14 @@ export async function getUsersbyGroup(group_id: string) {
 export async function getNameGroup(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
   try {
-    const { rows } = await sql`
+    const { rows } = await sql<GroupMember>`
     SELECT users.id, firstname, lastname, groups.id as group_id, groups.name
     FROM users
     JOIN user_groups ON users.id = user_groups.user_id
     JOIN groups ON groups.id = user_groups.group_id
     WHERE users.id = ${userID} and group_id = ${groupID}
     `
-
+    // console.log('getNameGroup: ', rows);
     return rows[0]
   } catch (error) {
     console.log('Database Error:', error);
