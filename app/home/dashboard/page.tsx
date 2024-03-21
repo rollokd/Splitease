@@ -2,14 +2,13 @@
 
 import { GroupCard } from '../../../components/group-card';
 import { GroupChart } from '../../../components/bar-chart';
-import { getUserGroups, fetchUserBalance } from '@/lib/data';
+import { getUserGroups, fetchUserBalance, getUserIdFromSession } from '../../../lib/data';
 import Totals from '../../../components/Totals';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 import { signOut, auth } from '@/auth';
 import { PowerIcon } from '@heroicons/react/24/outline';
-import { useStore } from '../../../lib/stote';
 
 
 
@@ -17,8 +16,10 @@ import { useStore } from '../../../lib/stote';
 
 export default async function Home() {
   const session = await auth();
-
-  console.log('Session: ', session);
+//  console.log('Session: ', session?.user.email);
+  
+  const userId = await getUserIdFromSession(session?.user.email);
+  console.log('User ID: ', userId);
 
   // const userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6';
   const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";

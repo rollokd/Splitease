@@ -204,3 +204,13 @@ export async function getUserGroups(userID: string = '9ec739f9-d23b-4410-8f1a-c2
   }
 }
 
+export async function getUserIdFromSession(email: string) : Promise<string | undefined> {
+  try {
+    const result = await sql`
+    SELECT id FROM users WHERE email = ${email}`;
+    return result.rows[0].id;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
