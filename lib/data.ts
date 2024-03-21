@@ -1,6 +1,6 @@
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
-import { UserWJunction, Group, UserTransaction, User } from './definititions';
+import { UserWJunction, Group, UserTransaction, User, GroupUsersBasic } from './definititions';
 
 export async function fetchUsersTransactionsOfGroups(groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
@@ -99,32 +99,20 @@ export async function getNameGroup(userID: string = '9ec739f9-d23b-4410-8f1a-c29
   }
 }
 
-export async function getNamesOfUsersInAGroup(group_id: string = '20328e6f-167b-4fb9-bb5e-c71580f59cd5'): Promise<UserWJunction[]> {
+export async function getNamesOfUsersInAGroup(group_id: string = '20328e6f-167b-4fb9-bb5e-c71580f59cd5'): Promise<GroupUsersBasic[]> {
   noStore()
   try {
-    const data = await sql<UserWJunction>`
+    const data = await sql<GroupUsersBasic>`
     SELECT firstname, id From users
     LEFT JOIN user_groups ON user_groups.user_id=users.id
     WHERE group_id = ${group_id}
     `;
-
-    console.log("data.rows from the db", data.rows)
 
     return data.rows;
 
   } catch (error) {
     console.log('Database Error ====> ', error);
     throw new Error('Failed to fetch the group data')
-  }
-}
-
-export async function getRecentlyAddedTransactionId() {
-  noStore()
-  try {
-
-  } catch (e) {
-    console.log("Database failed to fetch recent transaction id", e);
-    throw new Error('Failed to fetch the recent transaction id')
   }
 }
 

@@ -27,14 +27,13 @@ const formSchemaTransactions = z.object({
   })
   ,
   amount: z.number(),
-  date: z.string().datetime()
+  date: z.coerce.date()
   // date: z.coerce.date()
 });
 
 export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[] }) {
   const [amountInput, setAmountInput] = useState(0);
   const [tableData, setTableData] = useState<TableDataType[]>([]);
-  const itemContext = useContext(FormFieldContext)
 
   const form = useForm<z.infer<typeof formSchemaTransactions>>({
     resolver: zodResolver(formSchemaTransactions),
@@ -52,11 +51,9 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
   useEffect(() => {
     async function helper() {
       console.log("whatever inside");
-      // const value = await getNamesOfUsersInAGroup();
-      // console.log(" Value: what a thrill ====> ", value);
       const data = groupMembers.map((ele) => ({
         ...ele,
-        amount: amountInput / groupMembers.length,
+        amount: amountInput / groupMembers.length
       }));
       setTableData(data);
     }
@@ -67,6 +64,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
     const data = groupMembers.map((ele) => ({
       ...ele,
       amount: amountInput / groupMembers.length,
+      paid: false
     }));
     setTableData(data);
   }, [amountInput]);

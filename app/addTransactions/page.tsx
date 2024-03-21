@@ -1,12 +1,11 @@
+import { GroupMembers, GroupUsersBasic } from "@/lib/definititions";
 import { TransactionForm } from "../../components/addTransactions/Form";
 import { getNamesOfUsersInAGroup } from "@/lib/data";
-import { useSearchParams } from 'next/navigation'
 
 
 
 
 export default async function Page() {
-  // const { id } = useSearchParams();
-  const groupMembers = await getNamesOfUsersInAGroup()
+  const groupMembers: GroupMembers[] = await getNamesOfUsersInAGroup()
   return <TransactionForm groupMembers={groupMembers}></TransactionForm>;
 }

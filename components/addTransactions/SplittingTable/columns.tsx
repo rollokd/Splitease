@@ -2,16 +2,10 @@
 
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Group } from "@/lib/data";
+import { TabledGroup } from "@/lib/definititions";
 
-// export type Group = {
-//   firstname: string
-//   status: true | false
-//   id: string
-//   amount: number
-// }
 
-export const columns: ColumnDef<Group>[] = [
+export const columns: ColumnDef<TabledGroup>[] = [
   {
     accessorKey: "firstname",
     header: "firstname",
@@ -27,5 +21,9 @@ export const columns: ColumnDef<Group>[] = [
   {
     accessorKey: "amount",
     header: "amount"
+  },
+  {
+    accessorKey: "paid",
+    header: "paid"
   }
 ]
