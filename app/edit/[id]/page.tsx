@@ -9,11 +9,11 @@ async function Page({ params }: Props) {
   const group = await getGroupById(group_id);
   const users = await fetchUsers();
   const groupUsers = await fetchGroupUsers(group_id);
-  // console.log(groupUsers);
   return (
     <div className='flex flex-col p-3 gap-3 h-full last:mt-auto'>
-      <GroupCrumbs name={group?.name} />
-      <div>Group name: {group?.name}</div>
+      <strong>
+        <GroupCrumbs name={group?.name} />
+      </strong>
       <EditGroupForm users={users} groupUsers={groupUsers} />
     </div>
   );
