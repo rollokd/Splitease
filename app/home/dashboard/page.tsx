@@ -1,6 +1,6 @@
 
 
-import { GroupCard } from '../../../components/group-card';
+import { GroupCard } from '@/components/group-card';
 import { GroupChart } from '../../../components/bar-chart';
 import { getUserGroups, fetchUserBalance, getUserIdFromSession } from '../../../lib/data';
 import Totals from '../../../components/Totals';
