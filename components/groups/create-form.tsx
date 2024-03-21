@@ -131,9 +131,9 @@ export default function CreateGroupForm({ users }: { users: User[] }) {
           </div>
         </div>
         <div className='mt-auto flex flex-col gap-4 p-6'>
-          <Button>
-            <Link href='/dashboard'>Cancel</Link>
-          </Button>
+          <Link href='/dashboard' passHref>
+            <Button className='w-full'>Cancel</Button>
+          </Link>
 
           <Button type='submit'>Create Group</Button>
         </div>
