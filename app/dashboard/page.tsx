@@ -30,25 +30,24 @@ export default async function Home() {
       <Totals />
 
       <div className="m-4 flex content-end">
-  <Button variant="outline">
-    <Link href="/create">Create Group +</Link>
-  </Button>
-</div>
+        <Button variant="outline">
+          <Link href="/create">Create Group +</Link>
+        </Button>
+      </div>
       <div>
-
-       
         {groups.map((group) => (
-          <GroupCard
-            key={group.group_id}
-            group_id={group.group_id}
-            user_id={userID}
-          />
+          <Link key={group.group_id} href={`/group/${group.group_id}`}>
+            <GroupCard
+              key={group.group_id}
+              group_id={group.group_id}
+              user_id={userID}
+            />
+          </Link>
         ))}
       </div>
       <div>
         <GroupChart data={balances}></GroupChart>
       </div>
-     
     </>
   );
 }
