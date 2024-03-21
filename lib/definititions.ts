@@ -120,3 +120,9 @@ export interface GroupPieChartProps {
 export type Name = {
   firstname: string
 }
+
+export type Debts = {
+  paid_by: string,
+  user_id: string,
+  sum: number
+}
