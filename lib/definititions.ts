@@ -77,5 +77,77 @@ export interface UserProps {
   groupID: string;
 }
 
-export type UserTransaction = Transaction & User
+export type UserTransaction = Transaction & User & {trans_id: string}
 
+export interface Own {
+  paidbyMe: number;
+  myPortionOfBills: number;
+  total: number;
+} 
+
+export type GroupMember = {
+  id: string;
+  firstname: string;
+  lastname: string;
+  group_id: string;
+  name: string;
+};
+
+export type DataBarChart = {
+  name: string,
+  total: number
+}
+
+type SqlField = {
+  columnID: number;
+  dataTypeID: number;
+  dataTypeModifier: number;
+  dataTypeSize: number;
+  format: string;
+  name: string;
+  tableID: number;
+};
+type SqlResult<T> = {
+  command: string;
+  fields: SqlField[];
+  rowAsArray: boolean;
+  rowCount: number;
+  rows: T[];
+  viaNeonFetch: boolean;
+};
+type UserPaidRow = {
+  total_amount: string | null;
+};
+type SplitToPayRow = {
+  total_user_amount: string | null;
+};
+
+export type UserPaidResult = SqlResult<UserPaidRow>;
+export type SplitToPayResult = SqlResult<SplitToPayRow>;
+
+export interface CustomizedLabelProps {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  percent: number;
+  index: number;
+}
+export interface DataItem {
+  name: string;
+  value: number;
+}
+export interface GroupPieChartProps {
+  data: DataItem[];
+}
+
+export type Name = {
+  firstname: string
+}
+
+export type Debts = {
+  paid_by: string,
+  user_id: string,
+  sum: number
+}
