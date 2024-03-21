@@ -27,9 +27,10 @@ export default async function Home() {
 
   return (
     <>
+    
       <Totals />
 
-      <div className="m-4 flex content-end">
+      <div className="m-4 flex justify-end">
         <Button variant="outline">
           <Link href="/create">Create Group +</Link>
         </Button>
@@ -48,6 +49,7 @@ export default async function Home() {
       <div>
         <GroupChart data={balances}></GroupChart>
       </div>
+      
     </>
   );
 }
