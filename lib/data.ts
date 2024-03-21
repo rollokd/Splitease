@@ -1,8 +1,17 @@
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
-import { UserWJunction, Group, UserTransaction, User, Own, GroupMember } from './definititions';
+import {
+  UserWJunction,
+  Group,
+  UserTransaction,
+  User,
+  Own,
+  GroupMember,
+} from './definititions';
 
-export async function fetchUsersTransactionsOfGroups(groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
+export async function fetchUsersTransactionsOfGroups(
+  groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267'
+) {
   noStore();
   try {
     // The query is already parameter-free, but ensure to escape or parameterize any dynamic values
@@ -20,10 +29,11 @@ export async function fetchUsersTransactionsOfGroups(groupID: string = '5909a47f
 
 // get group from group id
 export async function getGroupById(group_id: string) {
-  noStore()
+  noStore();
   try {
-    const { rows } = await sql<Group>`SELECT * FROM groups WHERE id = ${group_id}`
-    return rows[0]
+    const { rows } =
+      await sql<Group>`SELECT * FROM groups WHERE id = ${group_id}`;
+    return rows[0];
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch revenue data.');
@@ -32,21 +42,24 @@ export async function getGroupById(group_id: string) {
 
 // get all transactions for a group with user info
 export async function getTransactionsByGroup(group_id: string) {
-  noStore()
+  noStore();
   try {
     const { rows } = await sql<UserTransaction>`
       SELECT * FROM transactions
       Left JOIN users
 	    ON users.id = transactions.paid_by
-      WHERE group_id = ${group_id}`
-    return rows
+      WHERE group_id = ${group_id}`;
+    return rows;
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch revenue data.');
   }
 }
 
-export async function fetchUserBalance(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
+export async function fetchUserBalance(
+  userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6',
+  groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267'
+) {
   noStore();
   try {
     const userPaid = await sql`
@@ -60,14 +73,19 @@ export async function fetchUserBalance(userID: string = '9ec739f9-d23b-4410-8f1a
     WHERE user_id = ${userID} AND group_id = ${groupID} AND paid = false;
     `;
     //Calculate the account
-    const result = Number(userPaid.rows[0].total_amount) - Number(splitToPay.rows[0].total_user_amount);
+    const result =
+      Number(userPaid.rows[0].total_amount) -
+      Number(splitToPay.rows[0].total_user_amount);
     return result;
   } catch (error) {
     console.log('Database Error:', error);
     throw new Error('Failed to fetch balance data.');
   }
 }
-export async function fetchUserAndBalance(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
+export async function fetchUserAndBalance(
+  userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6',
+  groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267'
+) {
   noStore();
   try {
     const userPaid = await sql`
@@ -81,8 +99,10 @@ export async function fetchUserAndBalance(userID: string = '9ec739f9-d23b-4410-8
     WHERE user_id = ${userID} AND group_id = ${groupID} AND paid = false;
     `;
     //Calculate the account
-    const result = Number(userPaid.rows[0].total_amount) - Number( splitToPay.rows[0].total_user_amount);
-    return {user: userID, result};
+    const result =
+      Number(userPaid.rows[0].total_amount) -
+      Number(splitToPay.rows[0].total_user_amount);
+    return { user: userID, result };
   } catch (error) {
     console.log('Database Error:', error);
     throw new Error('Failed to fetch balance data.');
@@ -91,21 +111,24 @@ export async function fetchUserAndBalance(userID: string = '9ec739f9-d23b-4410-8
 
 // get all groups in a group
 export async function getUsersbyGroup(group_id: string) {
-  noStore()
+  noStore();
   try {
     const { rows } = await sql<UserWJunction>`
     SELECT * FROM users
     LEFT JOIN user_groups 
     ON users.id = user_groups.user_id
-    WHERE group_id = ${group_id}`
-    return rows
+    WHERE group_id = ${group_id}`;
+    return rows;
   } catch (err) {
     console.log('Database Error:', err);
     throw new Error('Failed to fetch group data.');
   }
 }
 
-export async function getNameGroup(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
+export async function getNameGroup(
+  userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6',
+  groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267'
+) {
   noStore();
   try {
     const { rows } = await sql`
@@ -114,16 +137,18 @@ export async function getNameGroup(userID: string = '9ec739f9-d23b-4410-8f1a-c29
     JOIN user_groups ON users.id = user_groups.user_id
     JOIN groups ON groups.id = user_groups.group_id
     WHERE users.id = ${userID} and group_id = ${groupID}
-    `
+    `;
 
-    return rows[0]
+    return rows[0];
   } catch (error) {
     console.log('Database Error:', error);
   }
 }
 
-export async function getNamesOfUsersInAGroup(group_id: string = '20328e6f-167b-4fb9-bb5e-c71580f59cd5'): Promise<UserWJunction[]> {
-  noStore()
+export async function getNamesOfUsersInAGroup(
+  group_id: string = '20328e6f-167b-4fb9-bb5e-c71580f59cd5'
+): Promise<UserWJunction[]> {
+  noStore();
   try {
     const data = await sql<UserWJunction>`
     SELECT firstname, id From users
@@ -131,48 +156,46 @@ export async function getNamesOfUsersInAGroup(group_id: string = '20328e6f-167b-
     WHERE group_id = ${group_id}
     `;
 
-    console.log("data.rows from the db", data.rows)
+    console.log('data.rows from the db', data.rows);
 
     return data.rows;
-
   } catch (error) {
     console.log('Database Error ====> ', error);
-    throw new Error('Failed to fetch the group data')
+    throw new Error('Failed to fetch the group data');
   }
 }
 
 export async function getRecentlyAddedTransactionId() {
-  noStore()
+  noStore();
   try {
-    
   } catch (e) {
-    console.log("Database failed to fetch recent transaction id", e);
-    throw new Error('Failed to fetch the recent transaction id')
+    console.log('Database failed to fetch recent transaction id', e);
+    throw new Error('Failed to fetch the recent transaction id');
   }
 }
 
-export async function fetchOwnDashboardData () : Promise<Own | undefined> {
+export async function fetchOwnDashboardData(): Promise<Own | undefined> {
   try {
     const paidbyMe = await sql`SELECT SUM(amount) AS total_amount
     FROM transactions
     WHERE paid_by = '3106eb8a-3288-4b62-a077-3b24bd640d9a';`;
 
-
-    const MyPortionofBills = await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id='3106eb8a-3288-4b62-a077-3b24bd640d9a' AND paid=false`;
+    const MyPortionofBills =
+      await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id='3106eb8a-3288-4b62-a077-3b24bd640d9a' AND paid=false`;
     console.log(paidbyMe.rows[0].total_amount);
     console.log(MyPortionofBills.rows[0].total_user_amount);
 
     return {
       paidbyMe: paidbyMe.rows[0].total_amount,
       myPortionOfBills: MyPortionofBills.rows[0].total_user_amount,
-      total: (paidbyMe.rows[0].total_amount - MyPortionofBills.rows[0].total_user_amount)
-    }
-
+      total:
+        paidbyMe.rows[0].total_amount -
+        MyPortionofBills.rows[0].total_user_amount,
+    };
   } catch (error) {
     console.error('Error querying the database:', error);
   }
 }
-
 
 export async function fetchUsers() {
   try {
@@ -186,8 +209,24 @@ export async function fetchUsers() {
     throw new Error('Failed to fetch users.');
   }
 }
+export async function fetchGroupUsers(group_id: string) {
+  noStore();
+  try {
+    const { rows } = await sql<User>`
+    SELECT id,firstName,lastName FROM users
+    LEFT JOIN user_groups 
+    ON users.id = user_groups.user_id
+    WHERE group_id = ${group_id}`;
+    return rows;
+  } catch (err) {
+    console.log('Database Error:', err);
+    throw new Error('Failed to fetch group data.');
+  }
+}
 
-export async function getUserGroups(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6') {
+export async function getUserGroups(
+  userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6'
+) {
   noStore();
   try {
     const { rows } = await sql<GroupMember>`
@@ -196,11 +235,10 @@ export async function getUserGroups(userID: string = '9ec739f9-d23b-4410-8f1a-c2
     JOIN user_groups ON users.id = user_groups.user_id
     JOIN groups ON groups.id = user_groups.group_id
     WHERE users.id = ${userID}
-    `
+    `;
     // console.log('userGroups result: ', rows);
-    return rows
+    return rows;
   } catch (error) {
     console.log('Database Error:', error);
   }
 }
-
