@@ -2,6 +2,8 @@ import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
 import { UserWJunction, Group, UserTransaction, User, Own, GroupMember } from './definititions';
 
+
+
 export async function fetchUsersTransactionsOfGroups(groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
   try {
@@ -233,6 +235,16 @@ export async function getUserGroups(userID: string = '9ec739f9-d23b-4410-8f1a-c2
     return rows
   } catch (error) {
     console.log('Database Error:', error);
+  }
+}
+
+export async function getUserIdFromSession(email: string) : Promise<string | undefined> {
+  try {
+    const result = await sql`
+    SELECT id FROM users WHERE email = ${email}`;
+    return result.rows[0].id;
+  } catch (error) {
+    console.error(error);
   }
 }
 

@@ -5,9 +5,15 @@ import { UserGroupIcon } from '@heroicons/react/16/solid';
 import { Button } from '../ui/button';
 import Search from '../search';
 import { useState } from 'react';
-import { createGroup } from '@/lib/actions';
+import { createGroup, getUserId } from '@/lib/actions';
+
+
 
 export default function CreateGroupForm({ users }: { users: User[] }) {
+
+  const userId = getUserId();
+  console.log('User ID: ', userId);
+
   const currUser = '3106eb8a-3288-4b62-a077-3b24bd640d9a';
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);

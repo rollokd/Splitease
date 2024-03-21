@@ -5,6 +5,16 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { TableDataType } from './definititions';
+import { getUserIdFromSession } from './data';
+
+import { signIn, auth } from '@/auth';
+import { AuthError } from 'next-auth';
+
+export async function getUserId() {
+  const session = await auth();
+  const userId = await getUserIdFromSession(session?.user?.email ?? '');
+  console.log('User ID: ', userId)
+}
 
 export async function deleteTransaction(transactionId: string) {
   try {
@@ -166,3 +176,25 @@ export async function createJunction(user_id: string, group_id: string) {
     throw error;
   }
 }
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    const user = await signIn('credentials', formData);
+    console.log('gabe', user);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
+}
+
+
