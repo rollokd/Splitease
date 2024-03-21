@@ -19,7 +19,7 @@ const svgIcon = (
 interface CardTotalsProps {
   myColor: string;
   title: string;
-  amount: number;
+  amount: string;
 }
 
 
@@ -34,9 +34,9 @@ const cardTotals = ({myColor ,title,amount } : CardTotalsProps) => {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">${amount}</div>
-          <p className="text-xs text-muted-foreground">
+          {/* <p className="text-xs text-muted-foreground">
             3106eb8a-3288-4b62-a077-3b24bd640d9a
-          </p>
+          </p> */}
         </CardContent>
       </Card>
   )
