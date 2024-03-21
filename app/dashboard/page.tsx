@@ -5,6 +5,12 @@ import Totals from '../../components/Totals';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
+import { signOut } from '@/auth';
+import { PowerIcon } from '@heroicons/react/24/outline';
+
+
+
+
 export default async function Home() {
   // const userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6';
   const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
@@ -27,6 +33,18 @@ export default async function Home() {
 
   return (
     <>
+            <form
+          action={async () => {
+            'use server';
+            await signOut();
+          }}
+        >
+          <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
+            <PowerIcon className="w-6" />
+            <div className="hidden md:block">Sign Out</div>
+          </button>
+        </form>
+
     
       <Totals />
 

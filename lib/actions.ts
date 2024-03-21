@@ -6,6 +6,9 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { TableDataType } from './definititions';
 
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
+
 const FormSchemaTransaction = z.object({
   id: z.string(),
   name: z.string(),
@@ -124,6 +127,26 @@ export async function createJunction(user_id: string, group_id: string) {
     VALUES (${user_id}, ${group_id})`;
   } catch (error) {
     console.error(error);
+    throw error;
+  }
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    const user = await signIn('credentials', formData);
+    console.log('gabe', user);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
     throw error;
   }
 }
