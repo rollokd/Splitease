@@ -30,21 +30,24 @@ export async function createTransaction(tableData: TableDataType[], formData: Fo
   const dateConverted = date.toISOString().split('T')[0];
   const statusBla = false;
   const paid_by = '410544b2-4001-4271-9855-fec4b6a6442a';
-  const groupBla_id = 'c0bc7c72-2ecc-4326-8507-db9df51ca310';
+  const groupBla_id = '752a8475-1aa9-4174-b4ba-9bb51b5de033';
 
   const transInsert = await sql`INSERT INTO transactions (name, date, amount, status, paid_by, group_id)
   VALUES (${name}, ${dateConverted}, ${amountInPennies}, ${statusBla}, ${paid_by}, ${groupBla_id})
-  RETURNING id, amount, group_id
+  RETURNING id, group_id
   `
   //second insert data prep
   let transactionId = transInsert.rows[0].id
-  let totalAmountPaid = transInsert.rows[0].amount
   let groupId = transInsert.rows[0].group_id
-  let bundledUpTransactionValues: TransInsert = { trans_id: transactionId, amount: totalAmountPaid, group_id: groupId }
+  let bundledUpTransactionValues: TransInsert = { trans_id: transactionId, amount: amountInPennies, group_id: groupId }
   let bundledUpTableData: UserValues;
   tableData.map((ele) => {
     if (ele.amount && ele.id) {
-      bundledUpTableData = { user_amount: ele.amount, user_id: ele.id, paid: false }
+      if (ele.id == paid_by) {
+        bundledUpTableData = { user_amount: ele.amount, user_id: ele.id, paid: true }
+      } else {
+        bundledUpTableData = { user_amount: ele.amount, user_id: ele.id, paid: false }
+      }
       createSplit(bundledUpTableData, bundledUpTransactionValues)
     }
   })

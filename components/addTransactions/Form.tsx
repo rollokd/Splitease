@@ -53,7 +53,8 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
       console.log("whatever inside");
       const data = groupMembers.map((ele) => ({
         ...ele,
-        amount: amountInput / groupMembers.length
+        amount: amountInput / groupMembers.length,
+        paid_by: '9eb625bd-239c-49bd-965f-ca7f62774832'
       }));
       setTableData(data);
     }
@@ -63,7 +64,8 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
   useEffect(() => {
     const data = groupMembers.map((ele) => ({
       ...ele,
-      amount: amountInput / groupMembers.length
+      amount: amountInput / groupMembers.length,
+      paid_by: '9eb625bd-239c-49bd-965f-ca7f62774832'
     }));
     setTableData(data);
   }, [amountInput]);
