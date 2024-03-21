@@ -4,59 +4,65 @@ import Link from 'next/link';
 import { UserGroupIcon } from '@heroicons/react/16/solid';
 import { Button } from '../ui/button';
 import Search from '../search';
-import { useState } from 'react';
-import { createGroup, getUserId } from '@/lib/actions';
+import { useEffect, useState } from 'react';
+import { updateGroup } from '@/lib/actions';
+import { usePathname } from 'next/navigation';
 
+type Props = { params: { id: string } };
 
+export default function EditGroupForm({ users }: { users: User[] }) {
+  // const [searchResults, setSearchResults] = useState<User[]>([]);
+  // const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  // const [searchQuery, setSearchQuery] = useState('');const router = useRouter();
+  const pathname = usePathname();
+  const [groupId, setGroupId] = useState<string | null>(null);
 
-export default function CreateGroupForm({ users }: { users: User[] }) {
+  useEffect(() => {
+    const segments = pathname.split('/').filter(Boolean);
+    const groupId = segments[1];
+    setGroupId(groupId);
+  }, [pathname]);
 
-  const userId = getUserId();
-  console.log('User ID: ', userId);
+  // const handleSearch = (query: string) => {
+  //   setSearchQuery(query);
+  //   if (!query) {
+  //     setSearchResults([]);
+  //     return;
+  //   }
+  //   const filteredResults = users.filter(
+  //     (user) =>
+  //       user.firstname.toLowerCase().includes(query.toLowerCase()) ||
+  //       user.lastname.toLowerCase().includes(query.toLowerCase())
+  //   );
+  //   setSearchResults(filteredResults);
+  // };
 
-  const currUser = '3106eb8a-3288-4b62-a077-3b24bd640d9a';
-  const [searchResults, setSearchResults] = useState<User[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  // const handleAddUser = (user: User) => {
+  //   // Add user to selectedUsers if not already added
+  //   if (!selectedUsers.find((selectedUser) => selectedUser.id === user.id)) {
+  //     setSelectedUsers((prevSelectedUsers) => [...prevSelectedUsers, user]);
+  //   }
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    if (!query) {
-      setSearchResults([]);
-      return;
-    }
-    const filteredResults = users.filter(
-      (user) =>
-        user.id !== currUser &&
-        (user.firstname.toLowerCase().includes(query.toLowerCase()) ||
-          user.lastname.toLowerCase().includes(query.toLowerCase()))
-    );
-    setSearchResults(filteredResults);
-  };
-
-  const handleAddUser = (user: User) => {
-    // Add user to selectedUsers if not already added
-    if (!selectedUsers.find((selectedUser) => selectedUser.id === user.id)) {
-      setSelectedUsers((prevSelectedUsers) => [...prevSelectedUsers, user]);
-    }
-
-    // Remove user from searchResults
-    setSearchResults((prevSearchResults) =>
-      prevSearchResults.filter((searchResult) => searchResult.id !== user.id)
-    );
-  };
-  const handleRemoveUser = (userId: string) => {
-    setSelectedUsers((prevSelectedUsers) =>
-      prevSelectedUsers.filter((user) => user.id !== userId)
-    );
-  };
+  //   // Remove user from searchResults
+  //   setSearchResults((prevSearchResults) =>
+  //     prevSearchResults.filter((searchResult) => searchResult.id !== user.id)
+  //   );
+  // };
+  // const handleRemoveUser = (userId: string) => {
+  //   setSelectedUsers((prevSelectedUsers) =>
+  //     prevSelectedUsers.filter((user) => user.id !== userId)
+  //   );
+  // };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const userIds = [...selectedUsers.map((user) => user.id), currUser];
-    console.log('Users added to the group:', userIds);
-    await createGroup(formData, userIds);
+
+    if (groupId) {
+      await updateGroup(formData, groupId);
+    } else {
+      console.error('Group ID is not available');
+    }
   };
   return (
     <form onSubmit={handleSubmit} className='px-6'>
@@ -67,7 +73,7 @@ export default function CreateGroupForm({ users }: { users: User[] }) {
             htmlFor='name'
             className='mb-2 block text-large font-medium p-6 '
           >
-            Add group Name
+            Edit Group Name
           </label>
           <div className='relative'>
             <input
@@ -82,7 +88,7 @@ export default function CreateGroupForm({ users }: { users: User[] }) {
           </div>
         </div>
 
-        {/** Add users */}
+        {/* * Add users
         <div className='mt-auto'>
           <label
             htmlFor='customer'
@@ -137,13 +143,13 @@ export default function CreateGroupForm({ users }: { users: User[] }) {
               ))}
             </ul>
           </div>
-        </div>
+        </div> */}
         <div className='mt-auto flex flex-col gap-4 p-6'>
-          <Link href='/dashboard' passHref>
-            <Button className='w-full'>Cancel</Button>
-          </Link>
+          <Button>
+            <Link href='/dashboard'>Cancel</Link>
+          </Button>
 
-          <Button type='submit'>Create Group</Button>
+          <Button type='submit'>Edit Group</Button>
         </div>
       </div>
     </form>

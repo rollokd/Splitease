@@ -103,7 +103,6 @@ const CreateGroup = GroupFormSchema.omit({
   date: true,
   status: true,
 });
-// const UpdateGroup = GroupFormSchema.omit({ id: true, date: true });
 
 export async function createGroup(formData: FormData, userIds: string[]) {
   const { name } = CreateGroup.parse({
@@ -122,6 +121,32 @@ export async function createGroup(formData: FormData, userIds: string[]) {
   for (const userId of userIds) {
     await createJunction(userId, groupId);
   }
+
+  revalidatePath('/dashboard');
+  redirect('/dashboard');
+}
+
+const UpdateGroup = GroupFormSchema.omit({
+  id: true,
+  date: true,
+  status: true,
+});
+
+export async function updateGroup(formData: FormData, groupId: string) {
+  const { name } = UpdateGroup.parse({
+    name: formData.get('name'),
+  });
+
+  const groupResult = await sql`
+      UPDATE groups 
+      SET name = ${name}
+      WHERE id = ${groupId} `;
+
+  // const groupId = groupResult.rows[0].id;
+
+  // for (const userId of userIds) {
+  //   await createJunction(userId, groupId);
+  // }
 
   revalidatePath('/dashboard');
   redirect('/dashboard');
