@@ -34,7 +34,7 @@ const formSchemaTransactions = z.object({
 export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[] }) {
   const [amountInput, setAmountInput] = useState(0);
   const [tableData, setTableData] = useState<TableDataType[]>([]);
-
+  const currentUser = 'abde2287-4cfa-4cc7-b810-dd119df1d039'
   const form = useForm<z.infer<typeof formSchemaTransactions>>({
     resolver: zodResolver(formSchemaTransactions),
   });
@@ -44,6 +44,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
     for (let key in values) {
       form_data.append(key, values[key as keyof typeof object]);
     }
+    form_data.append('paid_by', currentUser)
     const createTransactionAndData = createTransaction.bind(null, tableData)
     createTransactionAndData(form_data)
   }
@@ -53,8 +54,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
       console.log("whatever inside");
       const data = groupMembers.map((ele) => ({
         ...ele,
-        amount: amountInput / groupMembers.length,
-        paid_by: '9eb625bd-239c-49bd-965f-ca7f62774832'
+        amount: amountInput / groupMembers.length
       }));
       setTableData(data);
     }
@@ -64,8 +64,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
   useEffect(() => {
     const data = groupMembers.map((ele) => ({
       ...ele,
-      amount: amountInput / groupMembers.length,
-      paid_by: '9eb625bd-239c-49bd-965f-ca7f62774832'
+      amount: amountInput / groupMembers.length
     }));
     setTableData(data);
   }, [amountInput]);

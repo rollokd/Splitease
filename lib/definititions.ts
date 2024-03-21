@@ -41,7 +41,7 @@ export type GroupMembers = {
 }
 export type forNow = {
   amount: number
-  paid_by: string
+
 }
 export type SplitTable = {
   amount: number

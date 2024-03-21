@@ -15,22 +15,23 @@ const FormSchemaTransaction = z.object({
   paid_by: z.string(),
   group_id: z.string()
 })
-const CreateTransaction = FormSchemaTransaction.omit({ id: true, status: true, paid_by: true, group_id: true });
+const CreateTransaction = FormSchemaTransaction.omit({ id: true, status: true, group_id: true });
 
 export async function createTransaction(tableData: TableDataType[], formData: FormData) {
 
-  const { name, amount, date } = CreateTransaction.parse({
+  const { name, amount, date, paid_by } = CreateTransaction.parse({
     name: formData.get('name'),
     amount: formData.get('amount'),
     // status: formData.get('status')
-    date: formData.get('date')
+    date: formData.get('date'),
+    paid_by: formData.get('paid_by')
   })
 
   const amountInPennies = amount * 100;
   const dateConverted = date.toISOString().split('T')[0];
   const statusBla = false;
-  const paid_by = '410544b2-4001-4271-9855-fec4b6a6442a';
-  const groupBla_id = '752a8475-1aa9-4174-b4ba-9bb51b5de033';
+  // const paid_by = '410544b2-4001-4271-9855-fec4b6a6442a';
+  const groupBla_id = '26c034f0-9105-4d26-80c9-e49a89e1a8dd';
 
   const transInsert = await sql`INSERT INTO transactions (name, date, amount, status, paid_by, group_id)
   VALUES (${name}, ${dateConverted}, ${amountInPennies}, ${statusBla}, ${paid_by}, ${groupBla_id})
@@ -44,9 +45,9 @@ export async function createTransaction(tableData: TableDataType[], formData: Fo
   tableData.map((ele) => {
     if (ele.amount && ele.id) {
       if (ele.id == paid_by) {
-        bundledUpTableData = { user_amount: ele.amount, user_id: ele.id, paid: true }
+        bundledUpTableData = { user_amount: (ele.amount * 100), user_id: ele.id, paid: true }
       } else {
-        bundledUpTableData = { user_amount: ele.amount, user_id: ele.id, paid: false }
+        bundledUpTableData = { user_amount: (ele.amount * 100), user_id: ele.id, paid: false }
       }
       createSplit(bundledUpTableData, bundledUpTransactionValues)
     }
