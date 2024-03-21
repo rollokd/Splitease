@@ -15,12 +15,16 @@ import {
 } from "@/components/ui/form";
 import { createTransaction } from "@/lib/actions";
 import { Input } from "@/components/ui/input";
-import { DataTable } from "@/components/addTransactions/SplittingTable/data-table";
-import { columns } from "./SplittingTable/columns";
-import { GroupMembers, TableDataType, User, UserWJunction } from "@/lib/definititions";
-import { useParams } from "next/navigation";
+import { GroupMembers, TableDataType } from "@/lib/definititions";
 import { FormFieldContext } from "@/components/ui/form";
-import StaticGenerationSearchParamsBailoutProvider from "next/dist/client/components/static-generation-searchparams-bailout-provider";
+import { UseFormReturn, SubmitHandler } from "react-hook-form";
+
+
+
+interface TableDataTypeExtended extends TableDataType {
+  manuallyAdjusted?: boolean;
+}
+
 
 const formSchemaTransactions = z.object({
   name: z.string().min(3, {
@@ -29,19 +33,21 @@ const formSchemaTransactions = z.object({
   amount: z.number(),
   date: z.coerce.date()
 });
+type FormValues = z.infer<typeof formSchemaTransactions>;
 
 export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[] }) {
   const [amountInput, setAmountInput] = useState(0);
-  const [tableData, setTableData] = useState<TableDataType[]>([]);
+  const [tableData, setTableData] = useState<TableDataTypeExtended[]>([]);
   const currentUser = 'abde2287-4cfa-4cc7-b810-dd119df1d039'
-  const form = useForm<z.infer<typeof formSchemaTransactions>>({
+  const form: UseFormReturn<FormValues> = useForm({
     resolver: zodResolver(formSchemaTransactions),
   });
 
-  const onSubmit = (values: z.infer<typeof formSchemaTransactions>) => {
+  const onSubmit: SubmitHandler<FormValues> = (values) => {
     const form_data = new FormData();
-    for (let key in values) {
-      form_data.append(key, values[key as keyof typeof object]);
+    let key: keyof typeof values;
+    for (key in values) {
+      form_data.append(key, String(values[key]));
     }
     form_data.append('paid_by', currentUser)
     const createTransactionAndData = createTransaction.bind(null, tableData)
@@ -62,24 +68,65 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
   // });
 
   useEffect(() => {
-
     const data = groupMembers.map(member => ({
       ...member,
-      amount: amountInput / groupMembers.length
-    }))
+      amount: amountInput / groupMembers.length,
+      manuallyAdjusted: false,
+    }));
     setTableData(data);
-  }, [amountInput]);
+  }, [amountInput, groupMembers]);
+
+
+  function adjustMemberShare(index: number, adjustAmount: number) {
+    const newData = [...tableData];
+
+    const adjustedMemberNewAmount = Math.round((newData[index].amount + adjustAmount) * 100) / 100;
+    newData[index] = { ...newData[index], amount: adjustedMemberNewAmount, manuallyAdjusted: true };
+    const totalAdjusted = newData.filter(member => member.manuallyAdjusted).reduce((acc, curr) => acc + curr.amount, 0)
+    const totalAmountLeft = amountInput - totalAdjusted
+    const unadjustedMembersCount = newData.filter(member => !member.manuallyAdjusted).length;
+
+
+    if (totalAmountLeft < 0 || (unadjustedMembersCount > 0 && totalAmountLeft / unadjustedMembersCount < 0.5)) {
+      alert("Error: There's insufficient amount of pesos. The whole amount needs to be distributed evenly, don't be cheap.");
+      return;
+    }
+
+
+    const amountPerUnmodifiedValue = Math.round((totalAmountLeft / unadjustedMembersCount) * 100) / 100;
+    for (let i = 0; i < newData.length; i++) {
+      if (!newData[i].manuallyAdjusted) {
+        newData[i] = { ...newData[i], amount: amountPerUnmodifiedValue };
+      }
+    }
+    setTableData(newData)
+
+  }
+
 
   function increment(index: number) {
-    setTableData(currentData =>
-      currentData.map((item, idx) => idx === index ? { ...item, amount: item.amount + 1 } : item)
-    );
+    const incrementAmount = 0.5;
+    const potentialTotal = tableData.reduce((acc, member, idx) => acc + (idx === index ? member.amount + incrementAmount : member.amount), 0)
+    if (potentialTotal <= amountInput) {
+      adjustMemberShare(index, incrementAmount)
+    } else {
+      console.log("Cannot increment beyond the total amount")
+    }
   }
+
   function decrement(index: number) {
-    setTableData(currentData =>
-      currentData.map((item, idx) => idx === index ? { ...item, amount: item.amount - 1 } : item)
-    );
+    const decrementAmount = 0.5;
+
+
+    if (tableData[index].amount - decrementAmount >= 0) {
+      adjustMemberShare(index, -decrementAmount);
+    } else {
+      console.log("Cannot decrement below zero, bud");
+    }
   }
+
+
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -173,7 +220,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
                       )} */}
                       <button onClick={() => decrement(index)}>-</button>
                     </td>
-                    <td>not yet paid</td>
+
                   </tr>
                 )
               })}

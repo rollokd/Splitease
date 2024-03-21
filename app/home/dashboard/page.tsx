@@ -18,7 +18,7 @@ export default async function Home() {
   // console.log('User ID: ', userId);
 
   const userId = getUserId();
-  console.log('User ID: ', userId);
+  // console.log('User ID: ', userId);
 
   const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
   const groupID: string = "5909a47f-9577-4e96-ad8d-7af0d52c3267";
@@ -41,20 +41,20 @@ export default async function Home() {
   //const bears = useStore((state) => state.bears);
   return (
     <>
-    {/* <h1>{bears} around here...</h1> */}
-            <form
-          action={async () => {
-            'use server';
-            await signOut();
-          }}
-        >
-          <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
-            <PowerIcon className="w-6" />
-            <div className="hidden md:block">Sign Out</div>
-          </button>
-        </form>
+      {/* <h1>{bears} around here...</h1> */}
+      <form
+        action={async () => {
+          'use server';
+          await signOut();
+        }}
+      >
+        <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
+          <PowerIcon className="w-6" />
+          <div className="hidden md:block">Sign Out</div>
+        </button>
+      </form>
 
-    
+
       <Totals />
 
       <div className="m-4 flex justify-end">
@@ -76,7 +76,7 @@ export default async function Home() {
       <div style={{ width: '80%', height: '100%' }}>
         <GroupChart data={balances}></GroupChart>
       </div>
-      
+
     </>
   );
 }
