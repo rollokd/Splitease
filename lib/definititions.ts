@@ -116,3 +116,7 @@ export interface DataItem {
 export interface GroupPieChartProps {
   data: DataItem[];
 }
+
+export type Name = {
+  firstname: string
+}

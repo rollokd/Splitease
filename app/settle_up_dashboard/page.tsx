@@ -10,7 +10,7 @@ export default async function SettleUpDashBoard({ params }: Props) {
 
   let debts = await getDebts(userID);
   if (debts === undefined) debts = [];
-  console.log('Get debts result: ', debts);
+  // console.log('Get debts result: ', debts);
 
   const balances = await Promise.all(debts.map(async (debt) => {
     //Get what that person owes me
@@ -18,7 +18,7 @@ export default async function SettleUpDashBoard({ params }: Props) {
     if (balance === undefined) balance = 0;
     return { name: debt.paid_by, total: (balance - Number(debt.sum) ) };
   }));
-  console.log('Get balances result: ', balances);
+  // console.log('Get balances result: ', balances);
 
   return (
     <>

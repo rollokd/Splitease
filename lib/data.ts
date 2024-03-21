@@ -1,6 +1,6 @@
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
-import { UserWJunction, Group, UserTransaction, User, Own, GroupMember, UserPaidResult, SplitToPayResult } from './definititions';
+import { UserWJunction, Group, UserTransaction, User, Own, GroupMember, UserPaidResult, SplitToPayResult, Name } from './definititions';
 
 export async function fetchUsersTransactionsOfGroups(groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
@@ -242,7 +242,7 @@ export async function getSpecificDebt(userID: string = '9ec739f9-d23b-4410-8f1a-
     WHERE transactions.paid_by = ${userID} AND splits.user_id = ${paid_by} AND paid=false
     GROUP BY paid_by, user_id;
     `
-    console.log('getSpecificDebt result: ', rows[0].sum);
+    // console.log('getSpecificDebt result: ', rows[0].sum);
     return Number(rows[0].sum)
   } catch (error) {
     console.log('Database Error:', error);
@@ -252,12 +252,12 @@ export async function getSpecificDebt(userID: string = '9ec739f9-d23b-4410-8f1a-
 export async function getName(userID: string) {
   noStore();
   try {
-    const { rows } = await sql`
+    const { rows } = await sql<Name>`
     SELECT users.firstname
     FROM users
     WHERE users.id = ${userID}
     `
-    console.log('getName Result: ', rows[0].firstname);
+    // console.log('getName Result: ', rows);
     return rows[0].firstname
   } catch (error) {
     console.log('Database Error:', error);
