@@ -54,7 +54,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
   //     const data = groupMembers.map((ele) => ({
   //       ...ele,
   //       // amount: amountInput / groupMembers.length
-  //       amount: currentSplit
+  //       amount: amountInput / groupMembers.length
   //     }));
   //     setTableData(data);
   //   }
