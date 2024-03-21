@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { createGroup } from '@/lib/actions';
 
 export default function CreateGroupForm({ users }: { users: User[] }) {
+  const currUser = '3106eb8a-3288-4b62-a077-3b24bd640d9a';
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,8 +21,9 @@ export default function CreateGroupForm({ users }: { users: User[] }) {
     }
     const filteredResults = users.filter(
       (user) =>
-        user.firstname.toLowerCase().includes(query.toLowerCase()) ||
-        user.lastname.toLowerCase().includes(query.toLowerCase())
+        user.id !== currUser &&
+        (user.firstname.toLowerCase().includes(query.toLowerCase()) ||
+          user.lastname.toLowerCase().includes(query.toLowerCase()))
     );
     setSearchResults(filteredResults);
   };
@@ -46,8 +48,8 @@ export default function CreateGroupForm({ users }: { users: User[] }) {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const userIds = selectedUsers.map((user) => user.id);
-
+    const userIds = [...selectedUsers.map((user) => user.id), currUser];
+    console.log('Users added to the group:', userIds);
     await createGroup(formData, userIds);
   };
   return (
