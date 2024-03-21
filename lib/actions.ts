@@ -5,6 +5,30 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { TableDataType } from './definititions';
+import { getUserIdFromSession } from './data';
+
+import { signIn, auth } from '@/auth';
+import { AuthError } from 'next-auth';
+
+export async function getUserId() {
+  const session = await auth();
+  const userId = await getUserIdFromSession(session?.user?.email ?? '');
+  console.log('User ID: ', userId)
+}
+
+export async function deleteTransaction(transactionId: string) {
+  try {
+    const resp = await sql`
+      DELETE FROM transactions
+      WHERE id = ${transactionId}
+    `;
+    revalidatePath('/group');
+    return 'success'
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to delete transaction.');
+  }
+}
 
 const FormSchemaTransaction = z.object({
   id: z.string(),
@@ -93,7 +117,6 @@ const CreateGroup = GroupFormSchema.omit({
   date: true,
   status: true,
 });
-// const UpdateGroup = GroupFormSchema.omit({ id: true, date: true });
 
 export async function createGroup(formData: FormData, userIds: string[]) {
   const { name } = CreateGroup.parse({
@@ -110,20 +133,88 @@ export async function createGroup(formData: FormData, userIds: string[]) {
   const groupId = groupResult.rows[0].id;
 
   for (const userId of userIds) {
-    await createJunction(userId, groupId);
+    await sql`
+    INSERT INTO user_groups (user_id, group_id)
+    VALUES (${userId}, ${groupId})`;
   }
 
   revalidatePath('/dashboard');
-  redirect('/dashboard');
+  redirect(`/group/${groupId}`);
 }
 
-export async function createJunction(user_id: string, group_id: string) {
+const UpdateGroup = GroupFormSchema.omit({
+  id: true,
+  date: true,
+  status: true,
+});
+
+export async function updateGroup(
+  formData: FormData,
+  groupId: string,
+  userIds: string[]
+) {
+  const { name } = UpdateGroup.parse({
+    name: formData.get('name'),
+  });
+  // fetch current users
+  const currentUsersResult = await sql`
+      SELECT user_id 
+      FROM user_groups 
+      WHERE group_id = ${groupId}`;
+  const currentUserIds = currentUsersResult.rows.map((row) => row.user_id);
+
+  // determine users to add or remvoe
+  const usersToRemove = currentUserIds.filter(
+    (userId) => !userIds.includes(userId)
+  );
+  const usersToAdd = userIds.filter(
+    (userId) => !currentUserIds.includes(userId)
+  );
+
+  // update group name
+  await sql`
+      UPDATE groups
+      SET name = ${name}
+      WHERE id = ${groupId} `;
+
+  //Remove users
+  for (const userId of usersToRemove) {
+    const removedUsers = await sql`
+    DELETE FROM user_groups
+    WHERE group_id = ${groupId} AND user_id = ${userId}`;
+  }
+
+  // Add new users
+  for (const userId of usersToAdd) {
+    const addedUsers = await sql`
+      INSERT INTO user_groups (user_id, group_id)
+      VALUES (${userId}, ${groupId})
+      ON CONFLICT (user_id, group_id) 
+      DO NOTHING`;
+  }
+
+  revalidatePath('/dashboard');
+  redirect(`/group/${groupId}`);
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
   try {
-    await sql`
-    INSERT INTO user_groups (user_id, group_id)
-    VALUES (${user_id}, ${group_id})`;
+    const user = await signIn('credentials', formData);
+    console.log('gabe', user);
   } catch (error) {
-    console.error(error);
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
     throw error;
   }
 }
+
+

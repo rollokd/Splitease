@@ -1,23 +1,30 @@
 'use client';
 import { User } from '@/lib/definititions';
-import { useState } from 'react';
-import { createGroup, getUserId } from '@/lib/actions';
-import CreateUserSelector from './CreateUserSelector';
+import { useEffect, useState } from 'react';
+import { updateGroup } from '@/lib/actions';
+import { usePathname } from 'next/navigation';
 import GroupNameInput from './GroupNameInput';
-import ActionButtons from './CreateActionButtons';
+import EditUserSelector from './EditUserSelector';
+import ActionButtons from './EditActionButtons';
 
-type CreateGroupFormProps = {
+type FormProps = {
   users: User[];
+  groupUsers: User[];
 };
-export default function CreateGroupForm({ users }: CreateGroupFormProps) {
-  const currUser = 'abde2287-4cfa-4cc7-b810-dd119df1d039';
 
-  const userId = getUserId();
-  console.log('User ID: ', userId);
-
+export default function EditGroupForm({ users, groupUsers }: FormProps) {
+  const currUser = '410544b2-4001-4271-9855-fec4b6a6442a';
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const pathname = usePathname();
+  const [groupId, setGroupId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const segments = pathname.split('/').filter(Boolean);
+    setGroupId(segments[1]);
+    setSelectedUsers(groupUsers);
+  }, [groupUsers, pathname]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -53,18 +60,20 @@ export default function CreateGroupForm({ users }: CreateGroupFormProps) {
     );
   };
 
-  // Submit form data to create a new group
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const userIds = [...selectedUsers.map((user) => user.id), currUser];
-    await createGroup(new FormData(event.currentTarget), userIds);
+    if (!groupId) {
+      console.error('Group ID is not available');
+      return;
+    }
+    const userIds = selectedUsers.map((user) => user.id);
+    await updateGroup(new FormData(event.currentTarget), groupId, userIds);
   };
-
   return (
     <form onSubmit={handleSubmit} className='px-6'>
       <div className='flex flex-col h-screen justify-center'>
         <GroupNameInput />
-        <CreateUserSelector
+        <EditUserSelector
           searchQuery={searchQuery}
           handleSearch={handleSearch}
           searchResults={searchResults}
@@ -72,8 +81,8 @@ export default function CreateGroupForm({ users }: CreateGroupFormProps) {
           selectedUsers={selectedUsers}
           handleRemoveUser={handleRemoveUser}
         />
+        <ActionButtons />
       </div>
-      <ActionButtons />
     </form>
   );
 }

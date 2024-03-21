@@ -52,7 +52,7 @@ export interface UserProps {
   groupID: string;
 }
 
-export type UserTransaction = Transaction & User
+export type UserTransaction = Transaction & User & {trans_id: string}
 
 export interface Own {
   paidbyMe: number;
