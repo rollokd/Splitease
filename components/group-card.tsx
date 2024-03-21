@@ -27,7 +27,7 @@ export const GroupCard: React.FC<Junction> = async ({ user_id, group_id }) => {
       <CardHeader>
         <div className="flex justify-between">
           <CardTitle>{groupName?.name}</CardTitle>
-          <CardDescription>$ {moneyFormat(groupTotals)}</CardDescription>
+          <CardDescription>$ {moneyFormat(groupTotals.result)}</CardDescription>
         </div>
       </CardHeader>
       <CardContent>
