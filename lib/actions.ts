@@ -109,7 +109,9 @@ export async function createGroup(formData: FormData, userIds: string[]) {
   const groupId = groupResult.rows[0].id;
 
   for (const userId of userIds) {
-    await createJunction(userId, groupId);
+    await sql`
+    INSERT INTO user_groups (user_id, group_id)
+    VALUES (${userId}, ${groupId})`;
   }
 
   revalidatePath('/dashboard');
@@ -169,26 +171,4 @@ export async function updateGroup(
 
   revalidatePath('/dashboard');
   redirect(`/group/${groupId}`);
-}
-
-export async function createJunction(user_id: string, group_id: string) {
-  try {
-    await sql`
-    INSERT INTO user_groups (user_id, group_id)
-    VALUES (${user_id}, ${group_id})`;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-export async function editJunction(user_id: string, groupId: string) {
-  try {
-    await sql`
-    UPDATE user_groups
-    SET user_id = ${user_id}
-    WHERE group_id = ${groupId}`;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
 }
