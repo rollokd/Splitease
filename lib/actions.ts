@@ -6,6 +6,20 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { TableDataType } from './definititions';
 
+export async function deleteTransaction(transactionId: string) {
+  try {
+    const resp = await sql`
+      DELETE FROM transactions
+      WHERE id = ${transactionId}
+    `;
+    revalidatePath('/group');
+    return 'success'
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to delete transaction.');
+  }
+}
+
 const FormSchemaTransaction = z.object({
   id: z.string(),
   name: z.string(),

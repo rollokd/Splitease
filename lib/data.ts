@@ -31,7 +31,22 @@ export async function getGroupById(group_id: string) {
 }
 
 // get all transactions for a group with user info
-export async function getTransactionsByGroup(group_id: string) {
+export async function getTransactionsByGroup(group_id: string): Promise<UserTransaction[]> {
+  noStore()
+  try {
+    const { rows } = await sql<UserTransaction>`
+      SELECT transactions.id AS trans_id, group_id, name, amount, paid_by,status, date, users.id, firstname,lastname, email FROM transactions
+      Left JOIN users
+	    ON users.id = transactions.paid_by
+      WHERE group_id = ${group_id}`
+    return rows
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch revenue data.');
+  }
+}
+// get all transactions for a group with user info
+export async function getTransactionsByGroupAndId(group_id: string, user_id: string) {
   noStore()
   try {
     const { rows } = await sql<UserTransaction>`
@@ -39,6 +54,15 @@ export async function getTransactionsByGroup(group_id: string) {
       Left JOIN users
 	    ON users.id = transactions.paid_by
       WHERE group_id = ${group_id}`
+    const myPortionOfBills = await Promise.all(
+      rows.map(async (row) => {
+        const { rows } = await sql`
+        SELECT * FROM splits
+        WHERE user_id = ${user_id} AND group_id = ${group_id} AND paid = false;
+        `;
+        return rows[0].total_user_amount;
+      })
+    );
     return rows
   } catch (err) {
     console.error('Database Error:', err);
@@ -49,18 +73,26 @@ export async function getTransactionsByGroup(group_id: string) {
 export async function fetchUserBalance(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267') {
   noStore();
   try {
-    const userPaid = await sql`
+    // i pay 50 quid for dinner - owed 25 
+    const totalPaid = await sql`
     SELECT SUM(amount) AS total_amount
     FROM transactions
     WHERE paid_by = ${userID} AND group_id = ${groupID};
     `;
+    const userPaid = await sql`
+    SELECT SUM(user_amount) AS total_amount
+    FROM transactions
+    LEFT JOIN splits
+    ON transactions.id = splits.trans_id
+    WHERE paid_by = ${userID} AND splits.group_id = ${groupID} AND user_id = ${userID};
+    `
     const splitToPay = await sql`
     SELECT SUM(user_amount) AS total_user_amount
     FROM splits
     WHERE user_id = ${userID} AND group_id = ${groupID} AND paid = false;
     `;
     //Calculate the account
-    const result = Number(userPaid.rows[0].total_amount) - Number(splitToPay.rows[0].total_user_amount);
+    const result = Number(totalPaid.rows[0].total_amount) - Number(userPaid.rows[0].total_amount) /* - Number(splitPaid.rows[0].total_paid_amount) */ - Number(splitToPay.rows[0].total_user_amount);
     return result;
   } catch (error) {
     console.log('Database Error:', error);
