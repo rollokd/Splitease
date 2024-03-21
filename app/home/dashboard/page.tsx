@@ -9,19 +9,20 @@ import { Button } from '@/components/ui/button';
 
 import { signOut, auth } from '@/auth';
 import { PowerIcon } from '@heroicons/react/24/outline';
+import { createGroup, getUserId } from '@/lib/actions';
 
 
 
 
 
 export default async function Home() {
-  const session = await auth();
-//  console.log('Session: ', session?.user.email);
-  
-  const userId = await getUserIdFromSession(session?.user.email);
+  // const session = await auth();
+  // const userId = await getUserIdFromSession(session?.user?.email ?? '');
+  // console.log('User ID: ', userId);
+
+  const userId = getUserId();
   console.log('User ID: ', userId);
 
-  // const userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6';
   const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
   const groupID: string = "5909a47f-9577-4e96-ad8d-7af0d52c3267";
   let userGroups = await getUserGroups(userID);

@@ -5,9 +5,16 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { TableDataType } from './definititions';
+import { getUserIdFromSession } from './data';
 
-import { signIn } from '@/auth';
+import { signIn, auth } from '@/auth';
 import { AuthError } from 'next-auth';
+
+export async function getUserId() {
+  const session = await auth();
+  const userId = await getUserIdFromSession(session?.user?.email ?? '');
+  console.log('User ID: ', userId)
+}
 
 const FormSchemaTransaction = z.object({
   id: z.string(),
