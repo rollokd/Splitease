@@ -1,5 +1,5 @@
 import React from "react";
-import CreateGroupForm from "../../components/groups/create-form";
+import CreateGroupForm from "../../../components/groups/create-form";
 import { fetchUsers } from "@/lib/data";
 
 const page = async () => {

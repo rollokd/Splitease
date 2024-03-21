@@ -1,17 +1,25 @@
-import { GroupCard } from '../../components/group-card';
-import { GroupChart } from '../../components/bar-chart';
+
+
+import { GroupCard } from '../../../components/group-card';
+import { GroupChart } from '../../../components/bar-chart';
 import { getUserGroups, fetchUserBalance } from '@/lib/data';
-import Totals from '../../components/Totals';
+import Totals from '../../../components/Totals';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
-import { signOut } from '@/auth';
+import { signOut, auth } from '@/auth';
 import { PowerIcon } from '@heroicons/react/24/outline';
+import { useStore } from '../../../lib/stote';
+
 
 
 
 
 export default async function Home() {
+  const session = await auth();
+
+  console.log('Session: ', session);
+
   // const userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6';
   const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
   const groupID: string = "5909a47f-9577-4e96-ad8d-7af0d52c3267";
@@ -31,8 +39,10 @@ export default async function Home() {
     })
   );
 
+  //const bears = useStore((state) => state.bears);
   return (
     <>
+    {/* <h1>{bears} around here...</h1> */}
             <form
           action={async () => {
             'use server';
@@ -50,12 +60,12 @@ export default async function Home() {
 
       <div className="m-4 flex justify-end">
         <Button variant="outline">
-          <Link href="/create">Create Group +</Link>
+          <Link href="/home/create">Create Group +</Link>
         </Button>
       </div>
       <div>
         {groups.map((group) => (
-          <Link key={group.group_id} href={`/group/${group.group_id}`}>
+          <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
             <GroupCard
               key={group.group_id}
               group_id={group.group_id}

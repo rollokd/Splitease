@@ -7,7 +7,10 @@ import Search from '../search';
 import { useState } from 'react';
 import { createGroup } from '@/lib/actions';
 
+
+
 export default function CreateGroupForm({ users }: { users: User[] }) {
+
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
