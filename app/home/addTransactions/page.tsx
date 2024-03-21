@@ -1,4 +1,4 @@
-import { TransactionForm } from "../../components/addTransactions/Form";
+import { TransactionForm } from "../../../components/addTransactions/Form";
 import { getNamesOfUsersInAGroup } from "@/lib/data";
 import { useSearchParams } from 'next/navigation'
 

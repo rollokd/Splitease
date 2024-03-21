@@ -13,7 +13,7 @@ async function Page({ params }: Props) {
   return (
     <div className="flex flex-col p-3 gap-3 h-full last:mt-auto">
       <GroupCrumbs name={group?.name} />
-      <div>Group name: {group?.name}</div>
+      {/* <div>Group name: {group?.name}</div> */}
       <GroupBalances group_id={group_id} />
       <TransactionList group_id={group_id} />
       <Link href="/dashboard" passHref>

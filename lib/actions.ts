@@ -5,6 +5,30 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { TableDataType } from './definititions';
+import { getUserIdFromSession } from './data';
+
+import { signIn, auth } from '@/auth';
+import { AuthError } from 'next-auth';
+
+export async function getUserId() {
+  const session = await auth();
+  const userId = await getUserIdFromSession(session?.user?.email ?? '');
+  console.log('User ID: ', userId)
+}
+
+export async function deleteTransaction(transactionId: string) {
+  try {
+    const resp = await sql`
+      DELETE FROM transactions
+      WHERE id = ${transactionId}
+    `;
+    revalidatePath('/group');
+    return 'success'
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to delete transaction.');
+  }
+}
 
 const FormSchemaTransaction = z.object({
   id: z.string(),
@@ -172,3 +196,25 @@ export async function updateGroup(
   revalidatePath('/dashboard');
   redirect(`/group/${groupId}`);
 }
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    const user = await signIn('credentials', formData);
+    console.log('gabe', user);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
+}
+
+

@@ -1,6 +1,6 @@
 import GroupCrumbs from '@/components/group-view/breadcrumbs';
 import { fetchGroupUsers, getGroupById, fetchUsers } from '@/lib/data';
-import EditGroupForm from '../../../components/groups/edit-group-form';
+import EditGroupForm from '@/components/groups/edit-group-form';
 
 type Props = { params: { id: string } };
 

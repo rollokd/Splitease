@@ -1,7 +1,7 @@
 'use client';
 import { User } from '@/lib/definititions';
 import { useState } from 'react';
-import { createGroup } from '@/lib/actions';
+import { createGroup, getUserId } from '@/lib/actions';
 import CreateUserSelector from './CreateUserSelector';
 import GroupNameInput from './GroupNameInput';
 import ActionButtons from './CreateActionButtons';
@@ -11,6 +11,10 @@ type CreateGroupFormProps = {
 };
 export default function CreateGroupForm({ users }: CreateGroupFormProps) {
   const currUser = 'abde2287-4cfa-4cc7-b810-dd119df1d039';
+
+  const userId = getUserId();
+  console.log('User ID: ', userId);
+
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');

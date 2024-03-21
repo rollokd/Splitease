@@ -1,7 +1,7 @@
-import React from 'react';
-import CreateGroupForm from '../../components/groups/create-form';
-import { fetchUsers } from '@/lib/data';
 import GroupCrumbs from '@/components/group-view/breadcrumbs';
+import React from 'react';
+import CreateGroupForm from '../../../components/groups/create-form';
+import { fetchUsers } from '@/lib/data';
 
 const page = async () => {
   const name = 'Create';

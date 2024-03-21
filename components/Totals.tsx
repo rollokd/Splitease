@@ -1,32 +1,34 @@
 import CardTotals from './cardTotals';
 import { fetchOwnDashboardData } from '../lib/data';
+import { moneyFormat } from '@/lib/utils';
 
 export default async function Totals() {
   const own = await fetchOwnDashboardData();
 
-  let paidbyMeMoney = (own?.paidbyMe ?? 0) / 1000;
-  let myPortionOfBillsMoney = (own?.myPortionOfBills ?? 0) / 1000;
-  let totalMoney = (own?.total ?? 0) / 1000;
+  let paidbyMeMoney = own?.paidbyMe;
+  let myPortionOfBillsMoney = own?.myPortionOfBills;
+  // let totalMoney = (own?.total ?? 0) / 100;
+  let totalMoney = own?.total;
   return (
     <>
       <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-6">
         <div className="flex-1">
           <CardTotals
             myColor="text-green-500"
-            title="Paid By Me"
-            amount={paidbyMeMoney}
+            title="Owed"
+            amount={moneyFormat(paidbyMeMoney)}
           />
         </div>
         <div className="flex-1">
           <CardTotals
             myColor="text-red-500"
-            title="My Portion"
-            amount={myPortionOfBillsMoney}
+            title="Own"
+            amount={moneyFormat(myPortionOfBillsMoney)}
           />
         </div>
         <div className="flex-1">
           <div className="flex-1">
-            <CardTotals myColor="" title="Balance" amount={totalMoney} />
+            <CardTotals myColor="" title="Total" amount={moneyFormat(totalMoney)} />
           </div>
         </div>
       </div>
