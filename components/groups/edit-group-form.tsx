@@ -1,5 +1,5 @@
 'use client';
-import { User } from '@/lib/definititions';
+import { User, UserWJunction } from '@/lib/definititions';
 import Link from 'next/link';
 import { UserGroupIcon } from '@heroicons/react/16/solid';
 import { Button } from '../ui/button';
@@ -8,12 +8,16 @@ import { useEffect, useState } from 'react';
 import { updateGroup } from '@/lib/actions';
 import { usePathname } from 'next/navigation';
 
-type Props = { params: { id: string } };
+type FormProps = {
+  users: User[];
+  groupUsers: User[];
+};
 
-export default function EditGroupForm({ users }: { users: User[] }) {
-  // const [searchResults, setSearchResults] = useState<User[]>([]);
-  // const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
-  // const [searchQuery, setSearchQuery] = useState('');const router = useRouter();
+export default function EditGroupForm({ users, groupUsers }: FormProps) {
+  const currUser = 'abde2287-4cfa-4cc7-b810-dd119df1d039';
+  const [searchResults, setSearchResults] = useState<User[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const pathname = usePathname();
   const [groupId, setGroupId] = useState<string | null>(null);
 
@@ -21,45 +25,51 @@ export default function EditGroupForm({ users }: { users: User[] }) {
     const segments = pathname.split('/').filter(Boolean);
     const groupId = segments[1];
     setGroupId(groupId);
-  }, [pathname]);
+    console.log(groupUsers);
+    if (groupUsers) {
+      setSelectedUsers(groupUsers);
+    }
+  }, [groupUsers, pathname]);
 
-  // const handleSearch = (query: string) => {
-  //   setSearchQuery(query);
-  //   if (!query) {
-  //     setSearchResults([]);
-  //     return;
-  //   }
-  //   const filteredResults = users.filter(
-  //     (user) =>
-  //       user.firstname.toLowerCase().includes(query.toLowerCase()) ||
-  //       user.lastname.toLowerCase().includes(query.toLowerCase())
-  //   );
-  //   setSearchResults(filteredResults);
-  // };
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (!query) {
+      setSearchResults([]);
+      return;
+    }
+    const filteredResults = users.filter(
+      (user) =>
+        user.id !== currUser &&
+        (user.firstname.toLowerCase().includes(query.toLowerCase()) ||
+          user.lastname.toLowerCase().includes(query.toLowerCase()))
+    );
+    setSearchResults(filteredResults);
+  };
 
-  // const handleAddUser = (user: User) => {
-  //   // Add user to selectedUsers if not already added
-  //   if (!selectedUsers.find((selectedUser) => selectedUser.id === user.id)) {
-  //     setSelectedUsers((prevSelectedUsers) => [...prevSelectedUsers, user]);
-  //   }
+  const handleAddUser = (user: User) => {
+    // Add user to selectedUsers if not already added
+    if (!selectedUsers.find((selectedUser) => selectedUser.id === user.id)) {
+      setSelectedUsers((prevSelectedUsers) => [...prevSelectedUsers, user]);
+    }
 
-  //   // Remove user from searchResults
-  //   setSearchResults((prevSearchResults) =>
-  //     prevSearchResults.filter((searchResult) => searchResult.id !== user.id)
-  //   );
-  // };
-  // const handleRemoveUser = (userId: string) => {
-  //   setSelectedUsers((prevSelectedUsers) =>
-  //     prevSelectedUsers.filter((user) => user.id !== userId)
-  //   );
-  // };
+    // Remove user from searchResults
+    setSearchResults((prevSearchResults) =>
+      prevSearchResults.filter((searchResult) => searchResult.id !== user.id)
+    );
+  };
+  const handleRemoveUser = (userId: string) => {
+    setSelectedUsers((prevSelectedUsers) =>
+      prevSelectedUsers.filter((user) => user.id !== userId)
+    );
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    const userIds = [...selectedUsers.map((user) => user.id), currUser];
 
     if (groupId) {
-      await updateGroup(formData, groupId);
+      await updateGroup(formData, groupId, userIds);
     } else {
       console.error('Group ID is not available');
     }
@@ -87,8 +97,7 @@ export default function EditGroupForm({ users }: { users: User[] }) {
             <UserGroupIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900' />
           </div>
         </div>
-
-        {/* * Add users
+        {/* * Add users */}
         <div className='mt-auto'>
           <label
             htmlFor='customer'
@@ -120,7 +129,7 @@ export default function EditGroupForm({ users }: { users: User[] }) {
             htmlFor='customer'
             className='mb-2 block text-large font-medium p-6'
           >
-            Selected participants
+            Edit Selected participants
           </label>
           <div className='border flex border-gray-200 p-4 rounded shadow'>
             <ul className='w-full'>
@@ -143,7 +152,7 @@ export default function EditGroupForm({ users }: { users: User[] }) {
               ))}
             </ul>
           </div>
-        </div> */}
+        </div>
         <div className='mt-auto flex flex-col gap-4 p-6'>
           <Button>
             <Link href='/dashboard'>Cancel</Link>

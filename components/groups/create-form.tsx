@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { createGroup } from '@/lib/actions';
 
 export default function CreateGroupForm({ users }: { users: User[] }) {
-  const currUser = '3106eb8a-3288-4b62-a077-3b24bd640d9a';
+  const currUser = 'abde2287-4cfa-4cc7-b810-dd119df1d039';
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -49,7 +49,7 @@ export default function CreateGroupForm({ users }: { users: User[] }) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const userIds = [...selectedUsers.map((user) => user.id), currUser];
-    console.log('Users added to the group:', userIds);
+    // console.log('Users added to the group:', userIds);
     await createGroup(formData, userIds);
   };
   return (
