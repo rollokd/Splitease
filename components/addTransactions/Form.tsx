@@ -20,15 +20,14 @@ import { columns } from "./SplittingTable/columns";
 import { GroupMembers, TableDataType, User, UserWJunction } from "@/lib/definititions";
 import { useParams } from "next/navigation";
 import { FormFieldContext } from "@/components/ui/form";
+import StaticGenerationSearchParamsBailoutProvider from "next/dist/client/components/static-generation-searchparams-bailout-provider";
 
 const formSchemaTransactions = z.object({
   name: z.string().min(3, {
     message: "Username must be at least 3 characters."
-  })
-  ,
+  }),
   amount: z.number(),
   date: z.coerce.date()
-  // date: z.coerce.date()
 });
 
 export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[] }) {
@@ -49,26 +48,38 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
     createTransactionAndData(form_data)
   }
 
-  useEffect(() => {
-    async function helper() {
-      console.log("whatever inside");
-      const data = groupMembers.map((ele) => ({
-        ...ele,
-        amount: amountInput / groupMembers.length
-      }));
-      setTableData(data);
-    }
-    helper();
-  }, []);
+  // useEffect(() => {
+  //   async function helper() {
+  //     console.log("whatever inside");
+  //     const data = groupMembers.map((ele) => ({
+  //       ...ele,
+  //       // amount: amountInput / groupMembers.length
+  //       amount: currentSplit
+  //     }));
+  //     setTableData(data);
+  //   }
+  //   helper();
+  // });
 
   useEffect(() => {
-    const data = groupMembers.map((ele) => ({
-      ...ele,
+
+    const data = groupMembers.map(member => ({
+      ...member,
       amount: amountInput / groupMembers.length
-    }));
+    }))
     setTableData(data);
   }, [amountInput]);
 
+  function increment(index: number) {
+    setTableData(currentData =>
+      currentData.map((item, idx) => idx === index ? { ...item, amount: item.amount + 1 } : item)
+    );
+  }
+  function decrement(index: number) {
+    setTableData(currentData =>
+      currentData.map((item, idx) => idx === index ? { ...item, amount: item.amount - 1 } : item)
+    );
+  }
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -132,9 +143,45 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
             </FormItem>
           )}
         />
-        <div className="container mx-auto py-10">
+        {/* <div className="container mx-auto py-10">
           <DataTable columns={columns} data={tableData} />
+        </div> */}
+        <div className="container mx-auto py-10">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">name</th>
+                <th scope="col">status</th>
+                {/* <th scope="col">id</th> */}
+                <th scope="col">amount</th>
+                <th scope="col">paid</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableData.map((ele, index) => {
+                return (
+                  <tr key={index}>
+                    <th scope="row">{ele.firstname}</th>
+                    <td><button className="toggleButton">will toggle</button></td>
+                    {/* <td className="ft-45">{ele.id}</td> */}
+                    <td>
+                      <button onClick={() => increment(index)}>+</button>
+                      {ele.amount}
+                      {/* {increment && (
+                        let evenParts = amountInput /groupMembers.length
+                        let currentValue = evenParts + 1;
+                      )} */}
+                      <button onClick={() => decrement(index)}>-</button>
+                    </td>
+                    <td>not yet paid</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
+
+
         <Button type="submit" className="flex flex-row self-center">
           Add Transaction
         </Button>
