@@ -2,7 +2,7 @@
 import { useState, useEffect, useContext } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { object, z } from "zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,8 +16,8 @@ import {
 import { createTransaction } from "@/lib/actions";
 import { Input } from "@/components/ui/input";
 import { GroupMembers, TableDataType } from "@/lib/definititions";
-import { FormFieldContext } from "@/components/ui/form";
 import { UseFormReturn, SubmitHandler } from "react-hook-form";
+import { useFormStatus } from 'react-dom';
 
 
 
@@ -38,12 +38,16 @@ type FormValues = z.infer<typeof formSchemaTransactions>;
 export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[] }) {
   const [amountInput, setAmountInput] = useState(0);
   const [tableData, setTableData] = useState<TableDataTypeExtended[]>([]);
+  const { pending } = useFormStatus()
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const currentUser = 'abde2287-4cfa-4cc7-b810-dd119df1d039'
   const form: UseFormReturn<FormValues> = useForm({
     resolver: zodResolver(formSchemaTransactions),
   });
 
-  const onSubmit: SubmitHandler<FormValues> = (values) => {
+
+  const onSubmit: SubmitHandler<FormValues> = async (values) => {
+    setIsSubmitting(true)
     const form_data = new FormData();
     let key: keyof typeof values;
     for (key in values) {
@@ -51,21 +55,16 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
     }
     form_data.append('paid_by', currentUser)
     const createTransactionAndData = createTransaction.bind(null, tableData)
-    createTransactionAndData(form_data)
+    try {
+      await createTransactionAndData(form_data)
+    } catch (e) {
+      console.log("errrorrrr...", e)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
-  // useEffect(() => {
-  //   async function helper() {
-  //     console.log("whatever inside");
-  //     const data = groupMembers.map((ele) => ({
-  //       ...ele,
-  //       // amount: amountInput / groupMembers.length
-  //       amount: amountInput / groupMembers.length
-  //     }));
-  //     setTableData(data);
-  //   }
-  //   helper();
-  // });
+
 
   useEffect(() => {
     const data = groupMembers.map(member => ({
@@ -106,7 +105,8 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
 
   function increment(index: number) {
     const incrementAmount = 0.5;
-    const potentialTotal = tableData.reduce((acc, member, idx) => acc + (idx === index ? member.amount + incrementAmount : member.amount), 0)
+    const potentialTotal = tableData.reduce((acc, member, idx) =>
+      acc + (idx === index ? member.amount + incrementAmount : member.amount), 0)
     if (potentialTotal <= amountInput) {
       adjustMemberShare(index, incrementAmount)
     } else {
@@ -129,7 +129,8 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      {/* <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8"> */}
+      <form onSubmit={pending ? (event) => { event.preventDefault() } : form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="name"
@@ -196,7 +197,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
         <div className="container mx-auto py-10">
           <table>
             <thead>
-              <tr>
+              <tr >
                 <th scope="col">name</th>
                 <th scope="col">status</th>
                 {/* <th scope="col">id</th> */}
@@ -209,16 +210,16 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
                 return (
                   <tr key={index}>
                     <th scope="row">{ele.firstname}</th>
-                    <td><button className="toggleButton">will toggle</button></td>
+                    <td ><button className="toggleButton">will toggle</button></td>
                     {/* <td className="ft-45">{ele.id}</td> */}
-                    <td>
-                      <button onClick={() => increment(index)}>+</button>
+                    <td >
+                      <button type="button" onClick={() => increment(index)}>+</button>
                       {ele.amount}
                       {/* {increment && (
                         let evenParts = amountInput /groupMembers.length
                         let currentValue = evenParts + 1;
                       )} */}
-                      <button onClick={() => decrement(index)}>-</button>
+                      <button type="button" onClick={() => decrement(index)}>-</button>
                     </td>
 
                   </tr>
@@ -229,8 +230,8 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
         </div>
 
 
-        <Button type="submit" className="flex flex-row self-center">
-          Add Transaction
+        <Button type="submit" className="flex flex-row self-center" disabled={isSubmitting || pending}>
+          {isSubmitting ? 'Submitting...' : 'Add Transaction'}
         </Button>
       </form>
     </Form>
