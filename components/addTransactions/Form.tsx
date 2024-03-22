@@ -24,13 +24,12 @@ interface TableDataTypeExtended extends TableDataType {
   manuallyAdjusted?: boolean;
 }
 
-
 const formSchemaTransactions = z.object({
   name: z.string().min(3, {
-    message: "Username must be at least 3 characters."
+    message: "Username must be at least 3 characters.",
   }),
   amount: z.number(),
-  date: z.coerce.date()
+  date: z.coerce.date(),
 });
 type FormValues = z.infer<typeof formSchemaTransactions>;
 
@@ -60,7 +59,7 @@ export function TransactionForm({
 
   // console.log("auth id ??? ===> ", auth)
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     const form_data = new FormData();
     let key: keyof typeof values;
     for (key in values) {
@@ -71,29 +70,29 @@ export function TransactionForm({
 
     const createTransactionAndData = createTransaction.bind(null, tableData)
     try {
-      await createTransactionAndData(form_data)
+      await createTransactionAndData(form_data);
       reset({
-        name: '',
+        name: "",
         amount: 0,
-        date: new Date()
-      })
-      setTableData(groupMembers.map(member => ({
-        ...member,
-        amount: 0,
-        manuallyAdjusted: false,
-      })));
+        date: new Date(),
+      });
+      setTableData(
+        groupMembers.map((member) => ({
+          ...member,
+          amount: 0,
+          manuallyAdjusted: false,
+        }))
+      );
       setAmountInput(0);
     } catch (e) {
-      console.log("errrorrrr...", e)
+      console.log("errrorrrr...", e);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
-
-
+  };
 
   useEffect(() => {
-    const data = groupMembers.map(member => ({
+    const data = groupMembers.map((member) => ({
       ...member,
       amount: amountInput / groupMembers.length,
       manuallyAdjusted: false,
@@ -101,9 +100,8 @@ export function TransactionForm({
     setTableData(data);
   }, [amountInput, groupMembers]);
 
-
   function adjustMemberShare(index: number, adjustAmount: number) {
-    const newData = [...tableData]
+    const newData = [...tableData];
 
     const adjustedMemberNewAmount = newData[index].amount + adjustAmount;
     newData[index] = { ...newData[index], amount: adjustedMemberNewAmount, manuallyAdjusted: true };
@@ -111,9 +109,14 @@ export function TransactionForm({
     const totalAmountLeft = amountInput - totalAdjusted
     const unadjustedMembersCount = newData.filter(member => !member.manuallyAdjusted).length;
 
-
-    if (totalAmountLeft < 0 || (unadjustedMembersCount > 0 && totalAmountLeft / unadjustedMembersCount < 0.5)) {
-      alert("Error: There's insufficient amount of pesos. The whole amount needs to be distributed evenly, don't be cheap.");
+    if (
+      totalAmountLeft < 0 ||
+      (unadjustedMembersCount > 0 &&
+        totalAmountLeft / unadjustedMembersCount < 0.5)
+    ) {
+      alert(
+        "Error: There's insufficient amount of pesos. The whole amount needs to be distributed evenly, don't be cheap."
+      );
       return;
     }
 
@@ -124,25 +127,25 @@ export function TransactionForm({
         newData[i] = { ...newData[i], amount: amountPerUnmodifiedValue };
       }
     }
-    setTableData(newData)
-
+    setTableData(newData);
   }
-
 
   function increment(index: number) {
     const incrementAmount = 0.5;
-    const potentialTotal = tableData.reduce((acc, member, idx) =>
-      acc + (idx === index ? member.amount + incrementAmount : member.amount), 0)
+    const potentialTotal = tableData.reduce(
+      (acc, member, idx) =>
+        acc + (idx === index ? member.amount + incrementAmount : member.amount),
+      0
+    );
     if (potentialTotal <= amountInput) {
-      adjustMemberShare(index, incrementAmount)
+      adjustMemberShare(index, incrementAmount);
     } else {
-      console.log("Cannot increment beyond the total amount")
+      console.log("Cannot increment beyond the total amount");
     }
   }
 
   function decrement(index: number) {
     const decrementAmount = 0.5;
-
 
     if (tableData[index].amount - decrementAmount >= 0) {
       adjustMemberShare(index, -decrementAmount);
@@ -151,12 +154,19 @@ export function TransactionForm({
     }
   }
 
-
-
   return (
     <Form {...form}>
       {/* <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8"> */}
-      <form onSubmit={pending ? (event) => { event.preventDefault() } : form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={
+          pending
+            ? (event) => {
+              event.preventDefault();
+            }
+            : form.handleSubmit(onSubmit)
+        }
+        className="space-y-8"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -185,9 +195,9 @@ export function TransactionForm({
                   {...field}
                   value={field.value}
                   onChange={(e) => {
-                    const newAmount = Number(e.target.value)
-                    setAmountInput(newAmount)
-                    field.onChange(newAmount)
+                    const newAmount = Number(e.target.value);
+                    setAmountInput(newAmount);
+                    field.onChange(newAmount);
                   }}
                 />
               </FormControl>
@@ -206,8 +216,13 @@ export function TransactionForm({
               <FormLabel>date</FormLabel>
               <FormControl>
                 <Input
-                  type='date'
+                  type="date"
                   {...field}
+                  value={
+                    field.value instanceof Date
+                      ? field.value.toISOString().split("T")[0]
+                      : field.value
+                  }
                 />
               </FormControl>
               <FormDescription>
@@ -221,8 +236,12 @@ export function TransactionForm({
           <table className="min-w-full table-auto">
             <thead className="bg-gray-200">
               <tr>
-                <th scope="col" className="px-4 py-2 text-left">name</th>
-                <th scope="col" className="px-4 py-2 text-left">status</th>
+                <th scope="col" className="px-4 py-2 text-left">
+                  name
+                </th>
+                <th scope="col" className="px-4 py-2 text-left">
+                  status
+                </th>
                 {/* <th scope="col">id</th> */}
                 <th scope="col" className="px-4 py-2 text-left">amount</th>
                 {/* <th scope="col" className="px-4 py-2 text-left">paid</th> */}
@@ -232,15 +251,13 @@ export function TransactionForm({
               {tableData.map((ele, index) => {
                 return (
                   <tr key={index}>
-                    <th scope="row" >{ele.firstname}</th>
+                    <th scope="row">{ele.firstname}</th>
                     <td className="px-4 py-2">
                       <button
                         type="button"
-                        className="relative inline-flex items-center justify-center p-3 mb-1 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 to-blue-500 group-hover:from-slate-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                        <span
-                          className="relative px-1 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-
-                        </span>
+                        className="relative inline-flex items-center justify-center p-3 mb-1 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 to-blue-500 group-hover:from-slate-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                      >
+                        <span className="relative px-1 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"></span>
                       </button>
                     </td>
                     {/* <td className="ft-45">{ele.id}</td> */}
@@ -249,41 +266,41 @@ export function TransactionForm({
                       <button
                         type="button"
                         onClick={() => increment(index)}
-                        className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 to-blue-500 group-hover:from-slate-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                        <span
-                          className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                        className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 to-blue-500 group-hover:from-slate-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                      >
+                        <span className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
                           +
                         </span>
                       </button>
-                      <div className="mx-1 flex-2 pl-2 pr-3">
-                        {ele.amount}
-                      </div>
+                      <div className="mx-1 flex-2 pl-2 pr-3">{ele.amount}</div>
 
                       <button
                         type="button"
                         onClick={() => decrement(index)}
-                        className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-large text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 to-blue-500 group-hover:from-slate-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                        <span
-                          className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                        className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-large text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 to-blue-500 group-hover:from-slate-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                      >
+                        <span className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
                           -
                         </span>
                       </button>
-
                     </td>
                     {/* <td className="mx-1 flex-2 pl-7">
                       <p>x</p>
                     </td> */}
 
                   </tr>
-                )
+                );
               })}
             </tbody>
           </table>
         </div>
 
-
-        <Button type="submit" className="flex flex-row self-center" disabled={isSubmitting || pending}>
-          {isSubmitting ? 'Submitting...' : 'Add Transaction'}
+        <Button
+          type="submit"
+          className="flex flex-row self-center"
+          disabled={isSubmitting || pending}
+        >
+          {isSubmitting ? "Submitting..." : "Add Transaction"}
         </Button>
       </form>
     </Form>

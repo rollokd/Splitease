@@ -8,12 +8,13 @@ import ActionButtons from './CreateActionButtons';
 
 type CreateGroupFormProps = {
   users: User[];
+  userID: string;
 };
-export default function CreateGroupForm({ users }: CreateGroupFormProps) {
-  const currUser = 'abde2287-4cfa-4cc7-b810-dd119df1d039';
-
-  const userId = getUserId();
-  console.log('User ID: ', userId);
+export default function CreateGroupForm({
+  users,
+  userID,
+}: CreateGroupFormProps) {
+  console.log('User ID from dashboard: ', userID);
 
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
@@ -29,7 +30,7 @@ export default function CreateGroupForm({ users }: CreateGroupFormProps) {
     //Filter users but exclude current user
     const filteredResults = users.filter(
       (user) =>
-        user.id !== currUser &&
+        user.id !== userID &&
         (user.firstname.toLowerCase().includes(query.toLowerCase()) ||
           user.lastname.toLowerCase().includes(query.toLowerCase()))
     );
@@ -56,7 +57,7 @@ export default function CreateGroupForm({ users }: CreateGroupFormProps) {
   // Submit form data to create a new group
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const userIds = [...selectedUsers.map((user) => user.id), currUser];
+    const userIds = [...selectedUsers.map((user) => user.id), userID];
     await createGroup(new FormData(event.currentTarget), userIds);
   };
 
