@@ -175,7 +175,9 @@ export async function getNameGroup(
   }
 }
 
-export async function getNamesOfUsersInAGroup(group_id: string = '26c034f0-9105-4d26-80c9-e49a89e1a8dd'): Promise<GroupUsersBasic[]> {
+export async function getNamesOfUsersInAGroup(
+  group_id: string = '26c034f0-9105-4d26-80c9-e49a89e1a8dd'
+): Promise<GroupUsersBasic[]> {
   noStore()
   try {
     const data = await sql<GroupUsersBasic>`

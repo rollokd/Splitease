@@ -90,7 +90,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
   function adjustMemberShare(index: number, adjustAmount: number) {
     const newData = [...tableData]
 
-    const adjustedMemberNewAmount = Math.round((newData[index].amount + adjustAmount) * 100) / 100;
+    const adjustedMemberNewAmount = newData[index].amount + adjustAmount;
     newData[index] = { ...newData[index], amount: adjustedMemberNewAmount, manuallyAdjusted: true };
     const totalAdjusted = newData.filter(member => member.manuallyAdjusted).reduce((acc, curr) => acc + curr.amount, 0)
     const totalAmountLeft = amountInput - totalAdjusted
@@ -103,7 +103,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
     }
 
 
-    const amountPerUnmodifiedValue = Math.round((totalAmountLeft / unadjustedMembersCount) * 100) / 100;
+    const amountPerUnmodifiedValue = (totalAmountLeft / unadjustedMembersCount);
     for (let i = 0; i < newData.length; i++) {
       if (!newData[i].manuallyAdjusted) {
         newData[i] = { ...newData[i], amount: amountPerUnmodifiedValue };
