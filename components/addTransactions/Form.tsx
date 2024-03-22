@@ -19,9 +19,10 @@ import { GroupMembers, TableDataType } from "@/lib/definititions";
 import { UseFormReturn, SubmitHandler } from "react-hook-form";
 import { useFormStatus } from 'react-dom';
 import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
+
 interface TableDataTypeExtended extends TableDataType {
   manuallyAdjusted?: boolean;
+  status?: boolean;
 }
 
 const formSchemaTransactions = z.object({
@@ -44,6 +45,7 @@ export function TransactionForm({
   const [tableData, setTableData] = useState<TableDataTypeExtended[]>([]);
   const { pending } = useFormStatus()
   const [isSubmitting, setIsSubmitting] = useState(false)
+
 
   const currentGroup = useParams()
 
@@ -75,7 +77,7 @@ export function TransactionForm({
         groupMembers.map((member) => ({
           ...member,
           amount: 0,
-          manuallyAdjusted: false,
+          manuallyAdjusted: false
         }))
       );
       setAmountInput(0);
@@ -87,20 +89,42 @@ export function TransactionForm({
   };
 
   useEffect(() => {
-    const data = groupMembers.map((member) => ({
-      ...member,
-      amount: amountInput / groupMembers.length,
-      manuallyAdjusted: false,
-    }));
+    const participatingMembers = groupMembers.filter(member => member.status !== false);
+    const newAmountPerMember = amountInput / participatingMembers.length;
+    const data = groupMembers.map((member) => (
+      {
+        ...member,
+        amount: member.status !== false ? newAmountPerMember : 0,
+        manuallyAdjusted: false
+      }
+    ));
+
     setTableData(data);
   }, [amountInput, groupMembers]);
 
+  function handleClick(index: number) {
+    const newData = [...tableData];
+    newData[index].status = !newData[index].status;
+
+    const participatingMembers = newData.filter(member => member.status);
+    const newAmountPerMember = amountInput / participatingMembers.length;
+
+    newData.forEach((member, idx) => {
+      if (member.status) {
+        newData[idx].amount = Number(newAmountPerMember.toFixed(2))
+      } else {
+        newData[idx].amount = 0
+      }
+    });
+
+    setTableData(newData);
+  }
+
   function adjustMemberShare(index: number, adjustAmount: number) {
     const newData = [...tableData];
-
     const adjustedMemberNewAmount = newData[index].amount + adjustAmount;
     newData[index] = { ...newData[index], amount: adjustedMemberNewAmount, manuallyAdjusted: true };
-    const totalAdjusted = newData.filter(member => member.manuallyAdjusted).reduce((acc, curr) => acc + curr.amount, 0)
+    const totalAdjusted = newData.filter(member => member.manuallyAdjusted && member.status === true).reduce((acc, curr) => acc + curr.amount, 0)
     const totalAmountLeft = amountInput - totalAdjusted
     const unadjustedMembersCount = newData.filter(member => !member.manuallyAdjusted).length;
 
@@ -127,14 +151,6 @@ export function TransactionForm({
 
   function increment(index: number) {
     const incrementAmount = 0.5;
-    // const potentialTotal = tableData.reduce(
-    //   (acc, member, idx) =>
-    //     acc + (idx === index ? member.amount + incrementAmount : member.amount),
-    //   0
-    // );
-    // if (potentialTotal <= amountInput) {
-    //   adjustMemberShare(index, incrementAmount);
-    // }
     if (tableData[index].amount + incrementAmount >= 0) {
       adjustMemberShare(index, incrementAmount);
     }
@@ -253,10 +269,15 @@ export function TransactionForm({
                     <th scope="row">{ele.firstname}</th>
                     <td className="px-4 py-2">
                       <button
+                        // onClick={() => setParticipates(false)}
                         type="button"
                         className="relative inline-flex items-center justify-center p-3 mb-1 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 to-blue-500 group-hover:from-slate-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
                       >
-                        <span className="relative px-1 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"></span>
+                        <span
+                          onClick={() => handleClick(index)}
+                          className="relative px-1 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+
+                        </span>
                       </button>
                     </td>
 

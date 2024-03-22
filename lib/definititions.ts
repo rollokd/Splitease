@@ -38,6 +38,7 @@ export type GroupMembers = {
   id: string
   firstname: string
   group_id?: string
+  status?: boolean
 }
 export type forNow = {
   amount: number
