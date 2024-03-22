@@ -3,6 +3,7 @@ import React from 'react';
 import Search from '../search';
 
 const EditUserSelector = ({
+  userID,
   searchQuery,
   handleSearch,
   searchResults,
@@ -10,6 +11,7 @@ const EditUserSelector = ({
   selectedUsers,
   handleRemoveUser,
 }: {
+  userID: string;
   searchQuery: string;
   handleSearch: (query: string) => void;
   searchResults: User[];
@@ -17,7 +19,6 @@ const EditUserSelector = ({
   selectedUsers: User[];
   handleRemoveUser: (userId: string) => void;
 }) => {
-  const currUser = '410544b2-4001-4271-9855-fec4b6a6442a';
   return (
     <>
       {/* * Add users */}
@@ -64,7 +65,7 @@ const EditUserSelector = ({
                 <span>
                   {user.firstname} {user.lastname}
                 </span>
-                {user.id !== currUser && (
+                {user.id !== userID && (
                   <button
                     type='button'
                     onClick={() => handleRemoveUser(user.id)}
