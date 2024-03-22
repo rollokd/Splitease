@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { signOut, auth } from "@/auth";
 import { PowerIcon } from "@heroicons/react/24/outline";
 import { createGroup, getUserId } from "@/lib/actions";
+import { moneyFormat } from "@/lib/utils";
 
 export default async function Home() {
   let userID: string = '';
