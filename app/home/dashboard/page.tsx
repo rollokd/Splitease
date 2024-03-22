@@ -45,6 +45,7 @@ export default async function Home() {
   //const bears = useStore((state) => state.bears);
   return (
     <>
+    <div className="p-4">
       {/* <h1>{bears} around here...</h1> */}
       <form
         action={async () => {
@@ -87,7 +88,7 @@ export default async function Home() {
           </Button>
         </Link>
       </div>
-
+      </div>
     </>
   );
 }
