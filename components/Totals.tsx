@@ -1,6 +1,6 @@
-import CardTotals from './cardTotals';
-import { fetchOwnDashboardData } from '../lib/data';
-import { moneyFormat } from '@/lib/utils';
+import CardTotals from "./cardTotals";
+import { fetchOwnDashboardData } from "../lib/data";
+import { moneyFormat } from "@/lib/utils";
 
 export default async function Totals({ userId }: { userId: string }) {
   const own = await fetchOwnDashboardData(userId);
@@ -22,13 +22,17 @@ export default async function Totals({ userId }: { userId: string }) {
         <div className="flex-1">
           <CardTotals
             myColor="text-red-500"
-            title="Own"
+            title="Owe"
             amount={moneyFormat(myPortionOfBillsMoney)}
           />
         </div>
         <div className="flex-1">
           <div className="flex-1">
-            <CardTotals myColor="" title="Total" amount={moneyFormat(totalMoney)} />
+            <CardTotals
+              myColor=""
+              title="Total"
+              amount={moneyFormat(totalMoney)}
+            />
           </div>
         </div>
       </div>
