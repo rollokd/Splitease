@@ -110,7 +110,7 @@ export function TransactionForm({
         totalAmountLeft / unadjustedMembersCount < 0.5)
     ) {
       alert(
-        "Error: There's insufficient amount of pesos. The whole amount needs to be distributed evenly, don't be cheap."
+        "Error: There's insufficient amount. The whole amount needs to be distributed."
       );
       return;
     }
@@ -119,7 +119,7 @@ export function TransactionForm({
     const amountPerUnmodifiedValue = (totalAmountLeft / unadjustedMembersCount);
     for (let i = 0; i < newData.length; i++) {
       if (!newData[i].manuallyAdjusted) {
-        newData[i] = { ...newData[i], amount: amountPerUnmodifiedValue };
+        newData[i] = { ...newData[i], amount: Number(amountPerUnmodifiedValue.toFixed(2)) };
       }
     }
     setTableData(newData);
@@ -127,14 +127,18 @@ export function TransactionForm({
 
   function increment(index: number) {
     const incrementAmount = 0.5;
-    const potentialTotal = tableData.reduce(
-      (acc, member, idx) =>
-        acc + (idx === index ? member.amount + incrementAmount : member.amount),
-      0
-    );
-    if (potentialTotal <= amountInput) {
+    // const potentialTotal = tableData.reduce(
+    //   (acc, member, idx) =>
+    //     acc + (idx === index ? member.amount + incrementAmount : member.amount),
+    //   0
+    // );
+    // if (potentialTotal <= amountInput) {
+    //   adjustMemberShare(index, incrementAmount);
+    // }
+    if (tableData[index].amount + incrementAmount >= 0) {
       adjustMemberShare(index, incrementAmount);
-    } else {
+    }
+    else {
       console.log("Cannot increment beyond the total amount");
     }
   }
