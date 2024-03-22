@@ -84,17 +84,17 @@ export default async function Home() {
             </Link>
           ))}
       </div>
-      <div className='flex justify-center m-4'>
+      <div className='flex justify-center pt-5'>
         <GroupChart data={balances}></GroupChart>
       </div>
-      <div className='flex justify-center m-4 p-10'>
-        <Link href={`/home/settle_up_dashboard`}>
-          <Button className='bg-green-500'>
+      <div className='flex justify-center m-4 pt-1 pb-3'>
+        <Link className="w-full" href={`/home/settle_up_dashboard`}>
+          <Button className='bg-green-500 w-full'>
             Settle Up
           </Button>
         </Link>
       </div>
-      </div>
+    </div>
     </>
   );
 }
