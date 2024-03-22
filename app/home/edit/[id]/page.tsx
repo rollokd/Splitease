@@ -13,7 +13,7 @@ async function Page({ params }: Props) {
   const userID = (await getUserId()) as string;
   return (
     <div className='flex flex-col p-3 gap-3 h-full last:mt-auto'>
-      <strong>
+      <strong className='gap-3 mb-4 mt-2 p-3'>
         <GroupCrumbs name={group?.name} />
       </strong>
       <EditGroupForm users={users} groupUsers={groupUsers} userID={userID} />

@@ -74,7 +74,10 @@ export default function EditGroupForm({
     await updateGroup(new FormData(event.currentTarget), groupId, userIds);
   };
   return (
-    <form onSubmit={handleSubmit} className='flex flex-col min-h-screen'>
+    <form
+      onSubmit={handleSubmit}
+      className='flex flex-col p-3 gap-3 h-full last:mt-auto'
+    >
       <div className='flex-grow'>
         <GroupNameInput />
         <EditUserSelector
