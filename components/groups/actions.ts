@@ -4,27 +4,24 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import {
-  SplitTable,
-  TableDataType,
-  TransInsert,
-  UserValues
-} from './definititions';
+import { SplitTable, TableDataType, TransInsert, UserValues } from './definititions';
 import { getUserIdFromSession } from './data';
 
 import { signIn, auth } from '@/auth';
 import { AuthError } from 'next-auth';
 
-export async function getUserId() {
-  try {
+export async function getUserId()  {
+  try{
     const session = await auth();
     const userId = await getUserIdFromSession(session?.user?.email ?? '');
-    //console.log('User ID from actions: ', userId)
-
+    console.log('User ID from actions: ', userId)
     return userId;
+
+
   } catch (error) {
-    console.log('error', error);
+  
   }
+
 }
 
 export async function deleteTransaction(transactionId: string) {
@@ -34,7 +31,7 @@ export async function deleteTransaction(transactionId: string) {
       WHERE id = ${transactionId}
     `;
     revalidatePath('/group');
-    return 'success';
+    return 'success'
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to delete transaction.');
@@ -49,24 +46,18 @@ const FormSchemaTransaction = z.object({
   date: z.coerce.date(),
   paid_by: z.string(),
   group_id: z.string()
-});
-const CreateTransaction = FormSchemaTransaction.omit({
-  id: true,
-  status: true,
-  group_id: true
-});
+})
+const CreateTransaction = FormSchemaTransaction.omit({ id: true, status: true, group_id: true });
 
-export async function createTransaction(
-  tableData: TableDataType[],
-  formData: FormData
-) {
+export async function createTransaction(tableData: TableDataType[], formData: FormData) {
+
   const { name, amount, date, paid_by } = CreateTransaction.parse({
     name: formData.get('name'),
     amount: formData.get('amount'),
     // status: formData.get('status')
     date: formData.get('date'),
     paid_by: formData.get('paid_by')
-  });
+  })
 
   const amountInPennies = amount * 100;
   const dateConverted = date.toISOString().split('T')[0];
@@ -78,49 +69,32 @@ export async function createTransaction(
     await sql`INSERT INTO transactions (name, date, amount, status, paid_by, group_id)
   VALUES (${name}, ${dateConverted}, ${amountInPennies}, ${statusBla}, ${paid_by}, ${groupBla_id})
   RETURNING id, group_id
-  `;
+  `
   //second insert data prep
-  let transactionId = transInsert.rows[0].id;
-  let groupId = transInsert.rows[0].group_id;
-  let bundledUpTransactionValues: TransInsert = {
-    trans_id: transactionId,
-    amount: amountInPennies,
-    group_id: groupId
-  };
+  let transactionId = transInsert.rows[0].id
+  let groupId = transInsert.rows[0].group_id
+  let bundledUpTransactionValues: TransInsert = { trans_id: transactionId, amount: amountInPennies, group_id: groupId }
   let bundledUpTableData: UserValues;
   tableData.map((ele) => {
     if (ele.amount && ele.id) {
       if (ele.id == paid_by) {
-        bundledUpTableData = {
-          user_amount: ele.amount * 100,
-          user_id: ele.id,
-          paid: true
-        };
+        bundledUpTableData = { user_amount: (ele.amount * 100), user_id: ele.id, paid: true }
       } else {
-        bundledUpTableData = {
-          user_amount: ele.amount * 100,
-          user_id: ele.id,
-          paid: false
-        };
+        bundledUpTableData = { user_amount: (ele.amount * 100), user_id: ele.id, paid: false }
       }
-      createSplit(bundledUpTableData, bundledUpTransactionValues);
+      createSplit(bundledUpTableData, bundledUpTransactionValues)
     }
-  });
+  })
 }
 
-export async function createSplit(
-  userValues: UserValues,
-  transInsert: TransInsert
-) {
+
+export async function createSplit(userValues: UserValues, transInsert: TransInsert) {
   const { user_id, user_amount, paid } = userValues;
   const { trans_id, amount, group_id } = transInsert;
   await sql<SplitTable>`INSERT INTO splits (amount, user_amount, paid, user_id, trans_id, group_id)
   VALUES (${amount}, ${user_amount}, ${paid}, ${user_id}, ${trans_id}, ${group_id})
-  `;
-  console.log('6 values to add to the split table', {
-    transInsert,
-    userValues
-  });
+  `
+  console.log("6 values to add to the split table", { transInsert, userValues })
   // revalidatePath('/viewGroup')
   // redirect('/viewGroup')
 }
@@ -129,18 +103,18 @@ const GroupFormSchema = z.object({
   id: z.string(),
   name: z.string(),
   date: z.date(),
-  status: z.boolean()
+  status: z.boolean(),
 });
 
 const CreateGroup = GroupFormSchema.omit({
   id: true,
   date: true,
-  status: true
+  status: true,
 });
 
 export async function createGroup(formData: FormData, userIds: string[]) {
   const { name } = CreateGroup.parse({
-    name: formData.get('name')
+    name: formData.get('name'),
   });
   const status = true;
   const date = new Date().toISOString().split('T')[0];
@@ -165,7 +139,7 @@ export async function createGroup(formData: FormData, userIds: string[]) {
 const UpdateGroup = GroupFormSchema.omit({
   id: true,
   date: true,
-  status: true
+  status: true,
 });
 
 export async function updateGroup(
@@ -174,7 +148,7 @@ export async function updateGroup(
   userIds: string[]
 ) {
   const { name } = UpdateGroup.parse({
-    name: formData.get('name')
+    name: formData.get('name'),
   });
   // fetch current users
   const currentUsersResult = await sql`
@@ -219,7 +193,7 @@ export async function updateGroup(
 
 export async function authenticate(
   prevState: string | undefined,
-  formData: FormData
+  formData: FormData,
 ) {
   try {
     const user = await signIn('credentials', formData);
@@ -235,3 +209,5 @@ export async function authenticate(
     throw error;
   }
 }
+
+

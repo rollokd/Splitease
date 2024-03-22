@@ -200,8 +200,6 @@ export async function fetchOwnDashboardData(): Promise<Own | undefined> {
 
     const MyPortionofBills =
       await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id='3106eb8a-3288-4b62-a077-3b24bd640d9a' AND paid=false`;
-    console.log(paidbyMe.rows[0].total_amount);
-    console.log(MyPortionofBills.rows[0].total_user_amount);
 
     return {
       paidbyMe: paidbyMe.rows[0].total_amount,

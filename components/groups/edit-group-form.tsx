@@ -10,10 +10,14 @@ import ActionButtons from './EditActionButtons';
 type FormProps = {
   users: User[];
   groupUsers: User[];
+  userID: string;
 };
 
-export default function EditGroupForm({ users, groupUsers }: FormProps) {
-  const currUser = '410544b2-4001-4271-9855-fec4b6a6442a';
+export default function EditGroupForm({
+  users,
+  groupUsers,
+  userID,
+}: FormProps) {
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -36,7 +40,7 @@ export default function EditGroupForm({ users, groupUsers }: FormProps) {
     //Filter users but exclude current user
     const filteredResults = users.filter(
       (user) =>
-        user.id !== currUser &&
+        user.id !== userID &&
         (user.firstname.toLowerCase().includes(query.toLowerCase()) ||
           user.lastname.toLowerCase().includes(query.toLowerCase()))
     );
@@ -74,6 +78,7 @@ export default function EditGroupForm({ users, groupUsers }: FormProps) {
       <div className='flex flex-col h-screen justify-center'>
         <GroupNameInput />
         <EditUserSelector
+          userID={userID}
           searchQuery={searchQuery}
           handleSearch={handleSearch}
           searchResults={searchResults}

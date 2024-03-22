@@ -12,30 +12,16 @@ import { PowerIcon } from '@heroicons/react/24/outline';
 import { createGroup, getUserId } from '@/lib/actions';
 
 
-
 export default async function Home() {
   // const session = await auth();
   // const userId = await getUserIdFromSession(session?.user?.email ?? '');
   // console.log('User ID: ', userId);
-  let userID : string = '';
 
-  // const userId = await getUserId();
-  // console.log('User ID on dashboard: ', userId);
-
-  // const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
-
-  try {
-    userID = await getUserId() as unknown as string;
-    console.log('User ID from dashboard: ', userID);
-  } catch (error) {
-    console.log(error);
-  }
-
-  //or redirect to error! 
-  // error boundary??? step 3
+  const userID = await getUserId();
+   console.log('User ID from dashboard: ', userID);
 
   //const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
-  // const groupID: string = "5909a47f-9577-4e96-ad8d-7af0d52c3267";
+ // const groupID: string = "5909a47f-9577-4e96-ad8d-7af0d52c3267";
   let userGroups = await getUserGroups(userID);
   if (userGroups === undefined) userGroups = [];
   const balances = await Promise.all(
@@ -87,15 +73,8 @@ export default async function Home() {
           </Link>
         ))}
       </div>
-      <div className='flex justify-center m-4'>
+      <div style={{ width: '80%', height: '100%' }}>
         <GroupChart data={balances}></GroupChart>
-      </div>
-      <div className='flex justify-center m-4 p-10'>
-        <Link href={`/home/settle_up_dashboard`}>
-          <Button className='bg-green-500'>
-            Settle Up
-          </Button>
-        </Link>
       </div>
 
     </>
