@@ -10,29 +10,19 @@ import { Button } from '@/components/ui/button';
 import { signOut, auth } from '@/auth';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import { createGroup, getUserId } from '@/lib/actions';
-
+import { moneyFormat } from "@/lib/utils";
 
 
 export default async function Home() {
-  // const session = await auth();
-  // const userId = await getUserIdFromSession(session?.user?.email ?? '');
-  // console.log('User ID: ', userId);
+
   let userID : string = '';
-
-  // const userId = await getUserId();
-  // console.log('User ID on dashboard: ', userId);
-
   // const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
-
   try {
     userID = await getUserId() as unknown as string;
-    console.log('User ID from dashboard: ', userID);
+    // console.log('User ID from dashboard: ', userID);
   } catch (error) {
     console.log(error);
   }
-
-  //or redirect to error! 
-  // error boundary??? step 3
 
   //const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
   // const groupID: string = "5909a47f-9577-4e96-ad8d-7af0d52c3267";
@@ -42,9 +32,10 @@ export default async function Home() {
     userGroups.map(async (group) => {
       let balance = await fetchUserBalance(userID, group.group_id);
       if (balance === undefined) balance = 0;
-      return { name: group.name, total: balance };
+      return { name: group.name, total: moneyFormat(balance) };
     })
   );
+  console.log('Balances results: ', balances);
   const groups = await Promise.all(
     userGroups.map(async (group) => {
       // console.log('Group ID: ', group.group_id);

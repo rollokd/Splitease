@@ -95,7 +95,7 @@ export type GroupMember = {
 
 export type DataBarChart = {
   name: string,
-  total: number
+  total: string
 }
 
 type SqlField = {

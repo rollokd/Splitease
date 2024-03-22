@@ -9,6 +9,7 @@ import {
   Cell 
 } from "recharts"
 import { DataBarChart } from "@/lib/definititions"
+
 interface GroupChartProps {
   data: DataBarChart[];
 }
@@ -44,7 +45,7 @@ export const GroupChart: React.FC<GroupChartProps> = ({data}) => {
         >
           {
             data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.total < 0 ? "#EF4444" : "#10B981"} />
+              <Cell key={`cell-${index}`} fill={Number(entry.total) < 0 ? "#EF4444" : "#10B981"} />
             ))
           }
         </Bar>

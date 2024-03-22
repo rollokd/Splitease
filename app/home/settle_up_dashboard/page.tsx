@@ -2,12 +2,20 @@ import { DashboardCard } from "@/components/settleDashboardCard";
 import { getSpecificDebt, getDebts } from "@/lib/data";
 import GroupCrumbs from "@/components/group-view/breadcrumbs";
 import { Button } from "@/components/ui/button";
+import { getUserId } from "@/lib/actions";
+import { moneyFormat } from "@/lib/utils";
 
 type Props = { params: { id: string } };
 
 export default async function SettleUpDashBoard({ params }: Props) {
-  const userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6';
-  // const userID: string = '410544b2-4001-4271-9855-fec4b6a6442a';
+  // const userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6';
+  let userID : string = '';
+  try {
+    userID = await getUserId() as unknown as string;
+    console.log('User ID from dashboard settle up: ', userID);
+  } catch (error) {
+    console.log(error);
+  }
 
   let debts = await getDebts(userID);
   if (debts === undefined) debts = [];
@@ -17,7 +25,7 @@ export default async function SettleUpDashBoard({ params }: Props) {
     //Get what that person owes me
     let balance = await getSpecificDebt(userID, debt.paid_by);
     if (balance === undefined) balance = 0;
-    return { name: debt.paid_by, total: (balance - Number(debt.sum) ) };
+    return { name: debt.paid_by, total: moneyFormat(balance - Number(debt.sum)) };
   }));
   // console.log('Get balances result: ', balances);
 

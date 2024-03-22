@@ -11,7 +11,7 @@ import { getName } from "@/lib/data";
 
 type DashboardCard = {
   user_id: string,
-  debt: number,
+  debt: string,
 }
 export const DashboardCard: React.FC<DashboardCard> = async ({ user_id, debt }) => {
 
