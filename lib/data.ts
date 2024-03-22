@@ -2,23 +2,25 @@ import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
 import { UserWJunction, Group, UserTransaction, User, Own, GroupMember, Name, Debts, GroupUsersBasic } from './definititions';
 
-export async function fetchUsersTransactionsOfGroups(
-  groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267'
-) {
-  noStore();
-  try {
-    // The query is already parameter-free, but ensure to escape or parameterize any dynamic values
-    const data = await sql`
-    SELECT users.id, firstname, lastname, transactions.paid_by, transactions.amount, transactions.status AS status, transactions.group_id
-    FROM users
-    JOIN transactions ON users.id = transactions.paid_by
-    WHERE transactions.group_id = ${groupID} AND status = 'false';
-    `;
-    return data.rows;
-  } catch (error) {
-    console.log('Database Error:', error);
-  }
-}
+
+
+// export async function fetchUsersTransactionsOfGroups(
+//   groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267'
+// ) {
+//   noStore();
+//   try {
+//     // The query is already parameter-free, but ensure to escape or parameterize any dynamic values
+//     const data = await sql`
+//     SELECT users.id, firstname, lastname, transactions.paid_by, transactions.amount, transactions.status AS status, transactions.group_id
+//     FROM users
+//     JOIN transactions ON users.id = transactions.paid_by
+//     WHERE transactions.group_id = ${groupID} AND status = 'false';
+//     `;
+//     return data.rows;
+//   } catch (error) {
+//     console.log('Database Error:', error);
+//   }
+// }
 
 // get group from group id
 export async function getGroupById(group_id: string) {
@@ -79,8 +81,8 @@ export async function getTransactionsByGroupAndId(
 }
 
 export async function fetchUserBalance(
-  userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6',
-  groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267'
+  userID: string ,
+  groupID: string 
 ) {
   noStore();
   try {
@@ -114,8 +116,8 @@ export async function fetchUserBalance(
   }
 }
 export async function fetchUserAndBalance(
-  userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6',
-  groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267'
+  userID: string ,
+  groupID: string 
 ) {
   noStore();
   try {
@@ -157,8 +159,8 @@ export async function getUsersbyGroup(group_id: string) {
 }
 
 export async function getNameGroup(
-  userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6',
-  groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267'
+  userID: string,
+  groupID: string 
 ) {
   noStore();
   try {
@@ -176,7 +178,7 @@ export async function getNameGroup(
   }
 }
 
-export async function getNamesOfUsersInAGroup(group_id: string = '26c034f0-9105-4d26-80c9-e49a89e1a8dd'): Promise<GroupUsersBasic[]> {
+export async function getNamesOfUsersInAGroup(group_id: string ): Promise<GroupUsersBasic[]> {
   noStore()
   try {
     const data = await sql<GroupUsersBasic>`
@@ -192,20 +194,28 @@ export async function getNamesOfUsersInAGroup(group_id: string = '26c034f0-9105-
   }
 }
 
-export async function fetchOwnDashboardData(): Promise<Own | undefined> {
+export async function fetchOwnDashboardData(userID: string): Promise<Own | undefined> {
   try {
     const paidbyMe = await sql`SELECT SUM(amount) AS total_amount
     FROM transactions
-    WHERE paid_by = '3106eb8a-3288-4b62-a077-3b24bd640d9a';`;
+    WHERE paid_by = ${userID};`;
+
+    const userPaid = await sql`
+    SELECT SUM(user_amount) AS total_amount
+    FROM transactions
+    LEFT JOIN splits
+    ON transactions.id = splits.trans_id
+    WHERE paid_by = ${userID} AND user_id = ${userID};`;
 
     const MyPortionofBills =
-      await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id='3106eb8a-3288-4b62-a077-3b24bd640d9a' AND paid=false`;
+      await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id=${userID} AND paid=false`;
 
     return {
-      paidbyMe: paidbyMe.rows[0].total_amount,
+      paidbyMe: paidbyMe.rows[0].total_amount - Number(userPaid.rows[0].total_amount),
       myPortionOfBills: MyPortionofBills.rows[0].total_user_amount,
       total:
         paidbyMe.rows[0].total_amount -
+        Number(userPaid.rows[0].total_amount) -
         MyPortionofBills.rows[0].total_user_amount,
     };
   } catch (error) {
@@ -241,7 +251,7 @@ export async function fetchGroupUsers(group_id: string) {
 }
 
 export async function getUserGroups(
-  userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6'
+  userID: string 
 ) {
   noStore();
   try {
@@ -259,7 +269,7 @@ export async function getUserGroups(
   }
 }
 
-export async function getDebts(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6') {
+export async function getDebts(userID: string ) {
   noStore();
   try {
     const { rows } = await sql<Debts>`
@@ -274,7 +284,7 @@ export async function getDebts(userID: string = '9ec739f9-d23b-4410-8f1a-c29e043
     console.log('Database Error:', error);
   }
 }
-export async function getSpecificDebt(userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6', paid_by: string = '410544b2-4001-4271-9855-fec4b6a6442a') {
+export async function getSpecificDebt(userID: string , paid_by: string ) {
   noStore();
   try {
     const { rows } = await sql<Debts>`

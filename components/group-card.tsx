@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { fetchUserAndBalance, getUsersbyGroup, getNameGroup } from "@/lib/data";
+import { fetchUserBalance, getUsersbyGroup, getNameGroup } from "@/lib/data";
 import { UserWJunction, Junction } from "@/lib/definititions";
 import { moneyFormat } from "@/lib/utils";
 
@@ -17,7 +17,7 @@ const getUsers = (userByGroup: UserWJunction[]) => {
   return firstnames;
 };
 export const GroupCard: React.FC<Junction> = async ({ user_id, group_id }) => {
-  const groupTotals = await fetchUserAndBalance(user_id, group_id);
+  const groupTotals = await fetchUserBalance(user_id, group_id);
   const userByGroup = await getUsersbyGroup(group_id);
   const listOfUsers = getUsers(userByGroup || []);
   const groupName = await getNameGroup(user_id, group_id);
@@ -27,7 +27,7 @@ export const GroupCard: React.FC<Junction> = async ({ user_id, group_id }) => {
       <CardHeader>
         <div className="flex justify-between">
           <CardTitle>{groupName?.name}</CardTitle>
-          <CardDescription>$ {moneyFormat(groupTotals.result)}</CardDescription>
+          <CardDescription>$ {moneyFormat(groupTotals)}</CardDescription>
         </div>
       </CardHeader>
       <CardContent>
