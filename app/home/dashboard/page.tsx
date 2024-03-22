@@ -12,10 +12,11 @@ import { Button } from "@/components/ui/button";
 import { signOut, auth } from "@/auth";
 import { PowerIcon } from "@heroicons/react/24/outline";
 import { createGroup, getUserId } from "@/lib/actions";
+import { moneyFormat } from "@/lib/utils";
 
 export default async function Home() {
   let userID: string = '';
-
+  // const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
   try {
     userID = await getUserId() as string;
     if (!userID) throw new Error("User ID not found");
@@ -32,9 +33,10 @@ export default async function Home() {
     userGroups.map(async (group) => {
       let balance = await fetchUserBalance(userID, group.group_id);
       if (balance === undefined) balance = 0;
-      return { name: group.name, total: balance };
+      return { name: group.name, total: moneyFormat(balance) };
     })
   );
+  console.log('Balances results: ', balances);
   const groups = await Promise.all(
     userGroups.map(async (group) => {
       // console.log('Group ID: ', group.group_id);
