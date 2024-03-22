@@ -2,8 +2,8 @@ import CardTotals from './cardTotals';
 import { fetchOwnDashboardData } from '../lib/data';
 import { moneyFormat } from '@/lib/utils';
 
-export default async function Totals() {
-  const own = await fetchOwnDashboardData();
+export default async function Totals({ userId }: { userId: string }) {
+  const own = await fetchOwnDashboardData(userId);
 
   let paidbyMeMoney = own?.paidbyMe;
   let myPortionOfBillsMoney = own?.myPortionOfBills;

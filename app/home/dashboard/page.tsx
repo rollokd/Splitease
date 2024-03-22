@@ -1,31 +1,31 @@
+import { GroupCard } from "@/components/group-card";
+import { GroupChart } from "../../../components/bar-chart";
+import {
+  getUserGroups,
+  fetchUserBalance,
+  getUserIdFromSession,
+} from "../../../lib/data";
+import Totals from "../../../components/Totals";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
-
-import { GroupCard } from '@/components/group-card';
-import { GroupChart } from '../../../components/bar-chart';
-import { getUserGroups, fetchUserBalance, getUserIdFromSession } from '../../../lib/data';
-import Totals from '../../../components/Totals';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-
-import { signOut, auth } from '@/auth';
-import { PowerIcon } from '@heroicons/react/24/outline';
-import { createGroup, getUserId } from '@/lib/actions';
-import { moneyFormat } from "@/lib/utils";
-
+import { signOut, auth } from "@/auth";
+import { PowerIcon } from "@heroicons/react/24/outline";
+import { createGroup, getUserId } from "@/lib/actions";
 
 export default async function Home() {
-
-  let userID : string = '';
+  let userID: string = '';
   // const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
   try {
-    userID = await getUserId() as unknown as string;
-    // console.log('User ID from dashboard: ', userID);
+    userID = await getUserId() as string;
+    if (!userID) throw new Error("User ID not found");
   } catch (error) {
     console.log(error);
   }
 
-  //const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
-  // const groupID: string = "5909a47f-9577-4e96-ad8d-7af0d52c3267";
+  //or redirect to error!
+  // error boundary??? step 3
+
   let userGroups = await getUserGroups(userID);
   if (userGroups === undefined) userGroups = [];
   const balances = await Promise.all(
@@ -46,10 +46,11 @@ export default async function Home() {
   //const bears = useStore((state) => state.bears);
   return (
     <>
+    <div className="p-4">
       {/* <h1>{bears} around here...</h1> */}
       <form
         action={async () => {
-          'use server';
+          "use server";
           await signOut();
         }}
       >
@@ -59,8 +60,7 @@ export default async function Home() {
         </button>
       </form>
 
-
-      <Totals />
+      <Totals userId={userID} />
 
       <div className="m-4 flex justify-end">
         <Button variant="outline">
@@ -68,15 +68,16 @@ export default async function Home() {
         </Button>
       </div>
       <div>
-        {groups.map((group) => (
-          <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
-            <GroupCard
-              key={group.group_id}
-              group_id={group.group_id}
-              user_id={userID}
-            />
-          </Link>
-        ))}
+        {userID &&
+          groups.map((group) => (
+            <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
+              <GroupCard
+                key={group.group_id}
+                group_id={group.group_id}
+                user_id={userID}
+              />
+            </Link>
+          ))}
       </div>
       <div className='flex justify-center m-4'>
         <GroupChart data={balances}></GroupChart>
@@ -88,7 +89,7 @@ export default async function Home() {
           </Button>
         </Link>
       </div>
-
+      </div>
     </>
   );
 }

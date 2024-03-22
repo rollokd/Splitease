@@ -4,11 +4,8 @@ import GroupCrumbs from "@/components/group-view/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { getUserId } from "@/lib/actions";
 import { moneyFormat } from "@/lib/utils";
-
 type Props = { params: { id: string } };
-
 export default async function SettleUpDashBoard({ params }: Props) {
-  // const userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6';
   let userID : string = '';
   try {
     userID = await getUserId() as unknown as string;
@@ -16,11 +13,9 @@ export default async function SettleUpDashBoard({ params }: Props) {
   } catch (error) {
     console.log(error);
   }
-
   let debts = await getDebts(userID);
   if (debts === undefined) debts = [];
   // console.log('Get debts result: ', debts);
-
   const balances = await Promise.all(debts.map(async (debt) => {
     //Get what that person owes me
     let balance = await getSpecificDebt(userID, debt.paid_by);
@@ -28,7 +23,6 @@ export default async function SettleUpDashBoard({ params }: Props) {
     return { name: debt.paid_by, total: moneyFormat(balance - Number(debt.sum)) };
   }));
   // console.log('Get balances result: ', balances);
-
   return (
     <>
     <div className="p-5">

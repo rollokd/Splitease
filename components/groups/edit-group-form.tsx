@@ -74,8 +74,11 @@ export default function EditGroupForm({
     await updateGroup(new FormData(event.currentTarget), groupId, userIds);
   };
   return (
-    <form onSubmit={handleSubmit} className='px-6'>
-      <div className='flex flex-col h-screen justify-center'>
+    <form
+      onSubmit={handleSubmit}
+      className='flex flex-col p-3 gap-3 h-full last:mt-auto'
+    >
+      <div className='flex-grow'>
         <GroupNameInput />
         <EditUserSelector
           userID={userID}
@@ -86,6 +89,8 @@ export default function EditGroupForm({
           selectedUsers={selectedUsers}
           handleRemoveUser={handleRemoveUser}
         />
+      </div>
+      <div className='mt-auto'>
         <ActionButtons />
       </div>
     </form>
