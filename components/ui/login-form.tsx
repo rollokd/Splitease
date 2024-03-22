@@ -1,22 +1,20 @@
-'use client';
+"use client";
 import {
   AtSymbolIcon,
   KeyIcon,
   ExclamationCircleIcon,
-} from '@heroicons/react/24/outline';
-import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { Button } from './button';
-import { useFormState, useFormStatus } from 'react-dom';
-import { authenticate } from '../../lib/actions';
+} from "@heroicons/react/24/outline";
+import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { Button } from "./button";
+import { useFormState, useFormStatus } from "react-dom";
+import { authenticate } from "../../lib/actions";
 
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
   return (
-    <form action={dispatch} className="space-y-3">
+    <form action={dispatch} className="w-80 space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1>
-          Please log in to continue.
-        </h1>
+        <h1>Please log in to continue.</h1>
         <div className="w-full">
           <div>
             <label
@@ -80,7 +78,7 @@ function LoginButton() {
   const { pending } = useFormStatus();
   return (
     <Button className="mt-4 w-full" aria-disabled={pending}>
-    Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-  </Button>
+      Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+    </Button>
   );
 }
