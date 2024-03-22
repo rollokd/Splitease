@@ -60,7 +60,10 @@ export default function CreateGroupForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className='flex flex-col min-h-screen'>
+    <form
+      onSubmit={handleSubmit}
+      className='flex flex-col p-3 gap-3 h-full last:mt-auto'
+    >
       <div className='flex-grow'>
         <GroupNameInput />
         <CreateUserSelector
