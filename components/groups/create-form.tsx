@@ -10,10 +10,8 @@ type CreateGroupFormProps = {
   users: User[];
 };
 export default function CreateGroupForm({ users }: CreateGroupFormProps) {
-  const currUser = 'abde2287-4cfa-4cc7-b810-dd119df1d039';
-
-  const userId = getUserId();
-  console.log('User ID: ', userId);
+  const userID = getUserId();
+  console.log('User ID from dashboard: ', userID);
 
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);

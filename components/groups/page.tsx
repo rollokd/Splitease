@@ -16,17 +16,9 @@ export default async function Home() {
   // const session = await auth();
   // const userId = await getUserIdFromSession(session?.user?.email ?? '');
   // console.log('User ID: ', userId);
-  let userID : string = '';
 
-  try {
-    const userID = await getUserId();
-    console.log('User ID from dashboard: ', userID);
-  } catch (error) {
-    //go to erro page
-    console.log('error', error)
-  } 
-  //or redirect to error! 
-  // error boundary??? step 3
+  const userID = await getUserId();
+   console.log('User ID from dashboard: ', userID);
 
   //const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
  // const groupID: string = "5909a47f-9577-4e96-ad8d-7af0d52c3267";
@@ -70,7 +62,6 @@ export default async function Home() {
           <Link href="/home/create">Create Group +</Link>
         </Button>
       </div>
-      const userID = await getUserId();
       <div>
         {groups.map((group) => (
           <Link key={group.group_id} href={`/home/group/${group.group_id}`}>

@@ -15,13 +15,11 @@ export async function getUserId()  {
     const session = await auth();
     const userId = await getUserIdFromSession(session?.user?.email ?? '');
     console.log('User ID from actions: ', userId)
-    
-    
     return userId;
 
 
   } catch (error) {
-  console.log('error', error)
+  
   }
 
 }
