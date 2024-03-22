@@ -82,8 +82,15 @@ export default async function Home() {
           </Link>
         ))}
       </div>
-      <div style={{ width: '80%', height: '100%' }}>
+      <div className='flex justify-center m-4'>
         <GroupChart data={balances}></GroupChart>
+      </div>
+      <div className='flex justify-center m-4 p-10'>
+        <Link href={`/home/settle_up_dashboard`}>
+          <Button className='bg-green-500'>
+            Settle Up
+          </Button>
+        </Link>
       </div>
 
     </>
