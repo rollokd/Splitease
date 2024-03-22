@@ -21,7 +21,7 @@ export default async function Home() {
 
   try {
     userID = await getUserId() as string;
-    console.log('User ID from dashboard: ', userID);
+    //console.log('User ID from dashboard: ', userID);
   } catch (error) {
     console.log(error);
   }
