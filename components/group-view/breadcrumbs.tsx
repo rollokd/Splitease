@@ -6,22 +6,45 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { capitalizeFirstLetter } from "@/lib/utils";
 
 import React from "react";
 
-type Props = { name: string };
+type Props = {
+  name: string;
+  group_id?: string;
+  type?: "create" | "edit" | "transaction" | null;
+};
 
-const GroupCrumbs = ({ name }: Props) => {
+const GroupCrumbs = ({ name, group_id, type }: Props) => {
   return (
     <Breadcrumb>
-      <BreadcrumbList>
+      <BreadcrumbList className="text-lg">
         <BreadcrumbItem>
-          <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
+          <BreadcrumbLink href="/home/dashboard">Dashboard</BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbPage>{name}</BreadcrumbPage>
+          {type ? (
+            <BreadcrumbLink href={`/home/group/${group_id}`}>
+              {name}
+            </BreadcrumbLink>
+          ) : (
+            <BreadcrumbPage>{name}</BreadcrumbPage>
+          )}
         </BreadcrumbItem>
+        {type && (
+          <>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>
+                {type === "transaction"
+                  ? "Add Transaction"
+                  : `${capitalizeFirstLetter(type)} Group`}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </>
+        )}
       </BreadcrumbList>
     </Breadcrumb>
   );
