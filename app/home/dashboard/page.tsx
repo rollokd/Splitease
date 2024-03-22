@@ -33,7 +33,11 @@ export default async function Home() {
     userGroups.map(async (group) => {
       let balance = await fetchUserBalance(userID, group.group_id);
       if (balance === undefined) balance = 0;
-      return { name: group.name, total: moneyFormat(balance) };
+      let name = group.name;
+      if (name.length >= 5) {
+        name = name.slice(0, 5);
+      }
+      return { name: `${name}...`, total: moneyFormat(balance) };
     })
   );
   console.log('Balances results: ', balances);

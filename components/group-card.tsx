@@ -23,14 +23,14 @@ export const GroupCard: React.FC<Junction> = async ({ user_id, group_id }) => {
   const groupName = await getNameGroup(user_id, group_id);
 
   return (
-    <Card className="mb-4">
-      <CardHeader>
+    <Card className="mb-2">
+      <CardHeader style={{ paddingBottom: '8px', paddingTop: '8px' }}>
         <div className="flex justify-between">
-          <CardTitle>{groupName?.name}</CardTitle>
-          <CardDescription>$ {moneyFormat(groupTotals)}</CardDescription>
+          <CardTitle style={{ margin: '1px' }}>{groupName?.name}</CardTitle>
+          <CardDescription style={{ margin: '1px' }}>$ {moneyFormat(groupTotals)}</CardDescription>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent style={{ paddingBottom: '8px' }}>
         {listOfUsers.length <= 4
           ? listOfUsers.join(", ")
           : `${listOfUsers.slice(0, 4).join(", ")}...`}
