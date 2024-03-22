@@ -23,7 +23,7 @@ export const GroupCard: React.FC<Junction> = async ({ user_id, group_id }) => {
   const groupName = await getNameGroup(user_id, group_id);
 
   return (
-    <Card className="mb-2">
+    <Card className="m-2">
       <CardHeader style={{ paddingBottom: '8px', paddingTop: '8px' }}>
         <div className="flex justify-between">
           <CardTitle style={{ margin: '1px' }}>{groupName?.name}</CardTitle>

@@ -13,6 +13,7 @@ import { signOut, auth } from "@/auth";
 import { PowerIcon } from "@heroicons/react/24/outline";
 import { createGroup, getUserId } from "@/lib/actions";
 import { moneyFormat } from "@/lib/utils";
+import { YAxis } from "recharts";
 
 export default async function Home() {
   let userID: string = '';
@@ -72,7 +73,7 @@ export default async function Home() {
           <Link href="/home/create">Create Group +</Link>
         </Button>
       </div>
-      <div>
+      <div style={{ height: "400px", overflowY: "auto", border: "1px solid grey", borderRadius: "5px" }}>
         {userID &&
           groups.map((group) => (
             <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
