@@ -44,20 +44,15 @@ export function TransactionForm({
   const [tableData, setTableData] = useState<TableDataTypeExtended[]>([]);
   const { pending } = useFormStatus()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const currentUser = 'abde2287-4cfa-4cc7-b810-dd119df1d039'
-  const currentGroup = useParams()
-  // const { data: session } = useSession()
-  // if (session) {
 
-  //   console.log("sesSSSsion ?", session.user?.id)
-  // }
-  console.log("userID", userID)
+  const currentGroup = useParams()
+
   const form: UseFormReturn<FormValues> = useForm({
     resolver: zodResolver(formSchemaTransactions),
   });
   const { reset } = form;
 
-  // console.log("auth id ??? ===> ", auth)
+
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     setIsSubmitting(true);
     const form_data = new FormData();
@@ -65,7 +60,7 @@ export function TransactionForm({
     for (key in values) {
       form_data.append(key, String(values[key]));
     }
-    form_data.append('paid_by', String(currentUser))
+    form_data.append('paid_by', String(userID))
     form_data.append('group_id', String(currentGroup.id))
 
     const createTransactionAndData = createTransaction.bind(null, tableData)
@@ -260,9 +255,9 @@ export function TransactionForm({
                         <span className="relative px-1 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"></span>
                       </button>
                     </td>
-                    {/* <td className="ft-45">{ele.id}</td> */}
+
                     <td className="flex flex-row px-2 py-2">
-                      {/* <button type="button" onClick={() => increment(index)} className="rounded-full">+</button> */}
+
                       <button
                         type="button"
                         onClick={() => increment(index)}
@@ -284,10 +279,6 @@ export function TransactionForm({
                         </span>
                       </button>
                     </td>
-                    {/* <td className="mx-1 flex-2 pl-7">
-                      <p>x</p>
-                    </td> */}
-
                   </tr>
                 );
               })}

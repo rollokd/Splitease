@@ -14,7 +14,8 @@ import { getUserIdFromSession } from './data';
 
 import { signIn, auth } from '@/auth';
 import { AuthError } from 'next-auth';
-import { getSession } from 'next-auth/react';
+
+
 export async function getUserId() {
   try {
     const session = await auth();
@@ -56,12 +57,10 @@ export async function createTransaction(
   tableData: TableDataType[],
   formData: FormData
 ) {
-  const session = await getSession()
-  console.log("=>>>>>>>>> ", session?.user?.id)
+
   const { name, amount, date, paid_by, group_id } = CreateTransaction.parse({
     name: formData.get('name'),
     amount: formData.get('amount'),
-    // status: formData.get('status')
     date: formData.get('date'),
     paid_by: formData.get('paid_by'),
     group_id: formData.get('group_id')
@@ -70,8 +69,7 @@ export async function createTransaction(
   const amountInPennies = amount * 100;
   const dateConverted = date.toISOString().split('T')[0];
   const statusBla = false;
-  // const paid_by = '410544b2-4001-4271-9855-fec4b6a6442a';
-  // const groupBla_id = '26c034f0-9105-4d26-80c9-e49a89e1a8dd';
+
   const transInsert =
     await sql`INSERT INTO transactions (name, date, amount, status, paid_by, group_id)
   VALUES (${name}, ${dateConverted}, ${amountInPennies}, ${statusBla}, ${paid_by}, ${group_id})
@@ -102,8 +100,11 @@ export async function createTransaction(
         };
       }
       createSplit(bundledUpTableData, bundledUpTransactionValues);
+
     }
   });
+  revalidatePath(`/home/group/${group_id}`)
+  redirect(`/home/group/${group_id}`)
 }
 
 export async function createSplit(
@@ -115,12 +116,6 @@ export async function createSplit(
   await sql<SplitTable>`INSERT INTO splits (amount, user_amount, paid, user_id, trans_id, group_id)
   VALUES (${amount}, ${user_amount}, ${paid}, ${user_id}, ${trans_id}, ${group_id})
   `;
-  console.log('6 values to add to the split table', {
-    transInsert,
-    userValues
-  });
-  // revalidatePath('/viewGroup')
-  // redirect('/viewGroup')
 }
 
 const GroupFormSchema = z.object({
