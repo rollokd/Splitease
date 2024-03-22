@@ -75,6 +75,7 @@ export default async function Home() {
       <div>
         {userID &&
           groups.map((group) => (
+           
             <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
               <GroupCard
                 key={group.group_id}
@@ -82,6 +83,8 @@ export default async function Home() {
                 user_id={userID}
               />
             </Link>
+           
+            
           ))}
       </div>
       <div className='flex justify-center pt-5'>
