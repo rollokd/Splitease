@@ -1,28 +1,29 @@
+import { GroupCard } from "@/components/group-card";
+import { GroupChart } from "../../../components/bar-chart";
+import {
+  getUserGroups,
+  fetchUserBalance,
+  getUserIdFromSession,
+} from "../../../lib/data";
+import Totals from "../../../components/Totals";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
-
-import { GroupCard } from '@/components/group-card';
-import { GroupChart } from '../../../components/bar-chart';
-import { getUserGroups, fetchUserBalance, getUserIdFromSession } from '../../../lib/data';
-import Totals from '../../../components/Totals';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-
-import { signOut, auth } from '@/auth';
-import { PowerIcon } from '@heroicons/react/24/outline';
-import { createGroup, getUserId } from '@/lib/actions';
-
-
+import { signOut, auth } from "@/auth";
+import { PowerIcon } from "@heroicons/react/24/outline";
+import { createGroup, getUserId } from "@/lib/actions";
 
 export default async function Home() {
-  let userID : string = '';
+  let userID: string = '';
 
   try {
     userID = await getUserId() as string;
+    if (!userID) throw new Error("User ID not found");
   } catch (error) {
     console.log(error);
   }
 
-  //or redirect to error! 
+  //or redirect to error!
   // error boundary??? step 3
 
   let userGroups = await getUserGroups(userID);
@@ -47,7 +48,7 @@ export default async function Home() {
       {/* <h1>{bears} around here...</h1> */}
       <form
         action={async () => {
-          'use server';
+          "use server";
           await signOut();
         }}
       >
@@ -57,7 +58,6 @@ export default async function Home() {
         </button>
       </form>
 
-
       <Totals userId={userID} />
 
       <div className="m-4 flex justify-end">
@@ -66,15 +66,16 @@ export default async function Home() {
         </Button>
       </div>
       <div>
-        {groups.map((group) => (
-          <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
-            <GroupCard
-              key={group.group_id}
-              group_id={group.group_id}
-              user_id={userID}
-            />
-          </Link>
-        ))}
+        {userID &&
+          groups.map((group) => (
+            <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
+              <GroupCard
+                key={group.group_id}
+                group_id={group.group_id}
+                user_id={userID}
+              />
+            </Link>
+          ))}
       </div>
       <div className='flex justify-center m-4'>
         <GroupChart data={balances}></GroupChart>
