@@ -13,7 +13,7 @@ import { AuthError } from 'next-auth';
 export async function getUserId() {
   const session = await auth();
   const userId = await getUserIdFromSession(session?.user?.email ?? '');
-  console.log('User ID: ', userId)
+  // console.log('User ID: ', userId)
 }
 
 export async function deleteTransaction(transactionId: string) {

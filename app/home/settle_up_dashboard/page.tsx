@@ -1,6 +1,7 @@
 import { DashboardCard } from "@/components/settleDashboardCard";
 import { getSpecificDebt, getDebts } from "@/lib/data";
 import GroupCrumbs from "@/components/group-view/breadcrumbs";
+import { Button } from "@/components/ui/button";
 
 type Props = { params: { id: string } };
 
@@ -29,9 +30,16 @@ export default async function SettleUpDashBoard({ params }: Props) {
       <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
         Balances
       </h4>
-      {balances.map((balance, index) => (
-        <DashboardCard key={index} user_id = {balance.name} debt={balance.total} />
-      ))}
+      <div>
+        {balances.map((balance, index) => (
+          <DashboardCard key={index} user_id = {balance.name} debt={balance.total} />
+        ))}
+      </div>
+      <div className="p-5">
+        <Button className='bg-green-500'>
+          Settle Up
+        </Button>
+      </div>
     </div>
     </>
   );

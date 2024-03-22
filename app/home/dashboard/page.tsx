@@ -17,11 +17,11 @@ export default async function Home() {
   // const userId = await getUserIdFromSession(session?.user?.email ?? '');
   // console.log('User ID: ', userId);
 
-  const userId = getUserId();
-  console.log('User ID: ', userId);
+  const userId = await getUserId();
+  console.log('User ID on dashboard: ', userId);
 
   const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
-  const groupID: string = "5909a47f-9577-4e96-ad8d-7af0d52c3267";
+
   let userGroups = await getUserGroups(userID);
   if (userGroups === undefined) userGroups = [];
   const balances = await Promise.all(
@@ -73,10 +73,16 @@ export default async function Home() {
           </Link>
         ))}
       </div>
-      <div style={{ width: '80%', height: '100%' }}>
+      <div className='flex justify-center m-4'>
         <GroupChart data={balances}></GroupChart>
       </div>
-      
+      <div className='flex justify-center m-4 p-10'>
+        <Link href={`/home/settle_up_dashboard`}>
+          <Button className='bg-green-500'>
+            Settle Up
+          </Button>
+        </Link>
+      </div>
     </>
   );
 }
