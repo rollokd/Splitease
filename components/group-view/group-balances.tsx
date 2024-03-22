@@ -6,7 +6,6 @@ import React from "react";
 type Props = { group_id: string };
 
 async function GroupBalances({ group_id }: Props) {
-  const me = "410544b2-4001-4271-9855-fec4b6a6442a";
   const users = await getUsersbyGroup(group_id);
   const balances = await Promise.all(
     users.map((userId) => fetchUserBalance(userId.user_id, group_id))

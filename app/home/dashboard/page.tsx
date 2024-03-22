@@ -14,14 +14,10 @@ import { createGroup, getUserId } from '@/lib/actions';
 
 
 export default async function Home() {
-  // const session = await auth();
-  // const userId = await getUserIdFromSession(session?.user?.email ?? '');
-  // console.log('User ID: ', userId);
   let userID : string = '';
 
   try {
     userID = await getUserId() as string;
-    //console.log('User ID from dashboard: ', userID);
   } catch (error) {
     console.log(error);
   }
@@ -29,8 +25,6 @@ export default async function Home() {
   //or redirect to error! 
   // error boundary??? step 3
 
-  //const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
-  // const groupID: string = "5909a47f-9577-4e96-ad8d-7af0d52c3267";
   let userGroups = await getUserGroups(userID);
   if (userGroups === undefined) userGroups = [];
   const balances = await Promise.all(
@@ -64,7 +58,7 @@ export default async function Home() {
       </form>
 
 
-      <Totals />
+      <Totals userId={userID} />
 
       <div className="m-4 flex justify-end">
         <Button variant="outline">

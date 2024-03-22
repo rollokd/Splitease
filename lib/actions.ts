@@ -71,7 +71,6 @@ export async function createTransaction(
   const amountInPennies = amount * 100;
   const dateConverted = date.toISOString().split('T')[0];
   const statusBla = false;
-  // const paid_by = '410544b2-4001-4271-9855-fec4b6a6442a';
   const groupBla_id = '26c034f0-9105-4d26-80c9-e49a89e1a8dd';
 
   const transInsert =

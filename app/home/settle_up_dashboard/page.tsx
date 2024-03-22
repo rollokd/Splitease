@@ -6,7 +6,6 @@ import { getUserId } from "@/lib/actions";
 import { moneyFormat } from "@/lib/utils";
 type Props = { params: { id: string } };
 export default async function SettleUpDashBoard({ params }: Props) {
-  // const userID: string = '9ec739f9-d23b-4410-8f1a-c29e0431e0a6';
   let userID : string = '';
   try {
     userID = await getUserId() as unknown as string;
