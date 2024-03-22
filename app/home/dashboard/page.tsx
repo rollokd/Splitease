@@ -33,7 +33,11 @@ export default async function Home() {
     userGroups.map(async (group) => {
       let balance = await fetchUserBalance(userID, group.group_id);
       if (balance === undefined) balance = 0;
-      return { name: group.name, total: moneyFormat(balance) };
+      let name = group.name;
+      if (name.length >= 5) {
+        name = name.slice(0, 5);
+      }
+      return { name: `${name}...`, total: moneyFormat(balance) };
     })
   );
   console.log('Balances results: ', balances);
@@ -80,17 +84,17 @@ export default async function Home() {
             </Link>
           ))}
       </div>
-      <div className='flex justify-center m-4'>
+      <div className='flex justify-center pt-5'>
         <GroupChart data={balances}></GroupChart>
       </div>
-      <div className='flex justify-center m-4 p-10'>
-        <Link href={`/home/settle_up_dashboard`}>
-          <Button className='bg-green-500'>
+      <div className='flex justify-center m-4 pt-1 pb-3'>
+        <Link className="w-full" href={`/home/settle_up_dashboard`}>
+          <Button className='bg-green-500 w-full'>
             Settle Up
           </Button>
         </Link>
       </div>
-      </div>
+    </div>
     </>
   );
 }
