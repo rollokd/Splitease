@@ -18,9 +18,8 @@ import { Input } from "@/components/ui/input";
 import { GroupMembers, TableDataType } from "@/lib/definititions";
 import { UseFormReturn, SubmitHandler } from "react-hook-form";
 import { useFormStatus } from 'react-dom';
-
-
-
+import { useParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 interface TableDataTypeExtended extends TableDataType {
   manuallyAdjusted?: boolean;
 }
@@ -35,17 +34,31 @@ const formSchemaTransactions = z.object({
 });
 type FormValues = z.infer<typeof formSchemaTransactions>;
 
-export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[] }) {
+export function TransactionForm({
+  groupMembers,
+  userID
+}: {
+  groupMembers: GroupMembers[],
+  userID: string
+}) {
   const [amountInput, setAmountInput] = useState(0);
   const [tableData, setTableData] = useState<TableDataTypeExtended[]>([]);
   const { pending } = useFormStatus()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const currentUser = 'abde2287-4cfa-4cc7-b810-dd119df1d039'
+  const currentGroup = useParams()
+  // const { data: session } = useSession()
+  // if (session) {
+
+  //   console.log("sesSSSsion ?", session.user?.id)
+  // }
+  console.log("userID", userID)
   const form: UseFormReturn<FormValues> = useForm({
     resolver: zodResolver(formSchemaTransactions),
   });
   const { reset } = form;
 
+  // console.log("auth id ??? ===> ", auth)
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     setIsSubmitting(true)
     const form_data = new FormData();
@@ -53,7 +66,9 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
     for (key in values) {
       form_data.append(key, String(values[key]));
     }
-    form_data.append('paid_by', currentUser)
+    form_data.append('paid_by', String(currentUser))
+    form_data.append('group_id', String(currentGroup.id))
+
     const createTransactionAndData = createTransaction.bind(null, tableData)
     try {
       await createTransactionAndData(form_data)
@@ -210,7 +225,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
                 <th scope="col" className="px-4 py-2 text-left">status</th>
                 {/* <th scope="col">id</th> */}
                 <th scope="col" className="px-4 py-2 text-left">amount</th>
-                <th scope="col" className="px-4 py-2 text-left">paid</th>
+                {/* <th scope="col" className="px-4 py-2 text-left">paid</th> */}
               </tr>
             </thead>
             <tbody className="mt-2">
@@ -255,9 +270,9 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
                       </button>
 
                     </td>
-                    <td className="mx-1 flex-2 pl-7">
+                    {/* <td className="mx-1 flex-2 pl-7">
                       <p>x</p>
-                    </td>
+                    </td> */}
 
                   </tr>
                 )

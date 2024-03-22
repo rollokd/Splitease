@@ -9,7 +9,7 @@ import { getUserIdFromSession } from './data';
 
 import { signIn, auth } from '@/auth';
 import { AuthError } from 'next-auth';
-
+import { getSession } from 'next-auth/react';
 export async function getUserId() {
   const session = await auth();
   const userId = await getUserIdFromSession(session?.user?.email ?? '');
@@ -39,27 +39,31 @@ const FormSchemaTransaction = z.object({
   paid_by: z.string(),
   group_id: z.string()
 })
-const CreateTransaction = FormSchemaTransaction.omit({ id: true, status: true, group_id: true });
+const CreateTransaction = FormSchemaTransaction.omit({ id: true, status: true });
 
-export async function createTransaction(tableData: TableDataType[], formData: FormData) {
-
-  const { name, amount, date, paid_by } = CreateTransaction.parse({
+export async function createTransaction(
+  tableData: TableDataType[],
+  formData: FormData
+) {
+  const session = await getSession()
+  console.log("=>>>>>>>>> ", session?.user?.id)
+  const { name, amount, date, paid_by, group_id } = CreateTransaction.parse({
     name: formData.get('name'),
     amount: formData.get('amount'),
     // status: formData.get('status')
     date: formData.get('date'),
-    paid_by: formData.get('paid_by')
+    paid_by: formData.get('paid_by'),
+    group_id: formData.get('group_id')
   })
 
   const amountInPennies = amount * 100;
   const dateConverted = date.toISOString().split('T')[0];
   const statusBla = false;
   // const paid_by = '410544b2-4001-4271-9855-fec4b6a6442a';
-  const groupBla_id = '26c034f0-9105-4d26-80c9-e49a89e1a8dd';
-
+  // const groupBla_id = '26c034f0-9105-4d26-80c9-e49a89e1a8dd';
   const transInsert =
     await sql`INSERT INTO transactions (name, date, amount, status, paid_by, group_id)
-  VALUES (${name}, ${dateConverted}, ${amountInPennies}, ${statusBla}, ${paid_by}, ${groupBla_id})
+  VALUES (${name}, ${dateConverted}, ${amountInPennies}, ${statusBla}, ${paid_by}, ${group_id})
   RETURNING id, group_id
   `
   //second insert data prep
