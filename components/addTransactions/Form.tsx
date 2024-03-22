@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -60,7 +60,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
       reset({
         name: '',
         amount: 0,
-        date: ''
+        date: new Date()
       })
       setTableData(groupMembers.map(member => ({
         ...member,
@@ -191,7 +191,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
               <FormLabel>date</FormLabel>
               <FormControl>
                 <Input
-                  type="date"
+                  type='date'
                   {...field}
                 />
               </FormControl>
@@ -202,9 +202,6 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
             </FormItem>
           )}
         />
-        {/* <div className="container mx-auto py-10">
-          <DataTable columns={columns} data={tableData} />
-        </div> */}
         <div className="container mx-auto py-10">
           <table className="min-w-full table-auto">
             <thead className="bg-gray-200">

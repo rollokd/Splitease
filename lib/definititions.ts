@@ -37,7 +37,7 @@ export type GroupUsersBasic = {
 export type GroupMembers = {
   id: string
   firstname: string
-  group_id: string
+  group_id?: string
 }
 export type forNow = {
   amount: number
@@ -77,13 +77,13 @@ export interface UserProps {
   groupID: string;
 }
 
-export type UserTransaction = Transaction & User & {trans_id: string}
+export type UserTransaction = Transaction & User & { trans_id: string }
 
 export interface Own {
   paidbyMe: number;
   myPortionOfBills: number;
   total: number;
-} 
+}
 
 export type GroupMember = {
   id: string;
