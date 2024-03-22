@@ -45,6 +45,7 @@ export function TransactionForm({
   const [tableData, setTableData] = useState<TableDataTypeExtended[]>([]);
   const { pending } = useFormStatus()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [overMark, setOverMark] = useState(false)
 
 
   const currentGroup = useParams()
@@ -91,6 +92,7 @@ export function TransactionForm({
   useEffect(() => {
     const participatingMembers = groupMembers.filter(member => member.status !== false);
     const newAmountPerMember = amountInput / participatingMembers.length;
+
     const data = groupMembers.map((member) => (
       {
         ...member,
@@ -121,12 +123,19 @@ export function TransactionForm({
   }
 
   function adjustMemberShare(index: number, adjustAmount: number) {
-    const newData = [...tableData];
-    const adjustedMemberNewAmount = newData[index].amount + adjustAmount;
-    newData[index] = { ...newData[index], amount: adjustedMemberNewAmount, manuallyAdjusted: true };
-    const totalAdjusted = newData.filter(member => member.manuallyAdjusted && member.status === true).reduce((acc, curr) => acc + curr.amount, 0)
+    let newData = [...tableData];
+
+    if (newData[index].status) {
+      newData[index] = {
+        ...newData[index],
+        amount: Number((newData[index].amount + adjustAmount).toFixed(2)),
+        manuallyAdjusted: true
+      };
+    }
+    const totalAdjusted = newData.filter(member => member.manuallyAdjusted && member.status).reduce((acc, curr) => acc + curr.amount, 0)
     const totalAmountLeft = amountInput - totalAdjusted
-    const unadjustedMembersCount = newData.filter(member => !member.manuallyAdjusted).length;
+    const participatingMembers = newData.filter(member => member.status);
+    const unadjustedMembersCount = participatingMembers.filter(member => !member.manuallyAdjusted).length;
 
     if (
       totalAmountLeft < 0 ||
@@ -141,11 +150,13 @@ export function TransactionForm({
 
 
     const amountPerUnmodifiedValue = (totalAmountLeft / unadjustedMembersCount);
-    for (let i = 0; i < newData.length; i++) {
-      if (!newData[i].manuallyAdjusted) {
-        newData[i] = { ...newData[i], amount: Number(amountPerUnmodifiedValue.toFixed(2)) };
+
+    newData = newData.map(member => {
+      if (member.status && !member.manuallyAdjusted) {
+        return { ...member, amount: Number(amountPerUnmodifiedValue.toFixed(2)) };
       }
-    }
+      return member;
+    });
     setTableData(newData);
   }
 
