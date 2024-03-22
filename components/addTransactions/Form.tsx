@@ -17,8 +17,9 @@ import { createTransaction } from "@/lib/actions";
 import { Input } from "@/components/ui/input";
 import { GroupMembers, TableDataType } from "@/lib/definititions";
 import { UseFormReturn, SubmitHandler } from "react-hook-form";
-import { useFormStatus } from "react-dom";
-
+import { useFormStatus } from 'react-dom';
+import { useParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 interface TableDataTypeExtended extends TableDataType {
   manuallyAdjusted?: boolean;
 }
@@ -34,18 +35,23 @@ type FormValues = z.infer<typeof formSchemaTransactions>;
 
 export function TransactionForm({
   groupMembers,
+  userID
 }: {
-  groupMembers: GroupMembers[];
+  groupMembers: GroupMembers[],
+  userID: string
 }) {
   const [amountInput, setAmountInput] = useState(0);
   const [tableData, setTableData] = useState<TableDataTypeExtended[]>([]);
-  const { pending } = useFormStatus();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const currentUser = "abde2287-4cfa-4cc7-b810-dd119df1d039";
+  const { pending } = useFormStatus()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const currentGroup = useParams()
+
   const form: UseFormReturn<FormValues> = useForm({
     resolver: zodResolver(formSchemaTransactions),
   });
   const { reset } = form;
+
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     setIsSubmitting(true);
@@ -54,8 +60,10 @@ export function TransactionForm({
     for (key in values) {
       form_data.append(key, String(values[key]));
     }
-    form_data.append("paid_by", currentUser);
-    const createTransactionAndData = createTransaction.bind(null, tableData);
+    form_data.append('paid_by', String(userID))
+    form_data.append('group_id', String(currentGroup.id))
+
+    const createTransactionAndData = createTransaction.bind(null, tableData)
     try {
       await createTransactionAndData(form_data);
       reset({
@@ -90,20 +98,11 @@ export function TransactionForm({
   function adjustMemberShare(index: number, adjustAmount: number) {
     const newData = [...tableData];
 
-    const adjustedMemberNewAmount =
-      Math.round((newData[index].amount + adjustAmount) * 100) / 100;
-    newData[index] = {
-      ...newData[index],
-      amount: adjustedMemberNewAmount,
-      manuallyAdjusted: true,
-    };
-    const totalAdjusted = newData
-      .filter((member) => member.manuallyAdjusted)
-      .reduce((acc, curr) => acc + curr.amount, 0);
-    const totalAmountLeft = amountInput - totalAdjusted;
-    const unadjustedMembersCount = newData.filter(
-      (member) => !member.manuallyAdjusted
-    ).length;
+    const adjustedMemberNewAmount = newData[index].amount + adjustAmount;
+    newData[index] = { ...newData[index], amount: adjustedMemberNewAmount, manuallyAdjusted: true };
+    const totalAdjusted = newData.filter(member => member.manuallyAdjusted).reduce((acc, curr) => acc + curr.amount, 0)
+    const totalAmountLeft = amountInput - totalAdjusted
+    const unadjustedMembersCount = newData.filter(member => !member.manuallyAdjusted).length;
 
     if (
       totalAmountLeft < 0 ||
@@ -116,8 +115,8 @@ export function TransactionForm({
       return;
     }
 
-    const amountPerUnmodifiedValue =
-      Math.round((totalAmountLeft / unadjustedMembersCount) * 100) / 100;
+
+    const amountPerUnmodifiedValue = (totalAmountLeft / unadjustedMembersCount);
     for (let i = 0; i < newData.length; i++) {
       if (!newData[i].manuallyAdjusted) {
         newData[i] = { ...newData[i], amount: amountPerUnmodifiedValue };
@@ -157,8 +156,8 @@ export function TransactionForm({
         onSubmit={
           pending
             ? (event) => {
-                event.preventDefault();
-              }
+              event.preventDefault();
+            }
             : form.handleSubmit(onSubmit)
         }
         className="space-y-8"
@@ -239,12 +238,8 @@ export function TransactionForm({
                   status
                 </th>
                 {/* <th scope="col">id</th> */}
-                <th scope="col" className="px-4 py-2 text-left">
-                  amount
-                </th>
-                <th scope="col" className="px-4 py-2 text-left">
-                  paid
-                </th>
+                <th scope="col" className="px-4 py-2 text-left">amount</th>
+                {/* <th scope="col" className="px-4 py-2 text-left">paid</th> */}
               </tr>
             </thead>
             <tbody className="mt-2">
@@ -260,9 +255,9 @@ export function TransactionForm({
                         <span className="relative px-1 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"></span>
                       </button>
                     </td>
-                    {/* <td className="ft-45">{ele.id}</td> */}
+
                     <td className="flex flex-row px-2 py-2">
-                      {/* <button type="button" onClick={() => increment(index)} className="rounded-full">+</button> */}
+
                       <button
                         type="button"
                         onClick={() => increment(index)}
@@ -283,9 +278,6 @@ export function TransactionForm({
                           -
                         </span>
                       </button>
-                    </td>
-                    <td className="mx-1 flex-2 pl-7">
-                      <p>x</p>
                     </td>
                   </tr>
                 );

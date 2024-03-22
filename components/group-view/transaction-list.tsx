@@ -31,7 +31,7 @@ const TransactionList = async ({ group_id }: Props) => {
               <SelectItem value="system">Outstanding</SelectItem>
             </SelectContent>
           </Select>
-          <Link href={"/addTransactions"} passHref>
+          <Link href={`/home/group/${group_id}/addTransactions`} passHref>
             <Button className="bg-blue-500 w-10" size={"sm"}>
               +
             </Button>

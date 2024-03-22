@@ -19,3 +19,7 @@ export function moneyFormat(n: number | undefined) : string {
 export function prettyMoney(amount: number) {
   return '£' + (amount/100).toFixed(2)
 }
+
+export function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}

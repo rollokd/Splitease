@@ -14,7 +14,7 @@ async function Page({ params }: Props) {
   return (
     <div className='flex flex-col p-3 gap-3 h-full last:mt-auto'>
       <strong className='gap-3 mb-4 mt-2 p-3'>
-        <GroupCrumbs name={group?.name} />
+        <GroupCrumbs name={group?.name} group_id={group_id} type='edit' />
       </strong>
       <EditGroupForm users={users} groupUsers={groupUsers} userID={userID} />
     </div>
