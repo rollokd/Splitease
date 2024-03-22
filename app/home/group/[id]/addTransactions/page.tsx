@@ -4,7 +4,7 @@ import { getUserId } from '@/lib/actions';
 
 export default async function Page() {
 
-  let userID: string = '';
+  let userID;
   try {
     userID = await getUserId();
     if (!userID) throw new Error("User ID not found");

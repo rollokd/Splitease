@@ -1,12 +1,12 @@
 "use client"
 import React from "react"
-import { 
-  Bar, 
-  BarChart, 
-  ResponsiveContainer, 
-  XAxis, 
+import {
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  XAxis,
   YAxis,
-  Cell 
+  Cell
 } from "recharts"
 import { DataBarChart } from "@/lib/definititions"
 interface GroupChartProps {
@@ -15,7 +15,7 @@ interface GroupChartProps {
 export const GroupChart: React.FC<GroupChartProps> = ({data}) => {
   return (
     <ResponsiveContainer width="100%" height={350}>
-      <BarChart 
+      <BarChart
       data={data}
       margin={{
         top: 10,
@@ -44,7 +44,7 @@ export const GroupChart: React.FC<GroupChartProps> = ({data}) => {
         >
           {
             data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.total < 0 ? "#EF4444" : "#10B981"} />
+              <Cell key={`cell-${index}`} fill={Number(entry.total) < 0 ? "#EF4444" : "#10B981"} />
             ))
           }
         </Bar>
@@ -52,7 +52,3 @@ export const GroupChart: React.FC<GroupChartProps> = ({data}) => {
     </ResponsiveContainer>
   )
 }
-
-
-
-

@@ -151,8 +151,8 @@ export async function createGroup(formData: FormData, userIds: string[]) {
     VALUES (${userId}, ${groupId})`;
   }
 
-  revalidatePath('/dashboard');
-  redirect(`/group/${groupId}`);
+  // revalidatePath('/home/');
+  redirect(`/home/group/${groupId}`);
 }
 
 const UpdateGroup = GroupFormSchema.omit({
