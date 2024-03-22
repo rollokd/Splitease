@@ -43,7 +43,7 @@ export const GroupChart: React.FC<GroupChartProps> = ({data}) => {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `$${value}`}
+          tickFormatter={(value) => `$${value.toFixed(2)}`}
           domain={[lowerBound, upperBound]}
         />
          <Bar
