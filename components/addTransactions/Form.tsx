@@ -88,7 +88,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
 
 
   function adjustMemberShare(index: number, adjustAmount: number) {
-    const newData = [...tableData];
+    const newData = [...tableData]
 
     const adjustedMemberNewAmount = Math.round((newData[index].amount + adjustAmount) * 100) / 100;
     newData[index] = { ...newData[index], amount: adjustedMemberNewAmount, manuallyAdjusted: true };
@@ -206,31 +206,60 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
           <DataTable columns={columns} data={tableData} />
         </div> */}
         <div className="container mx-auto py-10">
-          <table>
-            <thead>
-              <tr >
-                <th scope="col">name</th>
-                <th scope="col">status</th>
+          <table className="min-w-full table-auto">
+            <thead className="bg-gray-200">
+              <tr>
+                <th scope="col" className="px-4 py-2 text-left">name</th>
+                <th scope="col" className="px-4 py-2 text-left">status</th>
                 {/* <th scope="col">id</th> */}
-                <th scope="col">amount</th>
-                <th scope="col">paid</th>
+                <th scope="col" className="px-4 py-2 text-left">amount</th>
+                <th scope="col" className="px-4 py-2 text-left">paid</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="mt-2">
               {tableData.map((ele, index) => {
                 return (
                   <tr key={index}>
-                    <th scope="row">{ele.firstname}</th>
-                    <td ><button className="toggleButton">will toggle</button></td>
+                    <th scope="row" >{ele.firstname}</th>
+                    <td className="px-4 py-2">
+                      <button
+                        type="button"
+                        className="relative inline-flex items-center justify-center p-3 mb-1 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 to-blue-500 group-hover:from-slate-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                        <span
+                          className="relative px-1 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+
+                        </span>
+                      </button>
+                    </td>
                     {/* <td className="ft-45">{ele.id}</td> */}
-                    <td >
-                      <button type="button" onClick={() => increment(index)}>+</button>
-                      {ele.amount}
-                      {/* {increment && (
-                        let evenParts = amountInput /groupMembers.length
-                        let currentValue = evenParts + 1;
-                      )} */}
-                      <button type="button" onClick={() => decrement(index)}>-</button>
+                    <td className="flex flex-row px-2 py-2">
+                      {/* <button type="button" onClick={() => increment(index)} className="rounded-full">+</button> */}
+                      <button
+                        type="button"
+                        onClick={() => increment(index)}
+                        className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 to-blue-500 group-hover:from-slate-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                        <span
+                          className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                          +
+                        </span>
+                      </button>
+                      <div className="mx-1 flex-2 pl-2 pr-3">
+                        {ele.amount}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => decrement(index)}
+                        className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-large text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 to-blue-500 group-hover:from-slate-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                        <span
+                          className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                          -
+                        </span>
+                      </button>
+
+                    </td>
+                    <td className="mx-1 flex-2 pl-7">
+                      <p>x</p>
                     </td>
 
                   </tr>
