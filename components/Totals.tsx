@@ -1,8 +1,7 @@
-import CardTotals from "./cardTotals";
-import { fetchOwnDashboardData } from "../lib/data";
-import { moneyFormat } from "@/lib/utils";
-import {RevenueChartSkeleton} from '@/components/ui/skeletons';
-
+import CardTotals from './cardTotals';
+import { fetchOwnDashboardData } from '../lib/data';
+import { moneyFormat } from '@/lib/utils';
+import { RevenueChartSkeleton } from '@/components/ui/skeletons';
 
 export default async function Totals({ userId }: { userId: string }) {
   const own = await fetchOwnDashboardData(userId);
@@ -13,9 +12,6 @@ export default async function Totals({ userId }: { userId: string }) {
   let totalMoney = own?.total;
   return (
     <>
-   
-    
-  
       <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-6">
         <div className="flex-1">
           <CardTotals
@@ -41,7 +37,6 @@ export default async function Totals({ userId }: { userId: string }) {
           </div>
         </div>
       </div>
-      
     </>
   );
 }
