@@ -44,7 +44,7 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
   const form: UseFormReturn<FormValues> = useForm({
     resolver: zodResolver(formSchemaTransactions),
   });
-
+  const { reset } = form;
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     setIsSubmitting(true)
@@ -57,6 +57,17 @@ export function TransactionForm({ groupMembers }: { groupMembers: GroupMembers[]
     const createTransactionAndData = createTransaction.bind(null, tableData)
     try {
       await createTransactionAndData(form_data)
+      reset({
+        name: '',
+        amount: 0,
+        date: ''
+      })
+      setTableData(groupMembers.map(member => ({
+        ...member,
+        amount: 0,
+        manuallyAdjusted: false,
+      })));
+      setAmountInput(0);
     } catch (e) {
       console.log("errrorrrr...", e)
     } finally {
