@@ -26,7 +26,7 @@ export default function EditGroupForm({
 
   useEffect(() => {
     const segments = pathname.split('/').filter(Boolean);
-    setGroupId(segments[1]);
+    setGroupId(segments[2]);
     setSelectedUsers(groupUsers);
   }, [groupUsers, pathname]);
 
