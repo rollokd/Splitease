@@ -19,10 +19,10 @@ const CreateUserSelector = ({
 }) => {
   return (
     <>
-      <div className='mt-auto'>
+      <div>
         <label
           htmlFor='customer'
-          className='mb-2 block text-large font-medium p-6'
+          className='mt-6 mb-2 block text-large font-medium p-6'
         >
           Choose participants
         </label>
@@ -48,11 +48,11 @@ const CreateUserSelector = ({
       <div className='mt-auto'>
         <label
           htmlFor='customer'
-          className='mb-2 block text-large font-medium p-6'
+          className='mt-6 mb-2 block text-large font-medium p-6'
         >
           Selected participants
         </label>
-        <div className='border flex border-gray-200 p-4 rounded shadow'>
+        <div className='border flex border-gray-500 p-4 rounded shadow'>
           <ul className='w-full'>
             {selectedUsers.map((user) => (
               <li

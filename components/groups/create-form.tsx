@@ -14,8 +14,6 @@ export default function CreateGroupForm({
   users,
   userID,
 }: CreateGroupFormProps) {
-  console.log('User ID from dashboard: ', userID);
-
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,8 +60,8 @@ export default function CreateGroupForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className='px-6'>
-      <div className='flex flex-col h-screen justify-center'>
+    <form onSubmit={handleSubmit} className='flex flex-col min-h-screen'>
+      <div className='flex-grow'>
         <GroupNameInput />
         <CreateUserSelector
           searchQuery={searchQuery}
@@ -74,7 +72,9 @@ export default function CreateGroupForm({
           handleRemoveUser={handleRemoveUser}
         />
       </div>
-      <ActionButtons />
+      <div className='mt-auto'>
+        <ActionButtons />
+      </div>
     </form>
   );
 }
