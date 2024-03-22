@@ -110,6 +110,7 @@ export async function fetchUserBalance(
     return result;
   } catch (error) {
     console.log('Database Error:', error);
+    throw new Error('Failed to fetch balance data.');
   }
 }
 export async function fetchUserAndBalance(
