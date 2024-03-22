@@ -3,7 +3,7 @@ import { fetchOwnDashboardData } from '../lib/data';
 import { moneyFormat } from '@/lib/utils';
 
 export default async function Totals() {
-  const own = await fetchOwnDashboardData();
+  const own = await fetchOwnDashboardData('3106eb8a-3288-4b62-a077-3b24bd640d9a');
 
   let paidbyMeMoney = own?.paidbyMe;
   let myPortionOfBillsMoney = own?.myPortionOfBills;

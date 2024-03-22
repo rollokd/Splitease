@@ -2,6 +2,8 @@ import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
 import { UserWJunction, Group, UserTransaction, User, Own, GroupMember, Name, Debts, GroupUsersBasic } from './definititions';
 
+
+
 export async function fetchUsersTransactionsOfGroups(
   groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267'
 ) {
@@ -192,20 +194,28 @@ export async function getNamesOfUsersInAGroup(group_id: string = '26c034f0-9105-
   }
 }
 
-export async function fetchOwnDashboardData(): Promise<Own | undefined> {
+export async function fetchOwnDashboardData(userID: string): Promise<Own | undefined> {
   try {
     const paidbyMe = await sql`SELECT SUM(amount) AS total_amount
     FROM transactions
-    WHERE paid_by = '3106eb8a-3288-4b62-a077-3b24bd640d9a';`;
+    WHERE paid_by = ${userID};`;
+
+    const userPaid = await sql`
+    SELECT SUM(user_amount) AS total_amount
+    FROM transactions
+    LEFT JOIN splits
+    ON transactions.id = splits.trans_id
+    WHERE paid_by = ${userID} AND user_id = ${userID};`;
 
     const MyPortionofBills =
-      await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id='3106eb8a-3288-4b62-a077-3b24bd640d9a' AND paid=false`;
+      await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id=${userID} AND paid=false`;
 
     return {
-      paidbyMe: paidbyMe.rows[0].total_amount,
+      paidbyMe: paidbyMe.rows[0].total_amount - Number(userPaid.rows[0].total_amount),
       myPortionOfBills: MyPortionofBills.rows[0].total_user_amount,
       total:
         paidbyMe.rows[0].total_amount -
+        Number(userPaid.rows[0].total_amount) -
         MyPortionofBills.rows[0].total_user_amount,
     };
   } catch (error) {
