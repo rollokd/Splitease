@@ -44,7 +44,8 @@ export const GroupChart: React.FC<GroupChartProps> = ({data}) => {
           tickLine={false}
           axisLine={false}
           tickFormatter={(value) => `$${value.toFixed(2)}`}
-          domain={[lowerBound, upperBound]}
+          // domain={[lowerBound, upperBound]}
+          domain={[minValue, maxValue]}
         />
          <Bar
           dataKey="total"

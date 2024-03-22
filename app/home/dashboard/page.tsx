@@ -73,7 +73,7 @@ export default async function Home() {
           <Link href="/home/create">Create Group +</Link>
         </Button>
       </div>
-      <div style={{ height: "400px", overflowY: "auto", border: "1px solid grey", borderRadius: "5px" }}>
+      <div style={{ height: "400px", overflowY: "auto", borderColor: "var(--card)", borderRadius: "5px", borderStyle: 'ridge', borderWidth: "1px"}}>
         {userID &&
           groups.map((group) => (
             <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
