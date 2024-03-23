@@ -19,6 +19,7 @@ import {
 } from './card';
 import { Label } from './label';
 import { Input } from './input';
+import Link from 'next/link';
 
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
@@ -54,7 +55,17 @@ export default function LoginForm() {
         </CardContent>
         <CardFooter>
           <Button className="w-full">Login</Button>
+
         </CardFooter>
+        <CardContent className="grid gap-4">
+          <div className="mt-4 text-center text-sm">
+          Already have an account?{" "}
+          <Link href="sign" className="underline">
+            Sign up
+          </Link>
+        </div>
+        </CardContent>
+       
       </Card>
       </form>
     </>
