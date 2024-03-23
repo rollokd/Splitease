@@ -4,7 +4,6 @@ import { GroupChart } from '../../../components/bar-chart';
 import {
   getUserGroups,
   fetchUserBalance,
-  getUserIdFromSession
 } from '../../../lib/data';
 import Totals from '../../../components/Totals';
 import Link from 'next/link';
@@ -12,11 +11,10 @@ import { Button } from '@/components/ui/button';
 
 import { signOut, auth } from '@/auth';
 import { PowerIcon } from '@heroicons/react/24/outline';
-import { createGroup, getUserId } from '@/lib/actions';
+import { getUserId } from '@/lib/actions';
 import { moneyFormat } from '@/lib/utils';
-import { redirect } from 'next/navigation';
 import { ModeToggle } from '@/components/themeMode';
-import { YAxis } from "recharts";
+import { button } from '@/components/ui/button';
 
 export default async function Home() {
   const userID = (await getUserId()) as string;
@@ -53,10 +51,7 @@ export default async function Home() {
           }}
         >
           <ModeToggle />
-          <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
-            <PowerIcon className="w-6" />
-            <div className="hidden md:block">Sign Out</div>
-          </button>
+          <Button className='ml-4'><PowerIcon className="w-4" />   <div className="ml-2"> Sign Out</div> </Button>
         </form>
         <Totals userId={userID} />
 
