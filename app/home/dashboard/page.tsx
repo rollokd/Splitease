@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic"
 import { GroupCard } from '@/components/group-card';
 import { GroupChart } from '../../../components/bar-chart';
 import {
