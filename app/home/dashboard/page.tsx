@@ -14,7 +14,6 @@ import { PowerIcon } from '@heroicons/react/24/outline';
 import { getUserId } from '@/lib/actions';
 import { moneyFormat } from '@/lib/utils';
 import { ModeToggle } from '@/components/themeMode';
-import { button } from '@/components/ui/button';
 
 export default async function Home() {
   const userID = (await getUserId()) as string;
@@ -56,7 +55,7 @@ export default async function Home() {
         <Totals userId={userID} />
 
       <div className="m-4 flex justify-end">
-        <Button variant="outline">
+        <Button >
           <Link href="/home/create">Create Group +</Link>
         </Button>
       </div>
