@@ -16,7 +16,12 @@ async function Page({ params }: Props) {
       <strong className='gap-3 mb-4 mt-2 p-3'>
         <GroupCrumbs name={group?.name} group_id={group_id} type='edit' />
       </strong>
-      <EditGroupForm users={users} groupUsers={groupUsers} userID={userID} />
+      <EditGroupForm
+        users={users}
+        groupUsers={groupUsers}
+        userID={userID}
+        name={group?.name}
+      />
     </div>
   );
 }
