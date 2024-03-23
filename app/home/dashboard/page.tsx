@@ -65,10 +65,10 @@ export default async function Home() {
           style={{
             height: '400px',
             overflowY: 'auto',
-            borderColor: 'var(--card)',
-            borderRadius: '5px',
-            borderStyle: 'ridge',
-            borderWidth: '1px'
+            // borderColor: 'var(--card)',
+            // borderRadius: '5px',
+            // borderStyle: 'ridge',
+            // borderWidth: '1px'
           }}
         >
           {userID &&
