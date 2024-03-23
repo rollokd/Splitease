@@ -15,6 +15,7 @@ import { createGroup, getUserId } from '@/lib/actions';
 import { moneyFormat } from '@/lib/utils';
 import { redirect } from 'next/navigation';
 import { ModeToggle } from '@/components/themeMode';
+import { YAxis } from "recharts";
 
 export default async function Home() {
   const userID = await getUserId();
@@ -65,32 +66,34 @@ export default async function Home() {
         </form>
         <Totals userId={userID} />
 
-        <div className="m-4 flex justify-end">
-          <Button variant="outline">
-            <Link href="/home/create">Create Group +</Link>
-          </Button>
-        </div>
-        <div>
-          {userID &&
-            groups.map((group) => (
-              <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
-                <GroupCard
-                  key={group.group_id}
-                  group_id={group.group_id}
-                  user_id={userID}
-                />
-              </Link>
-            ))}
-        </div>
-        <div className="flex justify-center pt-5">
-          <GroupChart data={balances}></GroupChart>
-        </div>
-        <div className="flex justify-center m-4 pt-1 pb-3">
-          <Link className="w-full" href={`/home/settle_up_dashboard`}>
-            <Button className="bg-green-500 w-full">Settle Up</Button>
-          </Link>
-        </div>
+      <div className="m-4 flex justify-end">
+        <Button variant="outline">
+          <Link href="/home/create">Create Group +</Link>
+        </Button>
       </div>
+      <div style={{ height: "400px", overflowY: "auto", borderColor: "var(--card)", borderRadius: "5px", borderStyle: 'ridge', borderWidth: "1px"}}>
+        {userID &&
+          groups.map((group) => (
+            <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
+              <GroupCard
+                key={group.group_id}
+                group_id={group.group_id}
+                user_id={userID}
+              />
+            </Link>
+          ))}
+      </div>
+      <div className='flex justify-center pt-5'>
+        <GroupChart data={balances}></GroupChart>
+      </div>
+      <div className='flex justify-center m-4 pt-1 pb-3'>
+        <Link className="w-full" href={`/home/settle_up_dashboard`}>
+          <Button className='bg-green-500 w-full'>
+            Settle Up
+          </Button>
+        </Link>
+      </div>
+    </div>
     </>
   );
 }
