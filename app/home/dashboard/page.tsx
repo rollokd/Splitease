@@ -39,8 +39,8 @@ export default async function Home() {
   //const bears = useStore((state) => state.bears);
   return (
     <>
+      <div className="p-4">
       <div className="mb-2">
-        <div className="p-4">
           <form
             action={async () => {
               'use server';
