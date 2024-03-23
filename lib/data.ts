@@ -121,10 +121,17 @@ export async function fetchUserAndBalance(
 ) {
   noStore();
   try {
-    const userPaid = await sql`
+    const totalPaid = await sql`
     SELECT SUM(amount) AS total_amount
     FROM transactions
     WHERE paid_by = ${userID} AND group_id = ${groupID};
+    `;
+    const userPaid = await sql`
+    SELECT SUM(user_amount) AS total_amount
+    FROM transactions
+    LEFT JOIN splits
+    ON transactions.id = splits.trans_id
+    WHERE paid_by = ${userID} AND splits.group_id = ${groupID} AND user_id = ${userID};
     `;
     const splitToPay = await sql`
     SELECT SUM(user_amount) AS total_user_amount
@@ -133,6 +140,7 @@ export async function fetchUserAndBalance(
     `;
     //Calculate the account
     const result =
+      Number(totalPaid.rows[0].total_amount) -
       Number(userPaid.rows[0].total_amount) -
       Number(splitToPay.rows[0].total_user_amount);
     return { user: userID, result };
