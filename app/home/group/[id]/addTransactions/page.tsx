@@ -1,7 +1,7 @@
 import { TransactionForm } from "@/components/addTransactions/Form";
 import { getNamesOfUsersInAGroup } from "@/lib/data";
 import { getUserId } from '@/lib/actions';
-
+import { TransCrumbs } from "@/components/addTransactions/TransCrumbs";
 export default async function Page({ params }: { params: { id: string } }) {
 
   let userID;
@@ -13,5 +13,15 @@ export default async function Page({ params }: { params: { id: string } }) {
     console.log(error);
   }
   const groupMembers = await getNamesOfUsersInAGroup(params.id)
-  return <TransactionForm groupMembers={groupMembers} userID={String(userID)}></TransactionForm>;
+  return (
+    <>
+      <TransCrumbs />
+      <TransactionForm
+        groupMembers={groupMembers}
+        userID={String(userID)}
+      >
+
+      </TransactionForm>
+    </>
+  );
 }

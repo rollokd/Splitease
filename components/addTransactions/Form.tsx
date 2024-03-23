@@ -258,35 +258,53 @@ export function TransactionForm({
             </FormItem>
           )}
         />
-        <div className="container mx-auto py-10">
-          <table className="min-w-full table-auto">
-            <thead className="bg-gray-200">
+        <div className="container">
+          <table className="">
+            <thead className="[&_tr]:border-b">
               <tr>
-                <th scope="col" className="px-4 py-2 text-left">
+                <th
+                  scope="col"
+                  className="p-4 align-middle"
+                >
                   name
                 </th>
-                <th scope="col" className="px-4 py-2 text-left">
+                <th
+                  scope="col"
+                  className="p-4 align-middle"
+                >
                   status
                 </th>
-                {/* <th scope="col">id</th> */}
-                <th scope="col" className="px-4 py-2 text-left">amount</th>
-                {/* <th scope="col" className="px-4 py-2 text-left">paid</th> */}
+
+                <th
+                  scope="col"
+                  className="p-4 align-middle"
+                >amount</th>
+
               </tr>
             </thead>
-            <tbody className="mt-2">
+            <tbody className="[&_tr:last-child]:border-0">
               {tableData.map((ele, index) => {
                 return (
-                  <tr key={index}>
-                    <th scope="row">{ele.firstname}</th>
-                    <td className="px-4 py-2">
+                  <tr key={index}
+                    className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted text-left"
+                  >
+                    <th
+                      scope="row"
+                      className="p-4 align-middle [&:has([role=checkbox])]:pr-0"
+                    >
+                      {ele.firstname}
+                    </th>
+                    <td
+                      className=" pl-6 align-middle [&:has([role=checkbox])]:pr-0"
+                    >
                       <button
                         // onClick={() => setParticipates(false)}
                         type="button"
-                        className="relative inline-flex items-center justify-center p-3 mb-1 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 to-blue-500 group-hover:from-slate-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                        className="relative inline-flex items-center justify-center overflow-hidden  text-sm font-large text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none"
                       >
                         <span
                           onClick={() => handleClick(index)}
-                          className={`relative px-1 py-1 transition-all ease-in duration-75 ${ele.status ? "bg-gradient-to-br from-slate-600 to-blue-500" : "bg-white dark:bg-gray-900"
+                          className={`relative px-1 py-1 transition-all ease-in duration-75 ${ele.status ? "bg-gradient-to-br from-slate-700 to-blue-500" : "bg-slate-300 dark:bg-gray-900"
                             } rounded-md group-hover:bg-opacity-0`}
                         >
 
@@ -294,21 +312,25 @@ export function TransactionForm({
                       </button>
                     </td>
 
-                    <td className="flex flex-row px-2 py-2">
+                    <td
+                      className="flex flex-row  py-4 pl-2 align-middle pr-0"
+                    // className=" pl-12 align-middle pr-0"
+                    >
 
                       <button
                         type="button"
                         onClick={() => increment(index)}
-                        className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 to-blue-500 group-hover:from-slate-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                        className="relative inline-flex items-center justify-center mt-3 p-.5 mb-3 overflow-hidden text-sm font-medium text-black rounded-lg group bg-gradient-to-br from-black to-slate-700"
                       >
-                        <span className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                        <span className="relative px-2  py-1.2 transition-all ease-in duration-75 bg-white">
                           +
                         </span>
                       </button>
                       <div className="mx-1 flex-2 pl-2 pr-3">
                         {/* {ele.amount} */}
                         <input
-                          className="w-10 p-1 text-center" value={ele.amount}
+                          className="w-[4rem] mt-3 text-center bg-slate-100"
+                          value={ele.amount}
                           onChange={(e) => adjustMemberShare(index, Number(e.target.value) - ele.amount)}>
                         </input>
                       </div>
@@ -316,9 +338,9 @@ export function TransactionForm({
                       <button
                         type="button"
                         onClick={() => decrement(index)}
-                        className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-large text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 to-blue-500 group-hover:from-slate-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                        className="relative inline-flex  mr-3 items-center justify-center mt-3 p-.5 mb-3 overflow-hidden text-sm font-medium text-black rounded-lg group bg-gradient-to-br from-black to-slate-700"
                       >
-                        <span className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                        <span className="relative px-[.6rem] py-1.2 transition-all ease-in duration-75 bg-white">
                           -
                         </span>
                       </button>
@@ -332,12 +354,12 @@ export function TransactionForm({
 
         <Button
           type="submit"
-          className="flex flex-row self-center"
+          variant={"sticky"}
           disabled={isSubmitting || pending}
         >
           {isSubmitting ? "Submitting..." : "Add Transaction"}
         </Button>
       </form>
-    </Form>
+    </Form >
   );
 }
