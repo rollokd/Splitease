@@ -31,7 +31,7 @@ export default function SignForm() {
       <CardContent>
         <div className="grid gap-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div className="grid gap-2">
               <Label htmlFor="first-name">First name</Label>
               <Input id="first-name"  required />
             </div>
