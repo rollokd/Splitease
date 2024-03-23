@@ -178,23 +178,23 @@ export async function getNameGroup(
   }
 }
 
-export async function getNamesOfUsersInAGroup(
-  group_id: string
-): Promise<GroupUsersBasic[]> {
-  noStore()
-  try {
-    const data = await sql<GroupUsersBasic>`
-    SELECT firstname, id From users
-    LEFT JOIN user_groups ON user_groups.user_id=users.id
-    WHERE group_id = ${group_id}
-    `;
+// export async function getNamesOfUsersInAGroup(
+//   group_id: string
+// ): Promise<GroupUsersBasic[]> {
+//   noStore()
+//   try {
+//     const data = await sql<GroupUsersBasic>`
+//     SELECT firstname, id From users
+//     LEFT JOIN user_groups ON user_groups.user_id=users.id
+//     WHERE group_id = ${group_id}
+//     `;
 
-    return data.rows;
-  } catch (error) {
-    console.log('Database Error ====> ', error);
-    throw new Error('Failed to fetch the group data');
-  }
-}
+//     return data.rows;
+//   } catch (error) {
+//     console.log('Database Error ====> ', error);
+//     throw new Error('Failed to fetch the group data');
+//   }
+// }
 
 export async function fetchOwnDashboardData(userID: string): Promise<Own | undefined> {
   try {
