@@ -305,7 +305,13 @@ export function TransactionForm({
                           +
                         </span>
                       </button>
-                      <div className="mx-1 flex-2 pl-2 pr-3">{ele.amount}</div>
+                      <div className="mx-1 flex-2 pl-2 pr-3">
+                        {/* {ele.amount} */}
+                        <input
+                          className="w-10 p-1 text-center" value={ele.amount}
+                          onChange={(e) => adjustMemberShare(index, Number(e.target.value) - ele.amount)}>
+                        </input>
+                      </div>
 
                       <button
                         type="button"
