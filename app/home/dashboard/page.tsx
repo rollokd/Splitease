@@ -52,7 +52,7 @@ export default async function Home() {
     <>
       <div className="p-4">
         {/* <h1>{bears} around here...</h1> */}
-        <form
+        {/* <form
           action={async () => {
             'use server';
             await signOut();
@@ -63,7 +63,7 @@ export default async function Home() {
             <PowerIcon className="w-6" />
             <div className="hidden md:block">Sign Out</div>
           </button>
-        </form>
+        </form> */}
         <Totals userId={userID} />
 
       <div className="m-4 flex justify-end">
