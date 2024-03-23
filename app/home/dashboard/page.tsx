@@ -1,31 +1,30 @@
-import { GroupCard } from "@/components/group-card";
-import { GroupChart } from "../../../components/bar-chart";
+import { GroupCard } from '@/components/group-card';
+import { GroupChart } from '../../../components/bar-chart';
 import {
   getUserGroups,
   fetchUserBalance,
-  getUserIdFromSession,
-} from "../../../lib/data";
-import Totals from "../../../components/Totals";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+  getUserIdFromSession
+} from '../../../lib/data';
+import Totals from '../../../components/Totals';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
-import { signOut, auth } from "@/auth";
-import { PowerIcon } from "@heroicons/react/24/outline";
-import { createGroup, getUserId } from "@/lib/actions";
-import { moneyFormat } from "@/lib/utils";
+import { signOut, auth } from '@/auth';
+import { PowerIcon } from '@heroicons/react/24/outline';
+import { createGroup, getUserId } from '@/lib/actions';
+import { moneyFormat } from '@/lib/utils';
+import { redirect } from 'next/navigation';
+import { ModeToggle } from '@/components/themeMode';
+import { YAxis } from "recharts";
 
 export default async function Home() {
-  let userID: string = '';
-  // const userID: string = "410544b2-4001-4271-9855-fec4b6a6442a";
-  try {
-    userID = await getUserId() as string;
-    if (!userID) throw new Error("User ID not found");
-  } catch (error) {
-    console.log(error);
+  const userID = await getUserId();
+  console.log(userID);
+  // leave here to test empty user
+  // if (userID ==='3106eb8a-3288-4b62-a077-3b24bd640d9a') userID='';
+  if (!userID) {
+    throw new Error('User ID not found');
   }
-
-  //or redirect to error!
-  // error boundary??? step 3
 
   let userGroups = await getUserGroups(userID);
   if (userGroups === undefined) userGroups = [];
@@ -51,28 +50,28 @@ export default async function Home() {
   //const bears = useStore((state) => state.bears);
   return (
     <>
-    <div className="p-4">
-      {/* <h1>{bears} around here...</h1> */}
-      <form
-        action={async () => {
-          "use server";
-          await signOut();
-        }}
-      >
-        <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
-          <PowerIcon className="w-6" />
-          <div className="hidden md:block">Sign Out</div>
-        </button>
-      </form>
-
-      <Totals userId={userID} />
+      <div className="p-4">
+        {/* <h1>{bears} around here...</h1> */}
+        <form
+          action={async () => {
+            'use server';
+            await signOut();
+          }}
+        >
+          <ModeToggle />
+          <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
+            <PowerIcon className="w-6" />
+            <div className="hidden md:block">Sign Out</div>
+          </button>
+        </form>
+        <Totals userId={userID} />
 
       <div className="m-4 flex justify-end">
         <Button variant="outline">
           <Link href="/home/create">Create Group +</Link>
         </Button>
       </div>
-      <div>
+      <div style={{ height: "400px", overflowY: "auto", borderColor: "var(--card)", borderRadius: "5px", borderStyle: 'ridge', borderWidth: "1px"}}>
         {userID &&
           groups.map((group) => (
             <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
