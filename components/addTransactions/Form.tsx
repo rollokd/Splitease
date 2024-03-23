@@ -286,7 +286,9 @@ export function TransactionForm({
                       >
                         <span
                           onClick={() => handleClick(index)}
-                          className="relative px-1 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                          className={`relative px-1 py-1 transition-all ease-in duration-75 ${ele.status ? "bg-gradient-to-br from-slate-600 to-blue-500" : "bg-white dark:bg-gray-900"
+                            } rounded-md group-hover:bg-opacity-0`}
+                        >
 
                         </span>
                       </button>
