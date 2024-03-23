@@ -5,6 +5,7 @@ export default function LoginPage() {
     <main className="flex items-center justify-center md:h-screen">
       
         <LoginForm />
+
     </main>
   );
 }
