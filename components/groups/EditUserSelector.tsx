@@ -22,7 +22,7 @@ const EditUserSelector = ({
   return (
     <>
       {/* * Add users */}
-      <div className='flex flex-col gap-4 mb-6 p-4 border-2 border-black rounded-md'>
+      <form className='flex flex-col gap-4 mb-6 p-4 border-2 border-black rounded-md'>
         <label
           htmlFor='customer'
           className='mb-2 text-xl border-b-2 border-black'
@@ -46,7 +46,7 @@ const EditUserSelector = ({
             ))}
           </ul>
         </div>
-      </div>
+      </form>
       <div className='flex flex-col gap-4 mb-6 p-4 border-2 border-black rounded-md'>
         <label
           htmlFor='customer'

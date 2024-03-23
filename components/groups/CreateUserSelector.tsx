@@ -54,7 +54,10 @@ const CreateUserSelector = ({
   return (
     <>
       {/** Add Users */}
-      <div className='flex flex-col gap-4 mb-6 p-4 border-2 border-black rounded-md'>
+      <form
+        className='flex flex-col gap-4 mb-6 p-4 border-2 border-black rounded-md'
+        name='user'
+      >
         <label
           htmlFor='customer'
           className='mb-2 text-xl border-b-2 border-black'
@@ -65,7 +68,7 @@ const CreateUserSelector = ({
         <div className='flex flex-col gap-2 p-2 overflow-y-auto'>
           <ul className='space-y-2'>{searchUsers}</ul>
         </div>
-      </div>
+      </form>
       <div className='flex flex-col gap-4 mb-6 p-4 border-2 border-black rounded-md'>
         <label
           htmlFor='customer'
