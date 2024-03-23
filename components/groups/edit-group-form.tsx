@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import EditUserSelector from './EditUserSelector';
 import ActionButtons from './EditActionButtons';
 import InputEditName from './GroupNameEdit';
-import { useToast } from '@/components/ui/use-toast';
 
 type FormProps = {
   users: User[];
@@ -26,7 +25,6 @@ export default function EditGroupForm({
   const [searchQuery, setSearchQuery] = useState('');
   const pathname = usePathname();
   const [groupId, setGroupId] = useState<string | null>(null);
-  const { toast } = useToast();
 
   useEffect(() => {
     const segments = pathname.split('/').filter(Boolean);
@@ -64,15 +62,9 @@ export default function EditGroupForm({
 
   // Remove a user from the selected list
   const handleRemoveUser = (userId: string) => {
-    if (userId === userID) {
-      toast({
-        description: 'Action not allowed',
-      });
-    } else {
-      setSelectedUsers((prevSelectedUsers) =>
-        prevSelectedUsers.filter((user) => user.id !== userId)
-      );
-    }
+    setSelectedUsers((prevSelectedUsers) =>
+      prevSelectedUsers.filter((user) => user.id !== userId)
+    );
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
