@@ -18,13 +18,7 @@ import { ModeToggle } from '@/components/themeMode';
 import { YAxis } from "recharts";
 
 export default async function Home() {
-  const userID = await getUserId();
-  console.log(userID);
-  // leave here to test empty user
-  // if (userID ==='3106eb8a-3288-4b62-a077-3b24bd640d9a') userID='';
-  if (!userID) {
-    throw new Error('User ID not found');
-  }
+  const userID = (await getUserId()) as string;
 
   let userGroups = await getUserGroups(userID);
   if (userGroups === undefined) userGroups = [];
@@ -51,8 +45,7 @@ export default async function Home() {
   return (
     <>
       <div className="p-4">
-        {/* <h1>{bears} around here...</h1> */}
-        {/* <form
+        <form
           action={async () => {
             'use server';
             await signOut();
@@ -63,7 +56,7 @@ export default async function Home() {
             <PowerIcon className="w-6" />
             <div className="hidden md:block">Sign Out</div>
           </button>
-        </form> */}
+        </form>
         <Totals userId={userID} />
 
       <div className="m-4 flex justify-end">
