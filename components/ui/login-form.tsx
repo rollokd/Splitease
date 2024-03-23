@@ -52,14 +52,14 @@ export default function LoginForm() {
               minLength={4}
             />
           </div>
-        </CardContent>
-        <CardFooter>
+        
+       
           <Button className="w-full">Login</Button>
 
-        </CardFooter>
-        <CardContent className="grid gap-4">
-          <div className="mt-4 text-center text-sm">
-          Already have an account?{" "}
+     
+        
+          <div className="mt-1 text-center text-sm">
+          Don&apos;t have an account?{" "}
           <Link href="sign" className="underline">
             Sign up
           </Link>
