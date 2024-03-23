@@ -1,10 +1,11 @@
 'use client';
 import { User } from '@/lib/definititions';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createGroup, getUserId } from '@/lib/actions';
 import CreateUserSelector from './CreateUserSelector';
-import GroupNameInput from './GroupNameInput';
+
 import ActionButtons from './CreateActionButtons';
+import InputName from './GroupNameInput';
 
 type CreateGroupFormProps = {
   users: User[];
@@ -24,11 +25,11 @@ export default function CreateGroupForm({
       setSearchResults([]);
       return;
     }
-
-    //Filter users but exclude current user
+    // Filter users but exclude users that are in the selectedUsers
     const filteredResults = users.filter(
       (user) =>
         user.id !== userID &&
+        !selectedUsers.find((selectedUser) => selectedUser.id === user.id) &&
         (user.firstname.toLowerCase().includes(query.toLowerCase()) ||
           user.lastname.toLowerCase().includes(query.toLowerCase()))
     );
@@ -65,7 +66,7 @@ export default function CreateGroupForm({
       className='flex flex-col p-3 gap-3 h-full last:mt-auto'
     >
       <div className='flex-grow'>
-        <GroupNameInput />
+        <InputName />
         <CreateUserSelector
           searchQuery={searchQuery}
           handleSearch={handleSearch}
