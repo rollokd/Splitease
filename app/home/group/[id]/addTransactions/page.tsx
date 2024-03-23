@@ -13,9 +13,9 @@ export default async function Page({ params }: { params: { id: string } }) {
   } catch (error) {
     console.log(error);
   }
-  const groupMembers = await getNamesOfUsersInAGroup(params.id)
 
-  const groupName = await getGroupsName(params.id)
+  const groupMembers = await getNamesOfUsersInAGroup(params.id);
+  const groupName = await getGroupsName(params.id);
   return (
     <>
       <TransCrumbs name={groupName} />

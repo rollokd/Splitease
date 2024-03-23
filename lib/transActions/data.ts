@@ -23,6 +23,7 @@ export async function getNamesOfUsersInAGroup(
 export async function getGroupsName(
   group_id: string
 ) {
+  noStore()
   try {
     const data = await sql`
     SELECT name FROM groups
