@@ -65,7 +65,10 @@ const EditUserSelector = ({
                     className='flex justify-between items-center w-full p-2'
                     onClick={(event) => {
                       event.preventDefault();
-                      handleRemoveUser(user.id);
+                      if (user.id === userID) {
+                      } else {
+                        handleRemoveUser(user.id);
+                      }
                     }}
                   >
                     <UserIcon />
