@@ -3,7 +3,7 @@ import { User } from '@/lib/definititions';
 import { useEffect, useState } from 'react';
 import { createGroup, getUserId } from '@/lib/actions';
 import CreateUserSelector from './CreateUserSelector';
-
+import { toast } from 'react-hot-toast';
 import ActionButtons from './CreateActionButtons';
 import InputName from './GroupNameInput';
 
@@ -23,7 +23,10 @@ export default function CreateGroupForm({
     // Automatically add the logged-in user to selected users
     const loggedInUser = users.find((user) => user.id === userID);
     if (loggedInUser) {
-      setSelectedUsers([loggedInUser]);
+      setSelectedUsers((prevSelectedUsers) => [
+        ...prevSelectedUsers.filter((u) => u.id !== userID),
+        loggedInUser,
+      ]);
     }
   }, [userID, users]);
 
@@ -67,8 +70,19 @@ export default function CreateGroupForm({
   // Submit form data to create a new group
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const userIds = [...selectedUsers.map((user) => user.id), userID];
-    await createGroup(new FormData(event.currentTarget), userIds);
+    const formData = new FormData(event.currentTarget);
+    const userIds = selectedUsers.map((user) => user.id);
+
+    try {
+      await createGroup(formData, userIds);
+      toast.success('Group created successfully!', {
+        duration: 2000,
+      });
+    } catch (error) {
+      toast.error('Failed to create group. Please try again.', {
+        duration: 2000,
+      });
+    }
   };
 
   return (

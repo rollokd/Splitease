@@ -5,6 +5,7 @@ import { updateGroup } from '@/lib/actions';
 import EditUserSelector from './EditUserSelector';
 import ActionButtons from './EditActionButtons';
 import InputEditName from './GroupNameEdit';
+import { toast } from 'react-hot-toast';
 
 type FormProps = {
   users: User[];
@@ -65,7 +66,12 @@ export default function EditGroupForm({
 
     // Check if balance is not zero
     if (userBalance !== 0) {
-      alert('A participant can only be removed if their balance is zero.');
+      toast.error(
+        'A participant can only be removed if their balance is zero.',
+        {
+          duration: 900,
+        }
+      );
       return;
     }
     // Prevent logged-in user from being removed
@@ -79,11 +85,21 @@ export default function EditGroupForm({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!group_id) {
-      console.error('Group ID is not available');
+      toast.error('Group ID is not available');
       return;
     }
+    const formData = new FormData(event.currentTarget);
     const userIds = selectedUsers.map((user) => user.id);
-    await updateGroup(new FormData(event.currentTarget), group_id, userIds);
+    try {
+      await updateGroup(formData, group_id, userIds);
+      toast.success('Group edited successfully!', {
+        duration: 2000,
+      });
+    } catch (error) {
+      toast.error('Failed to edit group. Please try again.', {
+        duration: 2000,
+      });
+    }
   };
   return (
     <form
@@ -91,7 +107,7 @@ export default function EditGroupForm({
       className='flex flex-col p-3 gap-3 h-full last:mt-auto'
     >
       <div className='flex-grow'>
-        <InputEditName name={name} />
+        <InputEditName defaultValue={name} />
         <EditUserSelector
           userID={userID}
           searchQuery={searchQuery}
