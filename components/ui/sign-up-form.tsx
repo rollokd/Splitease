@@ -1,5 +1,4 @@
 import Link from "next/link"
-
 import { Button } from "./button"
 import {
   Card,
@@ -11,16 +10,21 @@ import {
 import { Input } from "./input"
 import { Label } from "./label"
 
-export const description =
-  "A sign up form with first name, last name, email and password inside a card. There's an option to sign up with GitHub and a link to login if you already have an account"
+async function createUser(formData: FormData) {
+  'use server'
 
-export const iframeHeight = "600px"
-
-export const containerClassName =
-  "w-full h-screen flex items-center justify-center px-4"
+  const rawFormData = {
+    firstName: formData.get('first-name'),
+    lastName: formData.get('last-name'),
+    email: formData.get('email'),
+    password: formData.get('password'),
+  }
+  console.log(rawFormData);
+}
 
 export default function SignForm() {
   return (
+    <form action={createUser} >
     <Card className="mx-auto max-w-sm">
       <CardHeader>
         <CardTitle className="text-xl">Sign Up</CardTitle>
@@ -33,11 +37,11 @@ export default function SignForm() {
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="first-name">First name</Label>
-              <Input id="first-name"  required />
+              <Input id="first-name" name="first-name"  required />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="last-name">Last name</Label>
-              <Input id="last-name"  required />
+              <Input id="last-name" name="last-name"  required />
             </div>
           </div>
           <div className="grid gap-2">
@@ -45,13 +49,14 @@ export default function SignForm() {
             <Input
               id="email"
               type="email"
+              name="email"
               
               required
             />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" />
+            <Input id="password" type="password" name="password" />
           </div>
           <Button type="submit" className="w-full">
             Create an account
@@ -68,5 +73,6 @@ export default function SignForm() {
         </div>
       </CardContent>
     </Card>
+    </form>
   )
 }
