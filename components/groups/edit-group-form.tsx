@@ -12,6 +12,7 @@ type FormProps = {
   userID: string;
   name: string;
   group_id: string;
+  balances: { [key: string]: number };
 };
 
 export default function EditGroupForm({
@@ -20,6 +21,7 @@ export default function EditGroupForm({
   userID,
   name,
   group_id,
+  balances,
 }: FormProps) {
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
@@ -59,6 +61,13 @@ export default function EditGroupForm({
 
   // Remove a user from the selected list
   const handleRemoveUser = (userId: string) => {
+    const userBalance = balances[userId];
+
+    // Check if balance is not zero
+    if (userBalance !== 0) {
+      alert('A participant can only be removed if their balance is zero.');
+      return;
+    }
     // Prevent logged-in user from being removed
     if (userId !== userID) {
       setSelectedUsers((prevSelectedUsers) =>
