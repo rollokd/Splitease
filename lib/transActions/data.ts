@@ -1,6 +1,7 @@
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
 import { GroupUsersBasic } from '../definititions';
+import { getNameGroup } from '../data';
 
 export async function getNamesOfUsersInAGroup(
   group_id: string
@@ -76,6 +77,24 @@ export async function verifyTransId(
   )
     `
     return transactionEnquiry.rows[0].exists
+
+  } catch (e) {
+    console.log("database could not verify whether group id exists", e)
+  }
+}
+
+export async function getGroupNameWithTransId(
+  id: string
+) {
+  try {
+    const transactionEnquiry = await sql`
+    SELECT group_id FROM transactions
+    WHERE id =${id}
+    `
+    const groupID = transactionEnquiry.rows[0].group_id
+    const name = await getGroupsName(groupID)
+    return name
+
 
   } catch (e) {
     console.log("database could not verify whether group id exists", e)

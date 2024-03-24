@@ -1,8 +1,9 @@
 import { TransactionForm } from "@/components/addTransactions/Form";
+import { TransEdit } from "@/components/addTransactions/TransEdit"
 import { getNamesOfUsersInAGroup } from "@/lib/transActions/data";
 import { getUserId } from '@/lib/actions';
 import { TransCrumbs } from "@/components/addTransactions/TransCrumbs";
-import { getGroupsName, verifyGroupId, verifyTransId } from "@/lib/transActions/data";
+import { getGroupsName, verifyGroupId, verifyTransId, getGroupNameWithTransId } from "@/lib/transActions/data";
 export default async function Page({ params }: { params: { id: string } }) {
 
   let userID;
@@ -18,11 +19,16 @@ export default async function Page({ params }: { params: { id: string } }) {
   const groupName = await getGroupsName(params.id);
   const verifyGroupID = await verifyGroupId(params.id);
   const verifyTransID = await verifyTransId(params.id);
+  const getNameTransId = await getGroupNameWithTransId(params.id)
+  console.log(getNameTransId)
   return (
     <>
       {verifyGroupID && (
         <>
-          <TransCrumbs name={groupName} />
+          <TransCrumbs
+            name={groupName}
+            edit="false"
+          />
           <TransactionForm
             groupMembers={groupMembers}
             userID={String(userID)}
@@ -32,12 +38,15 @@ export default async function Page({ params }: { params: { id: string } }) {
       )}
       {verifyTransID && (
         <>
-          <TransCrumbs name={groupName} />
-          <TransactionEdit
-            groupMembers={groupMembers}
-            userID={String(userID)}
+          <TransCrumbs
+            name={getNameTransId}
+            edit="true"
+          />
+          <TransEdit
+          // transMembers={transMembers}
+          // userID={String(userID)}
           >
-          </TransactionEdit>
+          </TransEdit>
         </>
       )}
     </>
