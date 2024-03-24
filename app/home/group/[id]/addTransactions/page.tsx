@@ -3,15 +3,20 @@ import { TransEdit } from "@/components/addTransactions/TransEdit"
 import { getNamesOfUsersInAGroup } from "@/lib/transActions/data";
 import { getUserId } from '@/lib/actions';
 import { TransCrumbs } from "@/components/addTransactions/TransCrumbs";
-import { getGroupsName, verifyGroupId, verifyTransId, getGroupNameWithTransId, fetchUsersFromTransactionId } from "@/lib/transActions/data";
+import {
+  getGroupsName,
+  verifyGroupId,
+  verifyTransId,
+  getGroupNameWithTransId,
+  fetchUsersFromTransactionId
+} from "@/lib/transActions/data";
 
 export default async function Page({ params }: { params: { id: string } }) {
 
   const verifyGroupID = await verifyGroupId(params.id);
   const verifyTransID = await verifyTransId(params.id);
-  let groupMembers, groupName;
+  let groupMembers, groupName, userID;
   if (verifyGroupID) {
-    let userID;
     try {
       userID = await getUserId();
       if (!userID) throw new Error("User ID not found");
