@@ -3,24 +3,33 @@ import { TransEdit } from "@/components/addTransactions/TransEdit"
 import { getNamesOfUsersInAGroup } from "@/lib/transActions/data";
 import { getUserId } from '@/lib/actions';
 import { TransCrumbs } from "@/components/addTransactions/TransCrumbs";
-import { getGroupsName, verifyGroupId, verifyTransId, getGroupNameWithTransId } from "@/lib/transActions/data";
+import { getGroupsName, verifyGroupId, verifyTransId, getGroupNameWithTransId, fetchUsersFromTransactionId } from "@/lib/transActions/data";
+
 export default async function Page({ params }: { params: { id: string } }) {
 
-  let userID;
-  try {
-    userID = await getUserId();
-    if (!userID) throw new Error("User ID not found");
-    console.log('userID', userID);
-  } catch (error) {
-    console.log(error);
-  }
-
-  const groupMembers = await getNamesOfUsersInAGroup(params.id);
-  const groupName = await getGroupsName(params.id);
   const verifyGroupID = await verifyGroupId(params.id);
   const verifyTransID = await verifyTransId(params.id);
-  const getNameTransId = await getGroupNameWithTransId(params.id)
-  console.log(getNameTransId)
+  let groupMembers, groupName;
+  if (verifyGroupID) {
+    let userID;
+    try {
+      userID = await getUserId();
+      if (!userID) throw new Error("User ID not found");
+      console.log('userID', userID);
+    } catch (error) {
+      console.log(error);
+    }
+
+    groupMembers = await getNamesOfUsersInAGroup(params.id);
+    groupName = await getGroupsName(params.id);
+  }
+  let getNameTransId, getUsers;
+  if (verifyTransID) {
+
+    getNameTransId = await getGroupNameWithTransId(params.id)
+    getUsers = await fetchUsersFromTransactionId(params.id)
+  }
+
   return (
     <>
       {verifyGroupID && (

@@ -41,6 +41,7 @@ export async function getGroupsName(
 export async function verifyGroupId(
   id: string
 ) {
+  noStore()
   try {
     const groupEnquiry = await sql`
     SELECT 
@@ -64,6 +65,7 @@ export async function verifyGroupId(
 export async function verifyTransId(
   id: string
 ) {
+  noStore()
   try {
     const transactionEnquiry = await sql`
     SELECT 
@@ -86,6 +88,7 @@ export async function verifyTransId(
 export async function getGroupNameWithTransId(
   id: string
 ) {
+  noStore()
   try {
     const transactionEnquiry = await sql`
     SELECT group_id FROM transactions
@@ -98,5 +101,25 @@ export async function getGroupNameWithTransId(
 
   } catch (e) {
     console.log("database could not verify whether group id exists", e)
+  }
+}
+
+export async function fetchUsersFromTransactionId(
+  id: string
+) {
+  noStore()
+  try {
+    let firstStep = await sql`
+    select group_id from transactions
+    where id =${id}
+    `
+    let getIdsFromSPlits = await sql`
+    select user_id from splits
+where group_id =${firstStep.rows[0].group_id}
+    `
+    console.log('getIdsFromSPlits', getIdsFromSPlits.rows)
+
+  } catch (e) {
+    console.log("could not fetch users based on transaction id", e)
   }
 }
