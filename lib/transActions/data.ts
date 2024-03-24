@@ -36,3 +36,48 @@ export async function getGroupsName(
   }
 
 }
+
+export async function verifyGroupId(
+  id: string
+) {
+  try {
+    const groupEnquiry = await sql`
+    SELECT 
+  EXISTS(
+    SELECT 
+      1
+    FROM 
+      groups 
+    WHERE 
+      id =${id}
+  )
+    `
+    return groupEnquiry.rows[0].exists
+
+  } catch (e) {
+    console.log("database could not verify whether group id exists", e)
+
+  }
+}
+
+export async function verifyTransId(
+  id: string
+) {
+  try {
+    const transactionEnquiry = await sql`
+    SELECT 
+  EXISTS(
+    SELECT 
+      1
+    FROM 
+      transactions
+    WHERE 
+      id =${id}
+  )
+    `
+    return transactionEnquiry.rows[0].exists
+
+  } catch (e) {
+    console.log("database could not verify whether group id exists", e)
+  }
+}

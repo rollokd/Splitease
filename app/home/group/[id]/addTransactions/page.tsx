@@ -2,7 +2,7 @@ import { TransactionForm } from "@/components/addTransactions/Form";
 import { getNamesOfUsersInAGroup } from "@/lib/transActions/data";
 import { getUserId } from '@/lib/actions';
 import { TransCrumbs } from "@/components/addTransactions/TransCrumbs";
-import { getGroupsName } from "@/lib/transActions/data";
+import { getGroupsName, verifyGroupId, verifyTransId } from "@/lib/transActions/data";
 export default async function Page({ params }: { params: { id: string } }) {
 
   let userID;
@@ -16,15 +16,30 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const groupMembers = await getNamesOfUsersInAGroup(params.id);
   const groupName = await getGroupsName(params.id);
+  const verifyGroupID = await verifyGroupId(params.id);
+  const verifyTransID = await verifyTransId(params.id);
   return (
     <>
-      <TransCrumbs name={groupName} />
-      <TransactionForm
-        groupMembers={groupMembers}
-        userID={String(userID)}
-      >
-
-      </TransactionForm>
+      {verifyGroupID && (
+        <>
+          <TransCrumbs name={groupName} />
+          <TransactionForm
+            groupMembers={groupMembers}
+            userID={String(userID)}
+          >
+          </TransactionForm>
+        </>
+      )}
+      {verifyTransID && (
+        <>
+          <TransCrumbs name={groupName} />
+          <TransactionEdit
+            groupMembers={groupMembers}
+            userID={String(userID)}
+          >
+          </TransactionEdit>
+        </>
+      )}
     </>
   );
 }
