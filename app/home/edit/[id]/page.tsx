@@ -21,6 +21,7 @@ async function Page({ params }: Props) {
         groupUsers={groupUsers}
         userID={userID}
         name={group?.name}
+        group_id={group_id}
       />
     </div>
   );

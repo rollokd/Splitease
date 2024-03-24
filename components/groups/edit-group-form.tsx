@@ -2,7 +2,6 @@
 import { User } from '@/lib/definititions';
 import { useEffect, useState } from 'react';
 import { updateGroup } from '@/lib/actions';
-import { usePathname } from 'next/navigation';
 import EditUserSelector from './EditUserSelector';
 import ActionButtons from './EditActionButtons';
 import InputEditName from './GroupNameEdit';
@@ -12,6 +11,7 @@ type FormProps = {
   groupUsers: User[];
   userID: string;
   name: string;
+  group_id: string;
 };
 
 export default function EditGroupForm({
@@ -19,18 +19,15 @@ export default function EditGroupForm({
   groupUsers,
   userID,
   name,
+  group_id,
 }: FormProps) {
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const pathname = usePathname();
-  const [groupId, setGroupId] = useState<string | null>(null);
 
   useEffect(() => {
-    const segments = pathname.split('/').filter(Boolean);
-    setGroupId(segments[2]);
     setSelectedUsers(groupUsers);
-  }, [groupUsers, pathname]);
+  }, [groupUsers]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -62,19 +59,22 @@ export default function EditGroupForm({
 
   // Remove a user from the selected list
   const handleRemoveUser = (userId: string) => {
-    setSelectedUsers((prevSelectedUsers) =>
-      prevSelectedUsers.filter((user) => user.id !== userId)
-    );
+    // Prevent logged-in user from being removed
+    if (userId !== userID) {
+      setSelectedUsers((prevSelectedUsers) =>
+        prevSelectedUsers.filter((user) => user.id !== userId)
+      );
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!groupId) {
+    if (!group_id) {
       console.error('Group ID is not available');
       return;
     }
     const userIds = selectedUsers.map((user) => user.id);
-    await updateGroup(new FormData(event.currentTarget), groupId, userIds);
+    await updateGroup(new FormData(event.currentTarget), group_id, userIds);
   };
   return (
     <form
