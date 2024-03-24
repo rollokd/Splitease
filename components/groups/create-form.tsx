@@ -19,6 +19,14 @@ export default function CreateGroupForm({
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
+  useEffect(() => {
+    // Automatically add the logged-in user to selected users
+    const loggedInUser = users.find((user) => user.id === userID);
+    if (loggedInUser) {
+      setSelectedUsers([loggedInUser]);
+    }
+  }, [userID, users]);
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (!query) {
@@ -48,9 +56,12 @@ export default function CreateGroupForm({
 
   // Remove a user from the selected list
   const handleRemoveUser = (userId: string) => {
-    setSelectedUsers((prevSelectedUsers) =>
-      prevSelectedUsers.filter((user) => user.id !== userId)
-    );
+    // Prevent logged-in user from being removed
+    if (userId !== userID) {
+      setSelectedUsers((prevSelectedUsers) =>
+        prevSelectedUsers.filter((user) => user.id !== userId)
+      );
+    }
   };
 
   // Submit form data to create a new group
@@ -68,6 +79,7 @@ export default function CreateGroupForm({
       <div className='flex-grow'>
         <InputName />
         <CreateUserSelector
+          userID={userID}
           searchQuery={searchQuery}
           handleSearch={handleSearch}
           searchResults={searchResults}

@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/command';
 
 const CreateUserSelector = ({
+  userID,
   searchQuery,
   handleSearch,
   searchResults,
@@ -18,6 +19,7 @@ const CreateUserSelector = ({
   selectedUsers,
   handleRemoveUser,
 }: {
+  userID: string;
   searchQuery: string;
   handleSearch: (query: string) => void;
   searchResults: User[];
@@ -58,15 +60,27 @@ const CreateUserSelector = ({
             {selectedUsers.length > 0 ? (
               <CommandGroup heading='Selected Users'>
                 {selectedUsers.map((user) => (
-                  <button
+                  <div
                     key={user.id}
-                    className='flex justify-between items-center w-full p-2'
-                    onClick={() => handleRemoveUser(user.id)}
+                    className='flex justify-stretch items-center w-full p-2'
                   >
                     <UserIcon />
-                    {`${user.firstname} ${user.lastname}`}
-                    <Minus />
-                  </button>
+                    <span
+                      className={`ml-2 ${
+                        user.id === userID ? 'font-bold' : ''
+                      }`}
+                    >
+                      {`${user.firstname} ${user.lastname}`}
+                    </span>
+                    {user.id !== userID && (
+                      <button
+                        onClick={() => handleRemoveUser(user.id)}
+                        className='ml-auto'
+                      >
+                        <Minus />
+                      </button>
+                    )}
+                  </div>
                 ))}
               </CommandGroup>
             ) : (
