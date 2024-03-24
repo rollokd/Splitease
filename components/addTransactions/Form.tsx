@@ -191,7 +191,7 @@ export function TransactionForm({
             }
             : form.handleSubmit(onSubmit)
         }
-        className="space-y-8"
+        className="space-y-8 mt-5"
       >
         <FormField
           control={form.control}
@@ -202,9 +202,6 @@ export function TransactionForm({
               <FormControl>
                 <Input placeholder="type here..." {...field} />
               </FormControl>
-              <FormDescription>
-                This is the tag for your transaction.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -227,9 +224,6 @@ export function TransactionForm({
                   }}
                 />
               </FormControl>
-              <FormDescription>
-                This is the sum that will be split.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -251,16 +245,15 @@ export function TransactionForm({
                   }
                 />
               </FormControl>
-              <FormDescription>
-                This is a transactions creation date.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <div className="container">
-          <table className="">
-            <thead className="[&_tr]:border-b">
+        <div>
+          <table>
+            <thead
+              className="[&_tr]:border-b"
+            >
               <tr>
                 <th
                   scope="col"
