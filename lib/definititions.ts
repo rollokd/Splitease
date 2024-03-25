@@ -103,8 +103,9 @@ export type GroupMember = {
 
 export type DataBarChart = {
   name: string,
-  total: string,
-  
+  total: number,
+  listOfUsers: string[],
+  group_id: string,
 }
 
 type SqlField = {
