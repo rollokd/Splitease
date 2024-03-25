@@ -7,7 +7,6 @@ import {
 } from '@/lib/data';
 import EditGroupForm from '@/components/groups/edit-group-form';
 import { getUserId } from '@/lib/actions';
-import Navbar from '@/components/Navbar';
 
 type Props = { params: { id: string } };
 
@@ -26,7 +25,6 @@ async function Page({ params }: Props) {
   const balances = Object.assign({}, ...balancesObjects);
   return (
     <>
-      <Navbar />
       <div className='flex flex-col p-3 gap-3 h-full last:mt-auto'>
         <strong className='gap-3 mb-4 mt-2 p-3'>
           <GroupCrumbs name={group?.name} group_id={group_id} type='edit' />

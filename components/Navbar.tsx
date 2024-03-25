@@ -21,7 +21,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className='w-full h-24 shadow-xl bg-white flex justify-between items-center px-2'>
+    <nav className='w-full h-24 shadow-xl flex justify-between items-center px-2'>
       <div>
         <Link href='/home/dashboard/'>
           <Image src={Logo} alt='logo' width={205} height={75} priority />
