@@ -11,9 +11,23 @@ import { PowerIcon } from '@heroicons/react/24/outline';
 import { getUserId } from '@/lib/actions';
 import { moneyFormat } from '@/lib/utils';
 import { ModeToggle } from '@/components/themeMode';
+import { redirect } from 'next/navigation'
 
 export default async function Home() {
-  const userID = (await getUserId()) as string;
+  
+  let userID : string | undefined;
+  try {
+    userID = await getUserId();
+    
+  } catch (error) {
+    console.error('Failed to fetch userID:', error);
+  }
+  if (userID === undefined) {
+    console.error('Failed to fetch userID');
+    redirect('login')
+  }
+
+  
 
   let userGroups = await getUserGroups(userID);
   if (userGroups === undefined) userGroups = [];
