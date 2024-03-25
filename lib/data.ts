@@ -3,25 +3,6 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { UserWJunction, Group, UserTransaction, User, Own, GroupMember, Name, Debts, GroupUsersBasic } from './definititions';
 
 
-
-// export async function fetchUsersTransactionsOfGroups(
-//   groupID: string = '5909a47f-9577-4e96-ad8d-7af0d52c3267'
-// ) {
-//   noStore();
-//   try {
-//     // The query is already parameter-free, but ensure to escape or parameterize any dynamic values
-//     const data = await sql`
-//     SELECT users.id, firstname, lastname, transactions.paid_by, transactions.amount, transactions.status AS status, transactions.group_id
-//     FROM users
-//     JOIN transactions ON users.id = transactions.paid_by
-//     WHERE transactions.group_id = ${groupID} AND status = 'false';
-//     `;
-//     return data.rows;
-//   } catch (error) {
-//     console.log('Database Error:', error);
-//   }
-// }
-
 // get group from group id
 export async function getGroupById(group_id: string) {
   noStore();
@@ -42,7 +23,7 @@ export async function getTransactionsByGroup(
   noStore();
   try {
     const { rows } = await sql<UserTransaction>`
-      SELECT transactions.id AS trans_id, group_id, name, amount, paid_by,status, date, users.id, firstname,lastname, email FROM transactions
+      SELECT transactions.id AS trans_id, group_id, name, amount, paid_by, status, date, users.id, firstname,lastname, email FROM transactions
       Left JOIN users
 	    ON users.id = transactions.paid_by
       WHERE group_id = ${group_id}`;

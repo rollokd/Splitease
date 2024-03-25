@@ -5,6 +5,15 @@ import GroupCrumbs from "@/components/group-view/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { getUserId } from "@/lib/actions";
 import { moneyFormat } from "@/lib/utils";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
 type Props = { params: { id: string } };
 
 export default async function SettleUpDashBoard({ params }: Props) {
@@ -40,11 +49,13 @@ export default async function SettleUpDashBoard({ params }: Props) {
       <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
         Balances
       </h4>
-      <div>
-        {balances.map((balance, index) => (
-          <DashboardCard key={index} user_id = {balance.name} debt={balance.total} />
-        ))}
-      </div>
+      <Card>
+        <div>
+          {balances.map((balance, index) => (
+            <DashboardCard key={index} user_id = {balance.name} debt={balance.total} />
+          ))}
+        </div>
+      </Card>
       <div className="p-5">
         <Button className='bg-green-500'>
           Settle Up
