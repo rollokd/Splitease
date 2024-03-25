@@ -66,21 +66,23 @@ export default async function Home() {
         </Button>
       </div>
       <div style={{ height: "400px", overflowY: "auto", borderColor: "var(--card)", borderRadius: "5px", borderStyle: 'ridge', borderWidth: "1px"}}>
-        {userID &&
-          groups.map((group) => (
-            <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
-              <GroupCard
-                key={group.group_id}
-                group_id={group.group_id}
-                user_id={userID}
-              />
-            </Link>
-          ))}
+        <div className='m-2'>
+          {userID &&
+            groups.map((group) => (
+              <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
+                <GroupCard
+                  key={group.group_id}
+                  group_id={group.group_id}
+                  user_id={userID}
+                />
+              </Link>
+            ))}
+        </div>
       </div>
-      <div className='flex justify-center pt-5'>
+      <div className='flex justify-center pt-5 mt-5 mb-10'>
         <GroupChart data={balances}></GroupChart>
       </div>
-      <div className='flex justify-center m-4 pt-1 pb-3'>
+      <div className='flex justify-center m-4 pt-1 pb-3 fixed inset-x-0 bottom-0'>
         <Link className="w-full" href={`/home/settle_up_dashboard`}>
           <Button className='bg-green-500 w-full'>
             Settle Up

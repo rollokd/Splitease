@@ -228,3 +228,27 @@ export async function authenticate(
     throw error;
   }
 }
+
+export async function updateSettleSplits(splitID: string, userID: string) {
+  try {
+    await sql`
+      UPDATE trasnactions
+      SET status = True
+      WHERE id = ${splitID} AND paid_by = ${userID};
+      `;
+  } catch (error) {
+    console.log('Error updateSettleSplits: ', error)
+  }
+}
+
+export async function updateSettleTransaction(transID: string, userID: string) {
+  try {
+    await sql`
+      UPDATE splits
+      SET paid = True
+      WHERE id = ${transID} AND user_id = ${userID};
+      `;
+  } catch (error) {
+    console.log('Error updateSettleTransaction: ', error)
+  }
+}

@@ -151,3 +151,8 @@ export type Debts = {
   user_id: string,
   sum: number
 }
+
+export type DashboardCardType = {
+  user_id: string,
+  debt: string,
+}
