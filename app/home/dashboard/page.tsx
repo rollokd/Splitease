@@ -39,26 +39,26 @@ export default async function Home() {
   //const bears = useStore((state) => state.bears);
   return (
     <>
-      <div className="p-4">
-      <div className="mb-2">
-          <form
+      <div className='p-4'>
+        <div className='mb-2'>
+          {/* <form
             action={async () => {
               'use server';
               await signOut();
             }}
           >
             <ModeToggle />
-            <Button className="ml-4">
-              <PowerIcon className="w-4" />{' '}
-              <div className="ml-2"> Sign Out</div>{' '}
+            <Button className='ml-4'>
+              <PowerIcon className='w-4' />{' '}
+              <div className='ml-2'> Sign Out</div>{' '}
             </Button>
-          </form>
+          </form> */}
         </div>
         <Totals userId={userID} />
 
-        <div className="m-4 flex justify-end">
+        <div className='m-4 flex justify-end'>
           <Button>
-            <Link href="/home/create">Create Group +</Link>
+            <Link href='/home/create'>Create Group +</Link>
           </Button>
         </div>
         <div
@@ -82,12 +82,12 @@ export default async function Home() {
               </Link>
             ))}
         </div>
-        <div className="flex justify-center pt-5">
+        <div className='flex justify-center pt-5'>
           <GroupChart data={balances}></GroupChart>
         </div>
-        <div className="flex justify-center m-4 pt-1 pb-3">
-          <Link className="w-full" href={`/home/settle_up_dashboard`}>
-            <Button className="bg-green-500 w-full">Settle Up</Button>
+        <div className='flex justify-center m-4 pt-1 pb-3'>
+          <Link className='w-full' href={`/home/settle_up_dashboard`}>
+            <Button className='bg-green-500 w-full'>Settle Up</Button>
           </Link>
         </div>
       </div>
