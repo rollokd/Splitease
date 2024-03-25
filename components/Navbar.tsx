@@ -1,5 +1,4 @@
 'use client';
-import React, { useEffect } from 'react';
 import { ModeToggle } from '@/components/themeMode';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
@@ -8,7 +7,6 @@ import Logo from '../public/Logo.png';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { MdGroupAdd } from 'react-icons/md';
 import { SignOut } from '@/lib/actions';
-import { useRouter } from 'next/router';
 
 const Navbar = () => {
   const handleSignOutClick = async () => {
