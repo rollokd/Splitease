@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { fetchUserBalance, getUsersbyGroup, getNameGroup } from '@/lib/data';
 import { UserWJunction, Junction } from '@/lib/definititions';
 import { moneyFormat } from '@/lib/utils';
+import { fetchUserBalancesForGroup } from '@/lib/databaseActions/fetchUserBalancesForGroup';
 
 const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map((user) => user.firstname);

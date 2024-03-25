@@ -161,6 +161,6 @@ export type Debts = {
 }
 
 export type DashboardCardType = {
-  user_id: string,
+  name: string,
   debt: string,
 }

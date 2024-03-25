@@ -5,12 +5,12 @@ import { getUserGroups, fetchUserBalance } from '../../../lib/data';
 import Totals from '../../../components/Totals';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-
 import { signOut, auth } from '@/auth';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import { getUserId } from '@/lib/actions';
 import { moneyFormat } from '@/lib/utils';
 import { ModeToggle } from '@/components/themeMode';
+import { getTransactionsById } from '@/lib/databaseActions/getTransactionsByID';
 
 export default async function Home() {
   const userID = (await getUserId()) as string;
@@ -28,13 +28,19 @@ export default async function Home() {
       return { name: `${name}...`, total: moneyFormat(balance) };
     })
   );
-  console.log('Balances results: ', balances);
+  // console.log('Balances results from dashboard page: ', balances);
   const groups = await Promise.all(
     userGroups.map(async (group) => {
       // console.log('Group ID: ', group.group_id);
       return { group_id: group.group_id };
     })
   );
+
+  const transactions = await getTransactionsById(userID);
+  // const balances = await Promise.all(balancesArray.map(async (debt) => {
+  //   return { name: debt.firstname, total: moneyFormat(debt.owed_amount - Number(debt.lent_amount)) };
+  // }))
+  console.log('Get transactions result: ', transactions);
 
   //const bears = useStore((state) => state.bears);
   return (

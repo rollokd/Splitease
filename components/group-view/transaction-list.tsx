@@ -18,7 +18,7 @@ type Props = { group_id: string; user_id: string };
 
 const TransactionList = async ({ group_id, user_id }: Props) => {
   const transactions = await getTransactionsByGroupAndId(group_id, user_id);
-  console.log(transactions);
+  // console.log(transactions);
   return (
     <Card className="flex-1">
       <CardHeader>

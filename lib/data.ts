@@ -203,7 +203,7 @@ export async function getDebts(userID: string) {
     const { rows } = await sql<Debts>`
     SELECT paid_by, SUM(user_amount) FROM public.transactions
     JOIN splits ON transactions.id = splits.trans_id
-    WHERE user_id = ${userID} AND paid_by != ${userID} AND paid=false
+    WHERE user_id = ${userID} AND paid=false
     GROUP BY paid_by;
     `
     // console.log('getDebts result: ', rows);
