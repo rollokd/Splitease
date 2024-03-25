@@ -23,14 +23,16 @@ export default async function SettleUpDashBoard({ params }: Props) {
   // console.log('User ID from dashboard settle up: ', userID);
   const balancesArray = await getMyDebtsForAll(userID)
   const balances = await Promise.all(balancesArray.map(async (debt) => {
-    return { name: debt.firstname, total: moneyFormat(debt.owed_amount - Number(debt.lent_amount)) };
+    return { name: debt.firstname, total: moneyFormat(debt.owed_amount - debt.lent_amount) };
   }))
+
+
   const filteredBalances = balances.filter(debt => {
     if (Number(debt.total) != 0) {
       return true 
     }
   })
-  console.log('Get filteredBalances result: ', filteredBalances);
+  // console.log('Get filteredBalances result: ', filteredBalances);
 
   return (
     <>
@@ -46,9 +48,9 @@ export default async function SettleUpDashBoard({ params }: Props) {
           <CardTitle>
             Balances
           </CardTitle>
-          <CardDescription>
+          {/* <CardDescription>
             per person
-          </CardDescription>
+          </CardDescription> */}
         </CardHeader>
         <div>
           {filteredBalances.map((balance, index) => (

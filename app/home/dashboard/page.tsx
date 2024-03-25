@@ -1,5 +1,5 @@
 export const dynamic = 'force-dynamic';
-import { GroupCard } from '@/components/group-card';
+import { GroupCard } from '@/components/group-card-test';
 import { GroupChart } from '../../../components/bar-chart';
 import { getUserGroups, fetchUserBalance } from '../../../lib/data';
 import Totals from '../../../components/Totals';
@@ -10,7 +10,8 @@ import { PowerIcon } from '@heroicons/react/24/outline';
 import { getUserId } from '@/lib/actions';
 import { moneyFormat } from '@/lib/utils';
 import { ModeToggle } from '@/components/themeMode';
-import { getTransactionsById } from '@/lib/databaseActions/getTransactionsByID';
+import { fetchOneUserBalanceForGroup } from '@/lib/databaseActions/fetchOneUserBalanceForGroup';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default async function Home() {
   const userID = (await getUserId()) as string;
@@ -19,13 +20,12 @@ export default async function Home() {
   if (userGroups === undefined) userGroups = [];
   const balances = await Promise.all(
     userGroups.map(async (group) => {
-      let balance = await fetchUserBalance(userID, group.group_id);
-      if (balance === undefined) balance = 0;
+      let { rows } = await fetchOneUserBalanceForGroup(userID, group.group_id);
       let name = group.name;
       if (name.length >= 5) {
-        name = name.slice(0, 5);
+        name = `${name.slice(0, 5)}...`;
       }
-      return { name: `${name}...`, total: moneyFormat(balance) };
+      return { name: name, total: moneyFormat(rows[0].lent_amount - rows[0].owed_amount) };
     })
   );
   // console.log('Balances results from dashboard page: ', balances);
@@ -36,13 +36,6 @@ export default async function Home() {
     })
   );
 
-  const transactions = await getTransactionsById(userID);
-  // const balances = await Promise.all(balancesArray.map(async (debt) => {
-  //   return { name: debt.firstname, total: moneyFormat(debt.owed_amount - Number(debt.lent_amount)) };
-  // }))
-  console.log('Get transactions result: ', transactions);
-
-  //const bears = useStore((state) => state.bears);
   return (
     <>
       <div className="p-4">
@@ -67,14 +60,33 @@ export default async function Home() {
             <Link href="/home/create">Create Group +</Link>
           </Button>
         </div>
-        <div style={{ height: "400px", overflowY: "auto", borderColor: "var(--card)", borderRadius: "5px", borderStyle: 'ridge', borderWidth: "1px"}}>
-          <div className='m-2'>
+        <div style={{ height: "400px", overflowY: "auto" }}>
+          {/* <Card className='m-2'>
+            <CardHeader>
+              <CardTitle>
+                Groups
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {userID &&
+                groups.map(({ group_id }) => (
+                  <Link key={group_id} href={`/home/group/${group_id}`}>
+                    <GroupCard
+                      key={group_id}
+                      group_id={group_id}
+                      user_id={userID}
+                    />
+                  </Link>
+                ))}
+            </CardContent>
+          </Card> */}
+          <div>
             {userID &&
-              groups.map((group) => (
-                <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
+              groups.map(({ group_id }) => (
+                <Link key={group_id} href={`/home/group/${group_id}`}>
                   <GroupCard
-                    key={group.group_id}
-                    group_id={group.group_id}
+                    key={group_id}
+                    group_id={group_id}
                     user_id={userID}
                   />
                 </Link>

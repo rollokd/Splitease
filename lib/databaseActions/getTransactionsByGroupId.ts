@@ -36,7 +36,8 @@ export async function getTransactionsByGroupAndId(
   WHERE
     TRANSACTIONS.GROUP_ID = ${group_id}
   GROUP BY
-    TRANSACTIONS.ID, USERS.ID;`
+    TRANSACTIONS.ID, USERS.ID;
+    `
     return rows;
   } catch (err) {
     console.error('Database Error:', err);
