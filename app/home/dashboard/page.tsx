@@ -1,7 +1,8 @@
 export const dynamic = 'force-dynamic';
-import { GroupCard } from '@/components/group-card-test';
+// import { GroupCard } from '@/components/group-card-test';
+import { GroupCard } from '@/components/group-card';
 import { GroupChart } from '../../../components/bar-chart';
-import { getUserGroups, fetchUserBalance } from '../../../lib/data';
+import { getUserGroups, fetchUserBalance, getUsersbyGroup } from '../../../lib/data';
 import Totals from '../../../components/Totals';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,13 @@ import { moneyFormat } from '@/lib/utils';
 import { ModeToggle } from '@/components/themeMode';
 import { fetchOneUserBalanceForGroup } from '@/lib/databaseActions/fetchOneUserBalanceForGroup';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { UserWJunction } from '@/lib/definititions';
+
+const getUsers = (userByGroup: UserWJunction[]) => {
+  const firstnames = userByGroup.map((user) => user.firstname);
+  // console.log(firstnames);
+  return firstnames;
+};
 
 export default async function Home() {
   const userID = (await getUserId()) as string;
@@ -25,16 +33,18 @@ export default async function Home() {
       if (name.length >= 5) {
         name = `${name.slice(0, 5)}...`;
       }
-      return { name: name, total: moneyFormat(rows[0].lent_amount - rows[0].owed_amount) };
+      const userByGroup = await getUsersbyGroup(group.group_id);
+      const listOfUsers = getUsers(userByGroup || []);
+      return { name: name, total: rows[0].lent_amount - rows[0].owed_amount, listOfUsers: listOfUsers, group_id: group.group_id };
     })
   );
   // console.log('Balances results from dashboard page: ', balances);
-  const groupIDs = await Promise.all(
-    userGroups.map(async (group) => {
-      // console.log('Group ID: ', group.group_id);
-      return { group_id: group.group_id };
-    })
-  );
+  // const groupIDs = await Promise.all(
+  //   userGroups.map(async (group) => {
+  //     // console.log('Group ID: ', group.group_id);
+  //     return { group_id: group.group_id };
+  //   })
+  // );
 
   return (
     <>
@@ -80,7 +90,7 @@ export default async function Home() {
                 ))}
             </CardContent>
           </Card> */}
-          <div>
+          {/* <div>
             {userID &&
               groupIDs.map(({ group_id }) => (
                 <Link key={group_id} href={`/home/group/${group_id}`}>
@@ -88,6 +98,19 @@ export default async function Home() {
                     key={group_id}
                     group_id={group_id}
                     user_id={userID}
+                  />
+                </Link>
+              ))}
+          </div> */}
+          <div>
+            {userID &&
+              groupBalances.map(( group ) => (
+                <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
+                  <GroupCard
+                    key={group.group_id}
+                    groupName={group.name}
+                    groupTotals={Number(group.total)}
+                    listOfUsers={group.listOfUsers}
                   />
                 </Link>
               ))}
