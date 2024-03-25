@@ -15,7 +15,6 @@ const page = async () => {
     <>
       <div className='flex flex-col p-3 gap-3 h-full last:mt-auto'>
         <GroupCrumbs name={name} />
-
         <CreateGroupForm users={users} userID={userID} />
       </div>
     </>
