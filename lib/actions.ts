@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { sql } from '@vercel/postgres';
+import { QueryResult, sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import {
@@ -43,12 +43,20 @@ export async function createUser(prevState: any, formData: FormData) {
   }
   console.log(validatedFields);
   const { email, firstName, lastName, password } = validatedFields.data;
-  const emailExists = await sql`select * from users where email = ${email}`;
+ // let emailExists;
 
-  if (emailExists.rows.length > 0) {
-    console.log('Email already exists');
-    return { emailExists: 'Email already exists' };
+  try {
+    const {rows} = await sql`select * from users where email = ${email}`;
+    if (rows.length > 0) {
+      console.log('Email already exists');
+      return { emailExists: 'Email already exists' };
+    }
+    //emailExists = await sql`select * from users where email = ${email}`;
+  } catch (error) {
+    console.log(error);
   }
+
+
 
   //bug try {
   //const { email, firstName, lastName, password } = validatedFields.data;

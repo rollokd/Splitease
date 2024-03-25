@@ -1,7 +1,6 @@
 import CardTotals from './cardTotals';
 import { fetchOwnDashboardData } from '../lib/data';
 import { moneyFormat } from '@/lib/utils';
-import { RevenueChartSkeleton } from '@/components/ui/skeletons';
 
 export default async function Totals({ userId }: { userId: string }) {
   let own;
