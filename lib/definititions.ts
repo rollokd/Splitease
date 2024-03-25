@@ -163,6 +163,8 @@ export type Debts = {
 export type DashboardCardType = {
   name: string,
   debt: string,
+  other_id: string,
+  user_id: string,
 }
 
 export type GroupCardType = {

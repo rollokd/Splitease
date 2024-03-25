@@ -18,7 +18,7 @@ export default async function Home() {
 
   let userGroups = await getUserGroups(userID);
   if (userGroups === undefined) userGroups = [];
-  const balances = await Promise.all(
+  const groupBalances = await Promise.all(
     userGroups.map(async (group) => {
       let { rows } = await fetchOneUserBalanceForGroup(userID, group.group_id);
       let name = group.name;
@@ -29,7 +29,7 @@ export default async function Home() {
     })
   );
   // console.log('Balances results from dashboard page: ', balances);
-  const groups = await Promise.all(
+  const groupIDs = await Promise.all(
     userGroups.map(async (group) => {
       // console.log('Group ID: ', group.group_id);
       return { group_id: group.group_id };
@@ -82,7 +82,7 @@ export default async function Home() {
           </Card> */}
           <div>
             {userID &&
-              groups.map(({ group_id }) => (
+              groupIDs.map(({ group_id }) => (
                 <Link key={group_id} href={`/home/group/${group_id}`}>
                   <GroupCard
                     key={group_id}
@@ -94,7 +94,7 @@ export default async function Home() {
           </div>
         </div>
         <div className='flex justify-center pt-5 mt-5 mb-10'>
-          <GroupChart data={balances}></GroupChart>
+          <GroupChart data={groupBalances}></GroupChart>
         </div>
         <div className='flex justify-center m-4 pt-1 pb-3 fixed inset-x-0 bottom-0'>
           <Link className="w-full" href={`/home/settle_up_dashboard`}>

@@ -1,3 +1,4 @@
+"use client"
 import * as React from "react";
 import {
   Card,
@@ -12,12 +13,18 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { DashboardCardType } from "@/lib/definititions";
 import { Button } from "./ui/button";
+import { settleUpSplits } from "@/lib/databaseActions/settleUpSplits";
 
-export const DashboardCard: React.FC<DashboardCardType> = async ({ name, debt }) => {
- 
+export const DashboardCard: React.FC<DashboardCardType> = async ({ name, debt, other_id, user_id }) => {
 
-  // const name = await getName(user_id);
-  // console.log('name: ', typeof name);
+  const handleSettleClick = () => {
+    settleUpSplits(user_id, other_id)
+      .then(() => {
+      })
+      .catch((error) => {
+        console.error("Failed to settle splits:", error);
+      });
+  };
 
   return (
     <div className="p-1">
@@ -31,20 +38,12 @@ export const DashboardCard: React.FC<DashboardCardType> = async ({ name, debt })
                 {/* <Switch id="settled-switch" />
                 <Label htmlFor="settled-switch"></Label> */}
               </div>
-              <Button>
+              <Button onClick={handleSettleClick} >
                 Settle
               </Button>
             </div>
           </div>
         </CardHeader>
-        {/* <CardContent>
-          {listOfUsers.length <= 4
-            ? listOfUsers.join(", ")
-            : `${listOfUsers.slice(0, 4).join(", ")}...`}
-        </CardContent> */}
-        {/* <CardFooter className="flex justify-between">
-          nothing at the moment
-        </CardFooter> */}
       </Card>
     </div>
   );

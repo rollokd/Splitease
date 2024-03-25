@@ -15,15 +15,13 @@ import {
 } from "@/components/ui/card"
 import { getMyDebtsForAll } from "@/lib/databaseActions/getMyDebtsForAll";
 
-type Props = { params: { id: string } };
-
-export default async function SettleUpDashBoard({ params }: Props) {
+export default async function SettleUpDashBoard() {
 
   const userID = (await getUserId()) as string;
   // console.log('User ID from dashboard settle up: ', userID);
   const balancesArray = await getMyDebtsForAll(userID)
   const balances = await Promise.all(balancesArray.map(async (debt) => {
-    return { name: debt.firstname, total: moneyFormat(debt.owed_amount - debt.lent_amount) };
+    return { id: debt.id, name: debt.firstname, total: moneyFormat(debt.owed_amount - debt.lent_amount) };
   }))
 
 
@@ -54,7 +52,7 @@ export default async function SettleUpDashBoard({ params }: Props) {
         </CardHeader>
         <div>
           {filteredBalances.map((balance, index) => (
-            <DashboardCard key={index} name = {balance.name} debt={balance.total} />
+            <DashboardCard key={index} name = {balance.name} debt={balance.total} other_id={balance.id} user_id={userID} />
           ))}
         </div>
       </Card>
