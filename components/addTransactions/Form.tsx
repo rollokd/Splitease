@@ -18,6 +18,7 @@ import { GroupMembers, TableDataType } from "@/lib/definititions";
 import { UseFormReturn, SubmitHandler } from "react-hook-form";
 import { useFormStatus } from 'react-dom';
 import { useParams } from "next/navigation";
+import { TableHead } from "@/components/addTransactions/TableHead";
 import { increment, decrement, handleStatusClick } from "@/lib/transActions/utils";
 
 interface TableDataTypeExtended extends TableDataType {
@@ -207,30 +208,7 @@ export function TransactionForm({
         />
         <div>
           <table>
-            <thead
-              className="[&_tr]:border-b"
-            >
-              <tr>
-                <th
-                  scope="col"
-                  className="p-4 align-middle"
-                >
-                  name
-                </th>
-                <th
-                  scope="col"
-                  className="p-4 align-middle"
-                >
-                  status
-                </th>
-
-                <th
-                  scope="col"
-                  className="p-4 align-middle"
-                >amount</th>
-
-              </tr>
-            </thead>
+            <TableHead />
             <tbody className="[&_tr:last-child]:border-0">
               {tableData.map((ele, index) => {
                 return (

@@ -120,19 +120,20 @@ export async function fetchUsersFromTransactionId(
 
     let result = await sql`
     SELECT 
-  u.firstname, 
-  COALESCE(s.user_amount, 0) AS user_amount,
-  t.date AS date,
-  t.amount AS total_amount
-  FROM 
-  user_groups ug
-  INNER JOIN users u ON ug.user_id = u.id
-  LEFT JOIN splits s ON u.id = s.user_id AND s.trans_id = ${id}
-  INNER JOIN transactions t ON t.id = ${id}
-  WHERE 
-  ug.group_id = ${intermediate.rows[0].group_id}
+    u.firstname, 
+    COALESCE(s.user_amount, 0) AS user_amount,
+    t.date AS date,
+    t.amount AS total_amount,
+    t.name AS transaction_name
+    FROM 
+    user_groups ug
+    INNER JOIN users u ON ug.user_id = u.id
+    LEFT JOIN splits s ON u.id = s.user_id AND s.trans_id = ${id}
+    INNER JOIN transactions t ON t.id = ${id}
+    WHERE
+    ug.group_id = ${intermediate.rows[0].group_id}
     `
-    console.log("result.rows", result.rows)
+    console.log("result.rows", result.rows[0].transaction_name)
     return result.rows
   } catch (e) {
     console.log("could not fetch users based on transaction id", e)

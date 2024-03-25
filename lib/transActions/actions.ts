@@ -39,12 +39,12 @@ export async function createTransaction(
   const dateConverted = date.toISOString().split('T')[0];
   const statusBla = false;
 
-  const transInsert =
-    await sql`INSERT INTO transactions (name, date, amount, status, paid_by, group_id)
+  const transInsert = await sql`
+  INSERT INTO transactions (name, date, amount, status, paid_by, group_id)
   VALUES (${name}, ${dateConverted}, ${amountInPennies}, ${statusBla}, ${paid_by}, ${group_id})
   RETURNING id, group_id
   `;
-  //second insert data prep
+
   let transactionId = transInsert.rows[0].id;
   let groupId = transInsert.rows[0].group_id;
   let bundledUpTransactionValues: TransInsert = {
@@ -82,38 +82,60 @@ export async function createSplit(
 ) {
   const { user_id, user_amount, paid } = userValues;
   const { trans_id, amount, group_id } = transInsert;
-  await sql<SplitTable>`INSERT INTO splits (amount, user_amount, paid, user_id, trans_id, group_id)
+
+  await sql<SplitTable>`
+  INSERT INTO splits (amount, user_amount, paid, user_id, trans_id, group_id)
   VALUES (${amount}, ${user_amount}, ${paid}, ${user_id}, ${trans_id}, ${group_id})
   `;
 }
 
 
-// const FormSchemaTransaction = z.object({
-//   id: z.string(),
-//   name: z.string(),
-//   amount: z.coerce.number(),
-//   status: z.boolean(),
-//   date: z.coerce.date(),
-//   paid_by: z.string(),
-//   group_id: z.string()
-// })
-const UpdateTransaction = FormSchemaTransaction.omit({
-  id: true,
-  date: true,
-  status: true
-});
-export async function editTransaction(
-  formData: FormData,
-  trans_id: string,
-  user_id: string[]
-) {
-  const { name } = UpdateTransaction.parse({
-    name: formData.get('name')
-  })
+const FormSchemaTransactionUpdate = FormSchemaTransaction.omit({ group_id: true });
 
-  const currentUserValues = await sql`
-      SELECT user_id FROM splits
-      WHERE trans_id = ${trans_id}`;
-  const currIds = currentUserValues.rows.map((row) => row.user_id);
-  console.log("show me those mad as f ids...", currIds)
+export async function updateTransaction(
+  currentGroupId: string,
+  transactionId: string,
+  tableData: TableDataType[],
+  formData: FormData
+) {
+
+  const { name, amount, date, paid_by } = FormSchemaTransactionUpdate.parse({
+    name: formData.get('name'),
+    amount: formData.get('amount'),
+    date: formData.get('date'),
+    paid_by: formData.get('paid_by'),
+  });
+
+  const amountInPennies = amount * 100;
+  const dateConverted = date.toISOString().split('T')[0];
+
+  await sql`
+  UPDATE transactions
+    SET name = ${name},
+        date = ${dateConverted},
+        amount = ${amountInPennies},
+        paid_by = ${paid_by}
+    WHERE id = ${transactionId}
+  `;
+
+
+  await sql`DELETE FROM splits WHERE trans_id = ${transactionId}`;
+
+  tableData.forEach(async (ele) => {
+    let userAmount = ele.amount * 100;
+    let paid = ele.id === paid_by;
+
+    await createSplit({
+      user_id: ele.id,
+      user_amount: userAmount,
+      paid: paid,
+    }, {
+      trans_id: transactionId,
+      amount: amountInPennies,
+      group_id: currentGroupId,
+    });
+  });
+
+  revalidatePath(`/home/group/${currentGroupId}`);
+  redirect(`/home/group/${currentGroupId}`);
 }
