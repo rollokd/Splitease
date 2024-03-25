@@ -10,7 +10,7 @@ const InputEditName = ({ defaultValue }: { defaultValue: string }) => (
         id='name'
         name='name'
         type='text'
-        placeholder={defaultValue}
+        defaultValue={defaultValue}
         required
       />
     </div>

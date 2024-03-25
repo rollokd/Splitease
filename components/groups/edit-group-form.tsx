@@ -69,7 +69,7 @@ export default function EditGroupForm({
       toast.error(
         'A participant can only be removed if their balance is zero.',
         {
-          duration: 900,
+          duration: 1500,
         }
       );
       return;

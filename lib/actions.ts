@@ -8,13 +8,20 @@ import {
   SplitTable,
   TableDataType,
   TransInsert,
-  UserValues
+  UserValues,
 } from './definititions';
 import { getUserIdFromSession } from './data';
 
-import { signIn, auth } from '@/auth';
+import { signIn, auth, signOut } from '@/auth';
 import { AuthError } from 'next-auth';
 
+export async function SignOut() {
+  try {
+    await signOut();
+  } catch (error) {
+    console.error('Error signing out:', error);
+  }
+}
 
 export async function getUserId() {
   try {
@@ -49,22 +56,24 @@ const FormSchemaTransaction = z.object({
   status: z.boolean(),
   date: z.coerce.date(),
   paid_by: z.string(),
-  group_id: z.string()
-})
-const CreateTransaction = FormSchemaTransaction.omit({ id: true, status: true });
+  group_id: z.string(),
+});
+const CreateTransaction = FormSchemaTransaction.omit({
+  id: true,
+  status: true,
+});
 
 export async function createTransaction(
   tableData: TableDataType[],
   formData: FormData
 ) {
-
   const { name, amount, date, paid_by, group_id } = CreateTransaction.parse({
     name: formData.get('name'),
     amount: formData.get('amount'),
     date: formData.get('date'),
     paid_by: formData.get('paid_by'),
-    group_id: formData.get('group_id')
-  })
+    group_id: formData.get('group_id'),
+  });
 
   const amountInPennies = amount * 100;
   const dateConverted = date.toISOString().split('T')[0];
@@ -81,7 +90,7 @@ export async function createTransaction(
   let bundledUpTransactionValues: TransInsert = {
     trans_id: transactionId,
     amount: amountInPennies,
-    group_id: groupId
+    group_id: groupId,
   };
   let bundledUpTableData: UserValues;
   tableData.map((ele) => {
@@ -90,21 +99,20 @@ export async function createTransaction(
         bundledUpTableData = {
           user_amount: ele.amount * 100,
           user_id: ele.id,
-          paid: true
+          paid: true,
         };
       } else {
         bundledUpTableData = {
           user_amount: ele.amount * 100,
           user_id: ele.id,
-          paid: false
+          paid: false,
         };
       }
       createSplit(bundledUpTableData, bundledUpTransactionValues);
-
     }
   });
-  revalidatePath(`/home/group/${group_id}`)
-  redirect(`/home/group/${group_id}`)
+  revalidatePath(`/home/group/${group_id}`);
+  redirect(`/home/group/${group_id}`);
 }
 
 export async function createSplit(
@@ -122,18 +130,18 @@ const GroupFormSchema = z.object({
   id: z.string(),
   name: z.string(),
   date: z.date(),
-  status: z.boolean()
+  status: z.boolean(),
 });
 
 const CreateGroup = GroupFormSchema.omit({
   id: true,
   date: true,
-  status: true
+  status: true,
 });
 
 export async function createGroup(formData: FormData, userIds: string[]) {
   const { name } = CreateGroup.parse({
-    name: formData.get('name')
+    name: formData.get('name'),
   });
   const status = true;
   const date = new Date().toISOString().split('T')[0];
@@ -158,7 +166,7 @@ export async function createGroup(formData: FormData, userIds: string[]) {
 const UpdateGroup = GroupFormSchema.omit({
   id: true,
   date: true,
-  status: true
+  status: true,
 });
 
 export async function updateGroup(
@@ -167,7 +175,7 @@ export async function updateGroup(
   userIds: string[]
 ) {
   const { name } = UpdateGroup.parse({
-    name: formData.get('name')
+    name: formData.get('name'),
   });
   // fetch current users
   const currentUsersResult = await sql`
