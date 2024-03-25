@@ -14,7 +14,63 @@ import { getUserIdFromSession } from './data';
 
 import { signIn, auth } from '@/auth';
 import { AuthError } from 'next-auth';
+import bcrypt from 'bcrypt';
 
+
+const schema = z.object({
+  email: z.string().email({
+    message: 'Invalid Email' // Custom message for email format validation
+  }),
+  firstName: z.string(), // Validates that firstName is a string
+  lastName: z.string(), // Validates that lastName is a string
+  password: z.string() // Validates that password is a string
+  // You can add more specific validations for each field as needed
+});
+
+export async function createUser(prevState: any, formData: FormData) {
+  
+  const validatedFields = schema.safeParse({
+    //const rawFormData = {
+    firstName: formData.get('first-name'),
+    lastName: formData.get('last-name'),
+    email: formData.get('email'),
+    password: formData.get('password')
+  });
+  // where is the erro showned if the email is already taken // gabe
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors
+    };
+  }
+  console.log(validatedFields);
+  const { email, firstName, lastName, password } = validatedFields.data;
+  const emailExists = await sql`select * from users where email = ${email}`;
+
+  if (emailExists.rows.length > 0) {
+    console.log('Email already exists');
+    return { emailExists: 'Email already exists' };
+  }
+
+  //bug try {
+  //const { email, firstName, lastName, password } = validatedFields.data;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = await sql`
+      INSERT INTO users (email, firstname, lastname, password)
+      VALUES (${email}, ${firstName}, ${lastName}, ${hashedPassword})
+      RETURNING id, email
+    `;
+  if (user.rows.length) {
+    console.log('Returned ID:', user.rows[0].id);
+
+
+    redirect('/login');
+  }
+
+  // bug redirect } catch (error) {
+  //   console.log(error);
+  // }
+}
 
 export async function getUserId() {
   try {
@@ -50,21 +106,23 @@ const FormSchemaTransaction = z.object({
   date: z.coerce.date(),
   paid_by: z.string(),
   group_id: z.string()
-})
-const CreateTransaction = FormSchemaTransaction.omit({ id: true, status: true });
+});
+const CreateTransaction = FormSchemaTransaction.omit({
+  id: true,
+  status: true
+});
 
 export async function createTransaction(
   tableData: TableDataType[],
   formData: FormData
 ) {
-
   const { name, amount, date, paid_by, group_id } = CreateTransaction.parse({
     name: formData.get('name'),
     amount: formData.get('amount'),
     date: formData.get('date'),
     paid_by: formData.get('paid_by'),
     group_id: formData.get('group_id')
-  })
+  });
 
   const amountInPennies = amount * 100;
   const dateConverted = date.toISOString().split('T')[0];
@@ -100,11 +158,10 @@ export async function createTransaction(
         };
       }
       createSplit(bundledUpTableData, bundledUpTransactionValues);
-
     }
   });
-  revalidatePath(`/home/group/${group_id}`)
-  redirect(`/home/group/${group_id}`)
+  revalidatePath(`/home/group/${group_id}`);
+  redirect(`/home/group/${group_id}`);
 }
 
 export async function createSplit(
