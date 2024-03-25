@@ -1,72 +1,82 @@
-import Link from "next/link"
+'use client';
+import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 
-import { Button } from "./button"
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+import Link from 'next/link';
+import { Button } from './button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
-} from "./card"
-import { Input } from "./input"
-import { Label } from "./label"
+  CardTitle
+} from './card';
+import { Input } from './input';
+import { Label } from './label';
+import { createUser } from '@/lib/actions';
+import { useFormState } from 'react-dom';
 
-export const description =
-  "A sign up form with first name, last name, email and password inside a card. There's an option to sign up with GitHub and a link to login if you already have an account"
+const initialState = {
+  emailExists: ''
+};
 
-export const iframeHeight = "600px"
-
-export const containerClassName =
-  "w-full h-screen flex items-center justify-center px-4"
-
+// how can i clear the email input field after the email is already taken // gabe
 export default function SignForm() {
+  const [state, formAction] = useFormState(createUser, initialState);
   return (
-    <Card className="mx-auto max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-xl">Sign Up</CardTitle>
-        <CardDescription>
-          Enter your information to create an account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="first-name">First name</Label>
-              <Input id="first-name"  required />
+    <form action={formAction}>
+      <Card className="mx-auto max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-xl">Sign Up</CardTitle>
+          <CardDescription>
+            Enter your information to create an account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="first-name">First name</Label>
+                <Input id="first-name" name="first-name" required />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="last-name">Last name</Label>
+                <Input id="last-name" name="last-name" required />
+              </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="last-name">Last name</Label>
-              <Input id="last-name"  required />
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" name="email" required />
+
+              {state?.emailExists && (
+                <>
+                  <Alert variant="destructive">
+                    <ExclamationTriangleIcon className="h-4 w-4" />
+                    <AlertTitle>{state.emailExists}</AlertTitle>
+                  </Alert>
+                </>
+              )}
             </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" type="password" name="password" required />
+            </div>
+            <Button type="submit" className="w-full">
+              Create an account
+            </Button>
+            <Button variant="outline" className="w-full">
+              Sign up with GitHub
+            </Button>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              
-              required
-            />
+          <div className="mt-4 text-center text-sm">
+            Already have an account?{' '}
+            <Link href="login" className="underline">
+              Log in
+            </Link>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" />
-          </div>
-          <Button type="submit" className="w-full">
-            Create an account
-          </Button>
-          <Button variant="outline" className="w-full">
-            Sign up with GitHub
-          </Button>
-        </div>
-        <div className="mt-4 text-center text-sm">
-          Already have an account?{" "}
-          <Link href="login" className="underline">
-            Log in
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
-  )
+        </CardContent>
+      </Card>
+    </form>
+  );
 }
