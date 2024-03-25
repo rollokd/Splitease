@@ -3,7 +3,7 @@ import { ModeToggle } from '@/components/themeMode';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
-import Logo from '../public/logo.png';
+import Logo from '@/public/Logo.png';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { MdGroupAdd } from 'react-icons/md';
 import { SignOut } from '@/lib/actions';
