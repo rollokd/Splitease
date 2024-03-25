@@ -41,7 +41,7 @@ export default async function Home() {
     <>
       <div className="p-4">
       <div className="mb-2">
-          <form
+          {/* <form
             action={async () => {
               'use server';
               await signOut();
@@ -52,8 +52,9 @@ export default async function Home() {
               <PowerIcon className="w-4" />{' '}
               <div className="ml-2"> Sign Out</div>{' '}
             </Button>
-          </form>
+          </form> */}
         </div>
+        <div className="mb-4"><h3>Totals</h3></div>
         <Totals userId={userID} />
 
         <div className="m-4 flex justify-end">
@@ -61,6 +62,7 @@ export default async function Home() {
             <Link href="/home/create">Create Group +</Link>
           </Button>
         </div>
+        <div className="mb-4"><h3>Groups</h3></div>
         <div
           style={{
             height: '400px',
