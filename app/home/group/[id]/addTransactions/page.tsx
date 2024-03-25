@@ -10,6 +10,7 @@ import {
   getGroupNameWithTransId,
   fetchUsersFromTransactionId
 } from "@/lib/transActions/data";
+import { GroupMembers } from "@/lib/definititions";
 
 export default async function Page({ params }: { params: { id: string } }) {
 
@@ -20,7 +21,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     try {
       userID = await getUserId();
       if (!userID) throw new Error("User ID not found");
-      console.log('userID', userID);
     } catch (error) {
       console.log(error);
     }
@@ -28,11 +28,10 @@ export default async function Page({ params }: { params: { id: string } }) {
     groupMembers = await getNamesOfUsersInAGroup(params.id);
     groupName = await getGroupsName(params.id);
   }
-  let getNameTransId, getUsers;
+  let getNameTransId, membersOfTrans;
   if (verifyTransID) {
-
     getNameTransId = await getGroupNameWithTransId(params.id)
-    getUsers = await fetchUsersFromTransactionId(params.id)
+    membersOfTrans = await fetchUsersFromTransactionId(params.id)
   }
 
   return (
@@ -57,7 +56,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             edit="true"
           />
           <TransEdit
-          // transMembers={transMembers}
+            membersOfTrans={membersOfTrans}
           // userID={String(userID)}
           >
           </TransEdit>

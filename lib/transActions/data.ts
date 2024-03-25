@@ -109,17 +109,33 @@ export async function fetchUsersFromTransactionId(
 ) {
   noStore()
   try {
-    let firstStep = await sql`
-    select group_id from transactions
-    where id =${id}
+    let intermediate = await sql`
+    select group_id, amount from splits
+    where trans_id=${id}
     `
-    let getIdsFromSPlits = await sql`
-    select user_id from splits
-where group_id =${firstStep.rows[0].group_id}
+    let dateAmount = await sql`
+    select amount, date from transactions
+    where id=${id}
     `
-    console.log('getIdsFromSPlits', getIdsFromSPlits.rows)
 
+    let result = await sql`
+    SELECT 
+  u.firstname, 
+  COALESCE(s.user_amount, 0) AS user_amount,
+  t.date AS date,
+  t.amount AS total_amount
+  FROM 
+  user_groups ug
+  INNER JOIN users u ON ug.user_id = u.id
+  LEFT JOIN splits s ON u.id = s.user_id AND s.trans_id = ${id}
+  INNER JOIN transactions t ON t.id = ${id}
+  WHERE 
+  ug.group_id = ${intermediate.rows[0].group_id}
+    `
+    console.log("result.rows", result.rows)
+    return result.rows
   } catch (e) {
     console.log("could not fetch users based on transaction id", e)
+    throw new Error("coudn't fetch trans data")
   }
 }
