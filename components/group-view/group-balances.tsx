@@ -1,33 +1,46 @@
-import { fetchUserBalance, getUsersbyGroup } from "@/lib/data";
-import { UserCircleIcon } from "@heroicons/react/24/outline";
-import { prettyMoney } from "@/lib/utils";
-import React from "react";
+import { cn, prettyMoney } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Separator } from "../ui/separator";
+import { fetchUserBalancesForGroup } from "@/lib/databaseActions/fetchUserBalancesForGroup";
 
 type Props = { user_id: string; group_id: string };
 
 async function GroupBalances({ user_id, group_id }: Props) {
-  // const me = "410544b2-4001-4271-9855-fec4b6a6442a";
-  const users = await getUsersbyGroup(group_id);
-  const balances = await Promise.all(
-    users.map((userId) => fetchUserBalance(userId.user_id, group_id))
-  );
-  const userBalances = balances.map((bal, i) => {
-    return { user: users[i], result: bal };
-  });
-  const userIcons = userBalances.map((item, index) => (
-    <div key={index} className="flex flex-col items-center">
-      <UserCircleIcon width={50} height={50} />
-      <h1>{item.user.firstname}</h1>
-      <p className={item.result < 0 ? "text-red-500" : "text-green-500"}>
-        {prettyMoney(item.result)}
-      </p>
-    </div>
-  ));
+  const { rows } = await fetchUserBalancesForGroup(group_id);
+
   return (
-    <div className="flex flex-col border-2 border-black rounded-md">
-      <div className="text-xl p-2 border-b-2 border-black">Balances</div>
-      <div className="flex flex-row p-2 gap-5 overflow-y-auto">{userIcons}</div>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="h-9 flex items-center">Balances</CardTitle>
+      </CardHeader>
+      <Separator className="mb-2" />
+      <CardContent className="grid grid-rows-1 grid-flow-col gap-6 grid-cols-max auto-cols-[minmax(80px,1fr)] overflow-x-auto">
+        {rows.map((balance) => (
+          <div
+            key={balance.user_id}
+            className="flex flex-col items-center justify-center"
+          >
+            <Avatar>
+              <AvatarFallback>
+                {`${balance.firstname} ${balance.lastname}`
+                  .match(/\b(\w)/g)
+                  ?.join("") ?? "N/A"}
+              </AvatarFallback>
+            </Avatar>
+            <h3 className="text-muted-foreground">{balance.firstname}</h3>
+            <p
+              className={cn(
+                "text-green-600 font-semibold pt-1 text-nowrap",
+                balance.lent_amount - balance.owed_amount < 0 && "text-red-600"
+              )}
+            >
+              {prettyMoney(balance.lent_amount - balance.owed_amount)}
+            </p>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
   );
 }
 

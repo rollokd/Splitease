@@ -10,46 +10,58 @@ import {
   SelectValue,
 } from "../ui/select";
 import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Separator } from "../ui/separator";
+import { getTransactionsByGroupAndId } from "@/lib/databaseActions/getTransactionsByGroupId";
 
-type Props = { group_id: string };
+type Props = { group_id: string; user_id: string };
 
-const TransactionList = async ({ group_id }: Props) => {
-  const transactions = await getTransactionsByGroup(group_id);
+const TransactionList = async ({ group_id, user_id }: Props) => {
+  const transactions = await getTransactionsByGroupAndId(group_id, user_id);
   console.log(transactions);
   return (
-    <div className="flex flex-col h-full overflow-x-auto border-2 rounded-md border-black">
-      <div className="flex flex-row p-2 sticky top-0 bg-white justify-between items-center border-b-2 border-black">
-        <h2 className="text-xl">Transactions</h2>
-        <div className="flex flex-row gap-2">
-          <Select>
-            <SelectTrigger className="w-0.2">
-              <SelectValue placeholder="Filter" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">All</SelectItem>
-              <SelectItem value="dark">Settled</SelectItem>
-              <SelectItem value="system">Outstanding</SelectItem>
-            </SelectContent>
-          </Select>
-          <Link href={`/home/group/${group_id}/addTransactions`} passHref>
-            <Button className="bg-blue-500 w-10" size={"sm"}>
-              +
-            </Button>
-          </Link>
+    <Card className="flex-1">
+      <CardHeader>
+        <div className="flex flex-row justify-between items-center">
+          <CardTitle>Transactions</CardTitle>
+          <div className="flex flex-row items-center gap-2">
+            <Select>
+              <SelectTrigger className="w-0.2">
+                <SelectValue placeholder="Filter" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">All</SelectItem>
+                <SelectItem value="dark">Settled</SelectItem>
+                <SelectItem value="system">Outstanding</SelectItem>
+              </SelectContent>
+            </Select>
+            <Link href={`/home/group/${group_id}/addTransactions`} passHref>
+              <Button className="bg-blue-500 w-10" size={"sm"}>
+                +
+              </Button>
+            </Link>
+          </div>
         </div>
-      </div>
-      <div className="pt-1 overflow-x-auto">
-        {transactions.map((transaction) => (
-          <TransactionItem
-            key={transaction.trans_id}
-            id={transaction.trans_id}
-            user={transaction.firstname}
-            amount={transaction.amount}
-            name={transaction.name}
-          />
+      </CardHeader>
+      <Separator />
+      <CardContent className="overflow-x-auto">
+        {transactions.map((transaction, index) => (
+          <div key={transaction.id}>
+            {index !== 0 && <Separator />}
+            <TransactionItem
+              key={transaction.trans_id}
+              id={transaction.trans_id}
+              username={transaction.firstname}
+              amount={transaction.amount}
+              name={transaction.name}
+              user_id={user_id}
+              amount_owed={transaction.amount_owed}
+              amount_lent={transaction.amount_lent}
+            />
+          </div>
         ))}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

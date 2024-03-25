@@ -1,10 +1,11 @@
 'use client';
 import { User } from '@/lib/definititions';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createGroup, getUserId } from '@/lib/actions';
 import CreateUserSelector from './CreateUserSelector';
-import GroupNameInput from './GroupNameInput';
+import { toast } from 'react-hot-toast';
 import ActionButtons from './CreateActionButtons';
+import InputName from './GroupNameInput';
 
 type CreateGroupFormProps = {
   users: User[];
@@ -18,17 +19,28 @@ export default function CreateGroupForm({
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
+  useEffect(() => {
+    // Automatically add the logged-in user to selected users
+    const loggedInUser = users.find((user) => user.id === userID);
+    if (loggedInUser) {
+      setSelectedUsers((prevSelectedUsers) => [
+        ...prevSelectedUsers.filter((u) => u.id !== userID),
+        loggedInUser,
+      ]);
+    }
+  }, [userID, users]);
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (!query) {
       setSearchResults([]);
       return;
     }
-
-    //Filter users but exclude current user
+    // Filter users but exclude users that are in the selectedUsers
     const filteredResults = users.filter(
       (user) =>
         user.id !== userID &&
+        !selectedUsers.find((selectedUser) => selectedUser.id === user.id) &&
         (user.firstname.toLowerCase().includes(query.toLowerCase()) ||
           user.lastname.toLowerCase().includes(query.toLowerCase()))
     );
@@ -47,16 +59,30 @@ export default function CreateGroupForm({
 
   // Remove a user from the selected list
   const handleRemoveUser = (userId: string) => {
-    setSelectedUsers((prevSelectedUsers) =>
-      prevSelectedUsers.filter((user) => user.id !== userId)
-    );
+    // Prevent logged-in user from being removed
+    if (userId !== userID) {
+      setSelectedUsers((prevSelectedUsers) =>
+        prevSelectedUsers.filter((user) => user.id !== userId)
+      );
+    }
   };
 
   // Submit form data to create a new group
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const userIds = [...selectedUsers.map((user) => user.id), userID];
-    await createGroup(new FormData(event.currentTarget), userIds);
+    const formData = new FormData(event.currentTarget);
+    const userIds = selectedUsers.map((user) => user.id);
+
+    try {
+      await createGroup(formData, userIds);
+      toast.success('Group created successfully!', {
+        duration: 2000,
+      });
+    } catch (error) {
+      toast.error('Failed to create group. Please try again.', {
+        duration: 2000,
+      });
+    }
   };
 
   return (
@@ -65,8 +91,9 @@ export default function CreateGroupForm({
       className='flex flex-col p-3 gap-3 h-full last:mt-auto'
     >
       <div className='flex-grow'>
-        <GroupNameInput />
+        <InputName />
         <CreateUserSelector
+          userID={userID}
           searchQuery={searchQuery}
           handleSearch={handleSearch}
           searchResults={searchResults}

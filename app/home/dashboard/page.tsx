@@ -1,22 +1,16 @@
-export const dynamic = "force-dynamic"
+export const dynamic = 'force-dynamic';
 import { GroupCard } from '@/components/group-card';
 import { GroupChart } from '../../../components/bar-chart';
-import {
-  getUserGroups,
-  fetchUserBalance,
-  getUserIdFromSession
-} from '../../../lib/data';
+import { getUserGroups, fetchUserBalance } from '../../../lib/data';
 import Totals from '../../../components/Totals';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 import { signOut, auth } from '@/auth';
 import { PowerIcon } from '@heroicons/react/24/outline';
-import { createGroup, getUserId } from '@/lib/actions';
+import { getUserId } from '@/lib/actions';
 import { moneyFormat } from '@/lib/utils';
-import { redirect } from 'next/navigation';
 import { ModeToggle } from '@/components/themeMode';
-import { YAxis } from "recharts";
 
 export default async function Home() {
   const userID = (await getUserId()) as string;
@@ -46,50 +40,52 @@ export default async function Home() {
   return (
     <>
       <div className="p-4">
-        <form
-          action={async () => {
-            'use server';
-            await signOut();
-          }}
-        >
-          <ModeToggle />
-          <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
-            <PowerIcon className="w-6" />
-            <div className="hidden md:block">Sign Out</div>
-          </button>
-        </form>
-        <Totals userId={userID} />
+        <div className="mb-2">
+            <form
+              action={async () => {
+                'use server';
+                await signOut();
+              }}
+            >
+              <ModeToggle />
+              <Button className="ml-4">
+                <PowerIcon className="w-4" />{' '}
+                <div className="ml-2"> Sign Out</div>{' '}
+              </Button>
+            </form>
+          </div>
+          <Totals userId={userID} />
 
-      <div className="m-4 flex justify-end">
-        <Button variant="outline">
-          <Link href="/home/create">Create Group +</Link>
-        </Button>
-      </div>
-      <div style={{ height: "400px", overflowY: "auto", borderColor: "var(--card)", borderRadius: "5px", borderStyle: 'ridge', borderWidth: "1px"}}>
-        <div className='m-2'>
-          {userID &&
-            groups.map((group) => (
-              <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
-                <GroupCard
-                  key={group.group_id}
-                  group_id={group.group_id}
-                  user_id={userID}
-                />
-              </Link>
-            ))}
+        <div className="m-4 flex justify-end">
+          <Button variant="outline">
+            <Link href="/home/create">Create Group +</Link>
+          </Button>
+        </div>
+        <div style={{ height: "400px", overflowY: "auto", borderColor: "var(--card)", borderRadius: "5px", borderStyle: 'ridge', borderWidth: "1px"}}>
+          <div className='m-2'>
+            {userID &&
+              groups.map((group) => (
+                <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
+                  <GroupCard
+                    key={group.group_id}
+                    group_id={group.group_id}
+                    user_id={userID}
+                  />
+                </Link>
+              ))}
+          </div>
+        </div>
+        <div className='flex justify-center pt-5 mt-5 mb-10'>
+          <GroupChart data={balances}></GroupChart>
+        </div>
+        <div className='flex justify-center m-4 pt-1 pb-3 fixed inset-x-0 bottom-0'>
+          <Link className="w-full" href={`/home/settle_up_dashboard`}>
+            <Button className='bg-green-500 w-full'>
+              Settle Up
+            </Button>
+          </Link>
         </div>
       </div>
-      <div className='flex justify-center pt-5 mt-5 mb-10'>
-        <GroupChart data={balances}></GroupChart>
-      </div>
-      <div className='flex justify-center m-4 pt-1 pb-3 fixed inset-x-0 bottom-0'>
-        <Link className="w-full" href={`/home/settle_up_dashboard`}>
-          <Button className='bg-green-500 w-full'>
-            Settle Up
-          </Button>
-        </Link>
-      </div>
-    </div>
     </>
   );
 }
