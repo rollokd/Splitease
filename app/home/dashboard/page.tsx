@@ -68,6 +68,7 @@ export default async function Home() {
             </Button>
           </form> */}
         </div>
+        
         <div className="mb-4"><h3>Totals</h3></div>
         <Totals userId={userID} />
 
