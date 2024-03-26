@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { getMyDebtsForAll } from "@/lib/databaseActions/getMyDebtsForAll";
+import { getMyDebtsForAll } from "@/lib/databaseFunctions/getMyDebtsForAll";
 
 export default async function SettleUpDashBoard() {
 
@@ -23,7 +23,6 @@ export default async function SettleUpDashBoard() {
   const balances = await Promise.all(balancesArray.map(async (debt) => {
     return { id: debt.id, name: debt.firstname, total: moneyFormat(debt.owed_amount - debt.lent_amount) };
   }))
-
 
   const filteredBalances = balances.filter(debt => {
     if (Number(debt.total) != 0) {

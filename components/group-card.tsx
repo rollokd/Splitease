@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { fetchUserBalance, getUsersbyGroup, getNameGroup } from '@/lib/data';
 import { GroupCardType } from '@/lib/definititions';
 import { moneyFormat } from '@/lib/utils';
-import { fetchUserBalancesForGroup } from '@/lib/databaseActions/fetchUserBalancesForGroup';
+import { fetchUserBalancesForGroup } from '@/lib/databaseFunctions/fetchUserBalancesForGroup';
 
 
 export const GroupCard: React.FC<GroupCardType> = async ({ groupName, groupTotals, listOfUsers }) => {

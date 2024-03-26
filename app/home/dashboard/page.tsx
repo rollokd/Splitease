@@ -11,7 +11,7 @@ import { PowerIcon } from '@heroicons/react/24/outline';
 import { getUserId } from '@/lib/actions';
 import { moneyFormat } from '@/lib/utils';
 import { ModeToggle } from '@/components/themeMode';
-import { fetchOneUserBalanceForGroup } from '@/lib/databaseActions/fetchOneUserBalanceForGroup';
+import { fetchOneUserBalanceForGroup } from '@/lib/databaseFunctions/fetchOneUserBalanceForGroup';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserWJunction } from '@/lib/definititions';
 import { redirect } from 'next/navigation'
@@ -43,13 +43,10 @@ export default async function Home() {
   const groupBalances = await Promise.all(
     userGroups.map(async (group) => {
       let { rows } = await fetchOneUserBalanceForGroup(userID, group.group_id);
-      let name = group.name;
-      if (name.length >= 5) {
-        name = `${name.slice(0, 5)}...`;
-      }
+      
       const userByGroup = await getUsersbyGroup(group.group_id);
       const listOfUsers = getUsers(userByGroup || []);
-      return { name: name, total: rows[0].lent_amount - rows[0].owed_amount, listOfUsers: listOfUsers, group_id: group.group_id };
+      return { name: group.name, total: rows[0].lent_amount - rows[0].owed_amount, listOfUsers: listOfUsers, group_id: group.group_id };
     })
   );
   // console.log('Balances results from dashboard page: ', balances);

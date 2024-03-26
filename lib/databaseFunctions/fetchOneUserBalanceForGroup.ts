@@ -3,7 +3,8 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { GroupBalancesByUser } from '../definititions';
 
 export async function fetchOneUserBalanceForGroup(
-  userID: string,
+  // userID: string,
+  userID: string | undefined,
   groupID: string
 ) {
   noStore();

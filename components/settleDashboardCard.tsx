@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { DashboardCardType } from "@/lib/definititions";
 import { Button } from "./ui/button";
-import { settleUpSplits } from "@/lib/databaseActions/settleUpSplits";
+import { settleUpSplits } from "@/lib/databaseFunctions/settleUpSplits";
 
 export const DashboardCard: React.FC<DashboardCardType> = async ({ name, debt, other_id, user_id }) => {
 
@@ -22,7 +22,7 @@ export const DashboardCard: React.FC<DashboardCardType> = async ({ name, debt, o
       .then(() => {
       })
       .catch((error) => {
-        console.error("Failed to settle splits:", error);
+        console.error("Failed to settle splits on client side:", error);
       });
   };
 
