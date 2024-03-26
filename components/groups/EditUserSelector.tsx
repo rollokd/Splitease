@@ -1,6 +1,14 @@
 import { User } from '@/lib/definititions';
 import React from 'react';
 import Search from '../search';
+import { UserIcon, Plus, Minus } from 'lucide-react';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandList,
+} from '@/components/ui/command';
+import { Label } from '@/components/ui/label';
 
 const EditUserSelector = ({
   userID,
@@ -21,65 +29,70 @@ const EditUserSelector = ({
 }) => {
   return (
     <>
-      {/* * Add users */}
-      <div className='mt-auto'>
-        <label
-          htmlFor='customer'
-          className='mb-2 block text-large font-medium p-6'
-        >
-          Choose participants
-        </label>
-        <Search onSearch={handleSearch} />
-        <div>
-          {searchQuery && <h3>Select Participants:</h3>}
-          <ul>
-            {searchResults.map((user) => (
-              <li key={user.id} className='flex justify-between items-center'>
-                {`${user.firstname} ${user.lastname}`}
+      {/* Search and Add Users */}
+      <div className='mt-4 mb-4'>
+        <Label htmlFor='user-search'>Choose participants</Label>
+        <Command className='rounded-lg border shadow-md mt-4'>
+          <Search onSearch={handleSearch} />
+          <CommandList>
+            <CommandGroup heading='Search Results'>
+              {searchResults.map((user) => (
                 <button
                   type='button'
+                  key={user.id}
+                  className='flex justify-between items-center w-full p-2'
                   onClick={() => handleAddUser(user)}
-                  className='ml-2 rounded bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2'
                 >
-                  +
+                  <UserIcon />
+                  {`${user.firstname} ${user.lastname}`}
+                  <Plus />
                 </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
       </div>
-      <div className='mt-auto'>
-        <label
-          htmlFor='customer'
-          className='mb-2 block text-large font-medium p-6'
-        >
-          Edit Selected participants
-        </label>
-        <div className='border flex border-gray-200 p-4 rounded shadow'>
-          <ul className='w-full'>
-            {selectedUsers.map((user) => (
-              <li
-                key={user.id}
-                className='flex justify-between items-center w-full'
-              >
-                <span>
-                  {user.firstname} {user.lastname}
-                </span>
-                {user.id !== userID && (
-                  <button
-                    type='button'
-                    onClick={() => handleRemoveUser(user.id)}
-                    className='ml-2 rounded bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2'
+
+      {/* Selected Users */}
+      <div className='mt-4 mb-4'>
+        <Label htmlFor='selected-users'>Selected participants</Label>
+        <Command className='rounded-lg border shadow-md mt-4'>
+          <CommandList>
+            {selectedUsers.length > 0 ? (
+              <CommandGroup heading='Selected Users'>
+                {selectedUsers.map((user) => (
+                  <div
+                    key={user.id}
+                    className='flex justify-start items-center w-full p-2'
                   >
-                    -
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
+                    <UserIcon />
+                    <span
+                      className={`ml-2 ${
+                        user.id === userID ? 'font-bold' : ''
+                      }`}
+                    >
+                      {`${user.firstname} ${user.lastname}`}
+                    </span>
+                    {user.id !== userID && (
+                      <button
+                        type='button'
+                        onClick={() => handleRemoveUser(user.id)}
+                        className='ml-auto'
+                      >
+                        <Minus />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </CommandGroup>
+            ) : (
+              <CommandEmpty>No selected users.</CommandEmpty>
+            )}
+          </CommandList>
+        </Command>
       </div>
     </>
   );
 };
+
 export default EditUserSelector;

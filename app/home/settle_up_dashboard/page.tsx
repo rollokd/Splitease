@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic"
 import { DashboardCard } from "@/components/settleDashboardCard";
 import { getSpecificDebt, getDebts } from "@/lib/data";
 import GroupCrumbs from "@/components/group-view/breadcrumbs";
@@ -5,17 +6,23 @@ import { Button } from "@/components/ui/button";
 import { getUserId } from "@/lib/actions";
 import { moneyFormat } from "@/lib/utils";
 type Props = { params: { id: string } };
+
 export default async function SettleUpDashBoard({ params }: Props) {
   let userID : string = '';
+
   try {
     userID = await getUserId() as unknown as string;
     console.log('User ID from dashboard settle up: ', userID);
   } catch (error) {
     console.log(error);
   }
+
+  //const userID='3106eb8a-3288-4b62-a077-3b24bd640d9a'
+
   let debts = await getDebts(userID);
   if (debts === undefined) debts = [];
   // console.log('Get debts result: ', debts);
+
   const balances = await Promise.all(debts.map(async (debt) => {
     //Get what that person owes me
     let balance = await getSpecificDebt(userID, debt.paid_by);
@@ -23,6 +30,7 @@ export default async function SettleUpDashBoard({ params }: Props) {
     return { name: debt.paid_by, total: moneyFormat(balance - Number(debt.sum)) };
   }));
   // console.log('Get balances result: ', balances);
+
   return (
     <>
     <div className="p-5">

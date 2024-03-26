@@ -8,12 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getName } from "@/lib/data";
-import { UserWJunction, Junction } from "@/lib/definititions";
-const getUsers = (userByGroup: UserWJunction[]) => {
-  const firstnames = userByGroup.map((user) => user.firstname);
-  // console.log(firstnames);
-  return firstnames;
-};
+
 type DashboardCard = {
   user_id: string,
   debt: string,

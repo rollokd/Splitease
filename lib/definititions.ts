@@ -79,7 +79,15 @@ export interface UserProps {
   groupID: string;
 }
 
-export type UserTransaction = Transaction & User & { trans_id: string }
+export type UserTransaction = Transaction & User & { trans_id: string, amount_lent:number, amount_owed:number }
+
+export type GroupBalancesByUser = {
+  user_id:string,
+  firstname: string,
+  lastname: string,
+  owed_amount: number,
+  lent_amount: number
+}
 
 export interface Own {
   paidbyMe: number;
@@ -97,7 +105,7 @@ export type GroupMember = {
 
 export type DataBarChart = {
   name: string,
-  total: number
+  total: string
 }
 
 type SqlField = {

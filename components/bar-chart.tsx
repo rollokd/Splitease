@@ -9,10 +9,17 @@ import {
   Cell
 } from "recharts"
 import { DataBarChart } from "@/lib/definititions"
+
 interface GroupChartProps {
   data: DataBarChart[];
 }
 export const GroupChart: React.FC<GroupChartProps> = ({data}) => {
+  //Calculate maximum value
+  const maxValue = Math.max(...data.map(entry => Number(entry.total)));
+  const minValue = Math.min(...data.map(entry => Number(entry.total)));
+  //Add 10%
+  const upperBound = maxValue > 0 ? maxValue * 1.1 : maxValue / 0.9;
+  const lowerBound = minValue < 0 ? minValue * 1.1 : minValue / 0.9;
   return (
     <ResponsiveContainer width="100%" height={350}>
       <BarChart
@@ -36,7 +43,9 @@ export const GroupChart: React.FC<GroupChartProps> = ({data}) => {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `$${value}`}
+          tickFormatter={(value) => `$${value.toFixed(2)}`}
+          // domain={[lowerBound, upperBound]}
+          domain={[minValue, maxValue]}
         />
          <Bar
           dataKey="total"
