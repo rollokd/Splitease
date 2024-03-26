@@ -11,40 +11,40 @@ describe('Comprehensive User Workflow with Delays', () => {
   it('navigates to edit page, modifies a group, and checks redirection', () => {
     // Navigate to a specific group's page
     cy.get(
-      'a[href*="/home/group/a2101f95-713c-41a0-9e14-61f125149d27"]'
+      'a[href*="home/group/b9049f76-c16e-4a82-89a7-264e1060adae"]'
     ).click();
     cy.url().should(
       'include',
-      '/home/group/a2101f95-713c-41a0-9e14-61f125149d27'
+      'home/group/b9049f76-c16e-4a82-89a7-264e1060adae'
     );
 
     // Navigate to the edit page for the group
     cy.get(
-      'a[href*="/home/edit/a2101f95-713c-41a0-9e14-61f125149d27"]'
+      'a[href*="/home/edit/b9049f76-c16e-4a82-89a7-264e1060adae"]'
     ).click();
     cy.url().should(
       'include',
-      '/home/edit/a2101f95-713c-41a0-9e14-61f125149d27'
+      '/home/edit/b9049f76-c16e-4a82-89a7-264e1060adae'
     );
     //can navigate using breadcrumbs
     cy.get('nav[aria-label="breadcrumb"]').contains('Dashboard').click();
     cy.url().should('include', '/home/dashboard');
     // Navigate to a specific group's page
     cy.get(
-      'a[href*="/home/group/a2101f95-713c-41a0-9e14-61f125149d27"]'
+      'a[href*="home/group/b9049f76-c16e-4a82-89a7-264e1060adae"]'
     ).click();
     cy.url().should(
       'include',
-      '/home/group/a2101f95-713c-41a0-9e14-61f125149d27'
+      'home/group/b9049f76-c16e-4a82-89a7-264e1060adae'
     );
 
     // Navigate to the edit page for the group
     cy.get(
-      'a[href*="/home/edit/a2101f95-713c-41a0-9e14-61f125149d27"]'
+      'a[href*="/home/edit/b9049f76-c16e-4a82-89a7-264e1060adae"]'
     ).click();
     cy.url().should(
       'include',
-      '/home/edit/a2101f95-713c-41a0-9e14-61f125149d27'
+      '/home/edit/b9049f76-c16e-4a82-89a7-264e1060adae'
     );
 
     //can search for participants
@@ -59,20 +59,20 @@ describe('Comprehensive User Workflow with Delays', () => {
     cy.url().should('include', '/dashboard');
     // Navigate to a specific group's page
     cy.get(
-      'a[href*="/home/group/a2101f95-713c-41a0-9e14-61f125149d27"]'
+      'a[href*="home/group/b9049f76-c16e-4a82-89a7-264e1060adae"]'
     ).click();
     cy.url().should(
       'include',
-      '/home/group/a2101f95-713c-41a0-9e14-61f125149d27'
+      'home/group/b9049f76-c16e-4a82-89a7-264e1060adae'
     );
 
     // Navigate to the edit page for the group
     cy.get(
-      'a[href*="/home/edit/a2101f95-713c-41a0-9e14-61f125149d27"]'
+      'a[href*="/home/edit/b9049f76-c16e-4a82-89a7-264e1060adae"]'
     ).click();
     cy.url().should(
       'include',
-      '/home/edit/a2101f95-713c-41a0-9e14-61f125149d27'
+      '/home/edit/b9049f76-c16e-4a82-89a7-264e1060adae'
     );
     //can edit the group name
     const newName = 'New Group Name';
