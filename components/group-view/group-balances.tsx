@@ -8,7 +8,7 @@ import {
 } from "../ui/card";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Separator } from "../ui/separator";
-import { fetchUserBalancesForGroup } from "@/lib/databaseActions/fetchUserBalancesForGroup";
+import { fetchUserBalancesForGroup } from "@/lib/databaseFunctions/fetchUserBalancesForGroup";
 
 type Props = { user_id: string; group_id: string };
 

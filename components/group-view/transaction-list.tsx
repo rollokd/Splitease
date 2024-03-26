@@ -11,13 +11,12 @@ import {
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
-import { getTransactionsByGroupAndId } from "@/lib/databaseActions/getTransactionsByGroupId";
+import { getTransactionsByGroupAndId } from "@/lib/databaseFunctions/getTransactionsByGroupId";
 
 type Props = { group_id: string; user_id: string };
 
 const TransactionList = async ({ group_id, user_id }: Props) => {
   const transactions = await getTransactionsByGroupAndId(group_id, user_id);
-  console.log(transactions);
   return (
     <Card className="h-full">
       <CardHeader>
