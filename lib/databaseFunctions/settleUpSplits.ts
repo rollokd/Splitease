@@ -34,7 +34,7 @@ export async function settleUpSplits(
     WHERE
     splits.id = TS.split_id
     `
-    // await updateTransactions();
+    await updateTransactions();
     console.log('query', query);
     return query
   }catch (err) {
