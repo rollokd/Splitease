@@ -1,34 +1,86 @@
-describe('Login Form', () => {
-  it('successfully edits page', () => {
-    // Visit the page where the login form is located
+describe('Comprehensive User Workflow with Delays', () => {
+  before(() => {
+    // Log in before tests
     cy.visit('http://localhost:3000/login');
-
-    // Fill in the email and password fields
     cy.get('input[name="email"]').type('enes@nextmail.com');
     cy.get('input[name="password"]').type('testing');
-    // Submit the form
     cy.get('form').submit();
-
-    // Wait for the URL to change to the dashboard
     cy.url().should('include', '/dashboard');
-    // Add assertions here to verify the login was successful
-    cy.get(
-      'a[href*="/home/group/837d853b-0a1d-4807-af0b-8c1551287a89"]'
-    ).click();
+  });
 
-    // Wait for the URL to change to /home/group
-    cy.url().should('include', '/home/group');
+  it('navigates to edit page, modifies a group, and checks redirection', () => {
+    // Navigate to a specific group's page
     cy.get(
-      'a[href*="/home/edit/837d853b-0a1d-4807-af0b-8c1551287a89"]'
+      'a[href*="/home/group/a2101f95-713c-41a0-9e14-61f125149d27"]'
     ).click();
-    cy.get('input[name="name"]').type('Cypress testing Edit');
-    cy.get('form[name="user"]').type('gabe');
-    cy.contains('button', '+', { timeout: 2000 }).should('be.visible');
-    cy.contains('button', '+').click();
-    cy.get('span').should('have.text', 'Sebastian');
-    cy.contains('button', '-', { timeout: 2000 }).should('be.visible');
-    cy.contains('button', '-').click();
-    cy.contains('button', 'Edit Group').click();
-    cy.url().should('include', '/home/group');
+    cy.url().should(
+      'include',
+      '/home/group/a2101f95-713c-41a0-9e14-61f125149d27'
+    );
+
+    // Navigate to the edit page for the group
+    cy.get(
+      'a[href*="/home/edit/a2101f95-713c-41a0-9e14-61f125149d27"]'
+    ).click();
+    cy.url().should(
+      'include',
+      '/home/edit/a2101f95-713c-41a0-9e14-61f125149d27'
+    );
+    //can navigate using breadcrumbs
+    cy.get('nav[aria-label="breadcrumb"]').contains('Dashboard').click();
+    cy.url().should('include', '/home/dashboard');
+    // Navigate to a specific group's page
+    cy.get(
+      'a[href*="/home/group/a2101f95-713c-41a0-9e14-61f125149d27"]'
+    ).click();
+    cy.url().should(
+      'include',
+      '/home/group/a2101f95-713c-41a0-9e14-61f125149d27'
+    );
+
+    // Navigate to the edit page for the group
+    cy.get(
+      'a[href*="/home/edit/a2101f95-713c-41a0-9e14-61f125149d27"]'
+    ).click();
+    cy.url().should(
+      'include',
+      '/home/edit/a2101f95-713c-41a0-9e14-61f125149d27'
+    );
+
+    //can search for participants
+    const searchQuery = 'Ola';
+    cy.get('input#search').type(searchQuery);
+    cy.get('div[cmdk-list]').should('contain', 'Search Results');
+    //can add participants
+    cy.get('svg.lucide-plus').click();
+    cy.wait(2000);
+    //can cancel and return to the dashboard
+    cy.get('a[href="/dashboard"]').click();
+    cy.url().should('include', '/dashboard');
+    // Navigate to a specific group's page
+    cy.get(
+      'a[href*="/home/group/a2101f95-713c-41a0-9e14-61f125149d27"]'
+    ).click();
+    cy.url().should(
+      'include',
+      '/home/group/a2101f95-713c-41a0-9e14-61f125149d27'
+    );
+
+    // Navigate to the edit page for the group
+    cy.get(
+      'a[href*="/home/edit/a2101f95-713c-41a0-9e14-61f125149d27"]'
+    ).click();
+    cy.url().should(
+      'include',
+      '/home/edit/a2101f95-713c-41a0-9e14-61f125149d27'
+    );
+    //can edit the group name
+    const newName = 'New Group Name';
+    cy.get('input#name').clear().type(newName);
+    cy.get('input#name').should('have.value', newName);
+    // can submit the form to edit the group
+    cy.get('form').within(() => {
+      cy.root().submit();
+    });
   });
 });
