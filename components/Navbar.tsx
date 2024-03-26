@@ -3,7 +3,7 @@ import { ModeToggle } from "@/components/themeMode";
 import { PowerIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
-import Logo from "@/public/logo.png";
+import "@/public/logo.png";
 import { MdGroupAdd } from "react-icons/md";
 import { SignOut } from "@/lib/actions";
 import { Button } from "./ui/button";
@@ -24,7 +24,13 @@ const Navbar = () => {
     <nav className="w-full shadow-sm flex justify-between items-center px-2">
       <div>
         <Link href="/home/dashboard/">
-          <Image src={Logo} alt="logo" width={100} priority />
+          <Image
+            src={"/Logo.png"}
+            alt="logo"
+            width={100}
+            height={100}
+            priority
+          />
         </Link>
       </div>
 
