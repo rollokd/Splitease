@@ -1,7 +1,7 @@
 'use client';
 import { User } from '@/lib/definititions';
 import { useEffect, useState } from 'react';
-import { updateGroup } from '@/lib/databaseActions/updateGroup';
+import { updateGroup } from '@/lib/serverActions/updateGroup';
 import EditUserSelector from './EditUserSelector';
 import ActionButtons from './EditActionButtons';
 import InputEditName from './GroupNameEdit';

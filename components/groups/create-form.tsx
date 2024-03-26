@@ -1,7 +1,7 @@
 'use client';
 import { User } from '@/lib/definititions';
 import { useEffect, useState } from 'react';
-import { createGroup } from '@/lib/databaseActions/createGroup';
+import { createGroup } from '@/lib/serverActions/createGroup';
 import CreateUserSelector from './CreateUserSelector';
 import { toast } from 'react-hot-toast';
 import ActionButtons from './CreateActionButtons';
