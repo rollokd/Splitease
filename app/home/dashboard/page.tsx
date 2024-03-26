@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 // import { GroupCard } from '@/components/group-card-test';
 import { GroupCard } from '@/components/group-card';
 import { GroupChart } from '../../../components/bar-chart';
-import { getUserGroups, fetchUserBalance, getUsersbyGroup } from '../../../lib/data';
+import { getUserGroups, getUsersbyGroup } from '../../../lib/data';
 import Totals from '../../../components/Totals';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -39,19 +39,16 @@ export default async function Home() {
   const groupBalances = await Promise.all(
     userGroups.map(async (group) => {
       let { rows } = await fetchOneUserBalanceForGroup(userID, group.group_id);
-      
+      let shortName = group.name;
+      if (shortName.length >= 5) {
+        shortName = `${shortName.slice(0, 7).replace(/\s$/, '')}..`;
+      }
       const userByGroup = await getUsersbyGroup(group.group_id);
       const listOfUsers = getUsers(userByGroup || []);
-      return { name: group.name, total: rows[0].lent_amount - rows[0].owed_amount, listOfUsers: listOfUsers, group_id: group.group_id };
+      return { name: group.name, shortName: shortName, total: rows[0].lent_amount - rows[0].owed_amount, listOfUsers: listOfUsers, group_id: group.group_id };
     })
   );
-  // console.log('Balances results from dashboard page: ', balances);
-  // const groupIDs = await Promise.all(
-  //   userGroups.map(async (group) => {
-  //     // console.log('Group ID: ', group.group_id);
-  //     return { group_id: group.group_id };
-  //   })
-  // );
+  // console.log('groupBalances results from dashboard page: ', groupBalances);
 
   return (
     <>
@@ -82,7 +79,7 @@ export default async function Home() {
           </Button>
         </div>
         <div style={{ height: "400px", overflowY: "auto" }}>
-          {/* <Card className='m-2'>
+          {/* <Card>
             <CardHeader>
               <CardTitle>
                 Groups
@@ -90,29 +87,18 @@ export default async function Home() {
             </CardHeader>
             <CardContent>
               {userID &&
-                groups.map(({ group_id }) => (
-                  <Link key={group_id} href={`/home/group/${group_id}`}>
+                groupBalances.map(( group ) => (
+                  <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
                     <GroupCard
-                      key={group_id}
-                      group_id={group_id}
-                      user_id={userID}
+                      key={group.group_id}
+                      groupName={group.name}
+                      groupTotals={Number(group.total)}
+                      listOfUsers={group.listOfUsers}
                     />
                   </Link>
                 ))}
             </CardContent>
           </Card> */}
-          {/* <div>
-            {userID &&
-              groupIDs.map(({ group_id }) => (
-                <Link key={group_id} href={`/home/group/${group_id}`}>
-                  <GroupCard
-                    key={group_id}
-                    group_id={group_id}
-                    user_id={userID}
-                  />
-                </Link>
-              ))}
-          </div> */}
           <div>
             {userID &&
               groupBalances.map(( group ) => (
@@ -128,7 +114,7 @@ export default async function Home() {
           </div>
         </div>
         <div className='flex justify-center pt-5 mt-5 mb-10'>
-          <GroupChart data={groupBalances}></GroupChart>
+          {userID && <GroupChart data={groupBalances}></GroupChart>}
         </div>
         <div className='flex justify-center m-4 pt-1 pb-3 fixed inset-x-0 bottom-0'>
           <Link className="w-full" href={`/home/settle_up_dashboard`}>
