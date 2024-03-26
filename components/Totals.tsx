@@ -27,7 +27,7 @@ export default async function Totals({ userId }: { userId: string }) {
         <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-6">
           <div className="flex-1">
             <CardTotals
-              myColor="text-green-400"
+              myColor="text-green-600"
               title="Owed"
               amount={moneyFormat(paidbyMeMoney)}
             />
