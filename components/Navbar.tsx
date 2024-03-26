@@ -26,15 +26,24 @@ const Navbar = () => {
           <Image
             src={'/Logo.png'}
             alt='logo'
-            width={100}
-            height={100}
+            width={150}
+           height={53}
+           className="block dark:hidden mt-4"
+            priority
+          />
+                  <Image
+            src={'/Logo-black.png'}
+            alt='logo'
+           width={150}
+           height={53}
+           className="hidden dark:block mt-4"
             priority
           />
         </Link>
       </div>
 
       <div>
-        <ul className='flex flex-row items-center'>
+        <ul className='flex flex-row items-center mt-4'>
           <Link href='/home/create'>
             <li className='px-4 py-2 cursor-pointer'>
               <MdGroupAdd className='cursor-pointer text-xl mx-2' />
