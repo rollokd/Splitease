@@ -3,32 +3,39 @@ import { ModeToggle } from '@/components/themeMode';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
-import Logo from '@/public/Logo.png';
-import { GiHamburgerMenu } from 'react-icons/gi';
 import { MdGroupAdd } from 'react-icons/md';
 import { SignOut } from '@/lib/actions';
+import { Button } from './ui/button';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
+  const router = useRouter();
   const handleSignOutClick = async () => {
     try {
       await SignOut();
-      window.location.href = '/login';
+      router.push('/login');
     } catch (error) {
       console.error('Error signing out:', error);
     }
   };
 
   return (
-    <nav className='w-full h-24 shadow-xl flex justify-between items-center px-2'>
+    <nav className='w-full shadow-sm flex justify-between items-center px-2'>
       <div>
         <Link href='/home/dashboard/'>
-          <Image src={Logo} alt='logo' width={165} height={75} priority />
+          <Image
+            src={'/Logo.png'}
+            alt='logo'
+            width={100}
+            height={100}
+            priority
+          />
         </Link>
       </div>
 
       <div>
         <ul className='flex flex-row items-center'>
-          <Link href='/home/create/'>
+          <Link href='/home/create'>
             <li className='px-4 py-2 cursor-pointer'>
               <MdGroupAdd className='cursor-pointer text-xl mx-2' />
             </li>
@@ -36,12 +43,15 @@ const Navbar = () => {
           <li className='px-4 py-2 cursor-pointer'>
             <ModeToggle />
           </li>
-          <li
-            onClick={handleSignOutClick}
-            className='px-4 py-2 cursor-pointer flex items-center'
+          <Button
+            onClick={async (e) => {
+              e.preventDefault();
+              await handleSignOutClick();
+            }}
+            className='cursor-pointer flex items-center'
           >
-            <PowerIcon className='w-5 h-5 mr-2' />
-          </li>
+            <PowerIcon className='w-5 h-5' />
+          </Button>
         </ul>
       </div>
     </nav>
