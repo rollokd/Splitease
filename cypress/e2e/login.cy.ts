@@ -4,8 +4,8 @@ describe('Login Form', () => {
     cy.visit('http://localhost:3000/login');
 
     // Fill in the email and password fields
-    cy.get('input[name="email"]').type('enes@nextmail.com');
-    cy.get('input[name="password"]').type('testing');
+    cy.get('input[name="email"]').type('gabemata@gmail.com');
+    cy.get('input[name="password"]').type('1010');
     // Submit the form
     cy.get('form').submit();
   });
