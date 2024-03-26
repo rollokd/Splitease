@@ -65,9 +65,6 @@ export default function SignForm() {
             <Button type="submit" className="w-full">
               Create an account
             </Button>
-            <Button variant="outline" className="w-full">
-              Sign up with GitHub
-            </Button>
           </div>
           <div className="mt-4 text-center text-sm">
             Already have an account?{' '}
