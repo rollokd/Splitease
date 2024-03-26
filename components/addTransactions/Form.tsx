@@ -244,11 +244,11 @@ export function TransactionForm({
 
                       <button
                         type="button"
-                        onClick={() => increment(index, adjustMemberShare, tableData)}
-                        className="relative inline-flex items-center justify-center mt-3 p-.5 mb-3 overflow-hidden text-sm font-medium text-black rounded-lg group bg-gradient-to-br from-black to-slate-700"
+                        onClick={() => decrement(index, adjustMemberShare, tableData)}
+                        className="relative inline-flex  mr-3 items-center justify-center mt-3 p-.5 mb-3 overflow-hidden text-sm font-medium text-black rounded-lg group bg-gradient-to-br from-black to-slate-700"
                       >
-                        <span className="relative px-2  py-1.2 transition-all ease-in duration-75 bg-white">
-                          +
+                        <span className="relative px-[.6rem] py-1.2 transition-all ease-in duration-75 bg-white">
+                          -
                         </span>
                       </button>
                       <div className="mx-1 flex-2 pl-2 pr-3">
@@ -258,16 +258,16 @@ export function TransactionForm({
                           onChange={(e) => adjustMemberShare(index, Number(e.target.value) - ele.amount)}>
                         </input>
                       </div>
-
                       <button
                         type="button"
-                        onClick={() => decrement(index, adjustMemberShare, tableData)}
-                        className="relative inline-flex  mr-3 items-center justify-center mt-3 p-.5 mb-3 overflow-hidden text-sm font-medium text-black rounded-lg group bg-gradient-to-br from-black to-slate-700"
+                        onClick={() => increment(index, adjustMemberShare, tableData)}
+                        className="relative inline-flex items-center justify-center mt-3 p-.5 mb-3 overflow-hidden text-sm font-medium text-black rounded-lg group bg-gradient-to-br from-black to-slate-700"
                       >
-                        <span className="relative px-[.6rem] py-1.2 transition-all ease-in duration-75 bg-white">
-                          -
+                        <span className="relative px-2  py-1.2 transition-all ease-in duration-75 bg-white">
+                          +
                         </span>
                       </button>
+
                     </td>
                   </tr>
                 );

@@ -45,6 +45,7 @@ function handleStatusClick(index: number, table: TableDataTypeExtended[], setTab
 }
 
 
+
 export {
   increment,
   decrement,

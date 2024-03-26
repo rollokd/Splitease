@@ -90,13 +90,22 @@ export async function createSplit(
 }
 
 
-const FormSchemaTransactionUpdate = FormSchemaTransaction.omit({ group_id: true });
+// const FormSchemaTransaction = z.object({
+//   id: z.string(),
+//   name: z.string(),
+//   amount: z.coerce.number(),
+//   status: z.boolean(),
+//   date: z.coerce.date(),
+//   paid_by: z.string(),
+//   group_id: z.string()
+// })
+
+const FormSchemaTransactionUpdate = FormSchemaTransaction.omit({ group_id: true, status: true, id: true });
 
 export async function updateTransaction(
-  currentGroupId: string,
   transactionId: string,
-  tableData: TableDataType[],
-  formData: FormData
+  formData: FormData,
+  tableData: TableDataType[]
 ) {
 
   const { name, amount, date, paid_by } = FormSchemaTransactionUpdate.parse({
@@ -108,23 +117,28 @@ export async function updateTransaction(
 
   const amountInPennies = amount * 100;
   const dateConverted = date.toISOString().split('T')[0];
+  const groupID = await sql`
+  select * from transactions
+  WHERE id=${transactionId}
+  `
+  console.log(groupID.rows[0].group_id)
 
-  await sql`
+
+  const value = await sql`
   UPDATE transactions
-    SET name = ${name},
-        date = ${dateConverted},
-        amount = ${amountInPennies},
-        paid_by = ${paid_by}
-    WHERE id = ${transactionId}
+  SET name = ${name},
+  date = ${dateConverted},
+  amount = ${amountInPennies},
+  paid_by = ${paid_by}
+  WHERE id = ${transactionId}
   `;
-
 
   await sql`DELETE FROM splits WHERE trans_id = ${transactionId}`;
 
   tableData.forEach(async (ele) => {
-    let userAmount = ele.amount * 100;
+    console.log("test 2: ele amount test", ele.user_amount)
+    let userAmount = ele.user_amount * 100;
     let paid = ele.id === paid_by;
-
     await createSplit({
       user_id: ele.id,
       user_amount: userAmount,
@@ -132,10 +146,11 @@ export async function updateTransaction(
     }, {
       trans_id: transactionId,
       amount: amountInPennies,
-      group_id: currentGroupId,
+      group_id: groupID.rows[0].group_id
     });
+    // console.log(" test 1 : table daaaaata", tableData)
   });
 
-  revalidatePath(`/home/group/${currentGroupId}`);
-  redirect(`/home/group/${currentGroupId}`);
+  revalidatePath(`/home/group/${groupID.rows[0].group_id}`);
+  redirect(`/home/group/${groupID.rows[0].group_id}`);
 }

@@ -20,6 +20,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (verifyGroupID) {
     try {
       userID = await getUserId();
+      console.log("eyeD", userID)
       if (!userID) throw new Error("User ID not found");
     } catch (error) {
       console.log(error);
@@ -30,13 +31,19 @@ export default async function Page({ params }: { params: { id: string } }) {
   }
   let getNameTransId, membersOfTrans;
   if (verifyTransID) {
-    getNameTransId = await getGroupNameWithTransId(params.id)
-    membersOfTrans = await fetchUsersFromTransactionId(params.id)
+    try {
+      getNameTransId = await getGroupNameWithTransId(params.id)
+      membersOfTrans = await fetchUsersFromTransactionId(params.id)
+      userID = await getUserId();
+      if (!userID) throw new Error("User ID not found");
+    } catch (e) {
+      console.log("error", e);
+    }
   }
 
   return (
     <>
-      {verifyGroupID && (
+      {verifyGroupID ? (
         <>
           <TransCrumbs
             name={groupName}
@@ -48,8 +55,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           >
           </TransactionForm>
         </>
-      )}
-      {verifyTransID && (
+      ) : (
         <>
           <TransCrumbs
             name={getNameTransId}
@@ -57,11 +63,13 @@ export default async function Page({ params }: { params: { id: string } }) {
           />
           <TransEdit
             membersOfTrans={membersOfTrans}
-          // userID={String(userID)}
+            userID={String(userID)}
           >
           </TransEdit>
         </>
       )}
     </>
-  );
+  )
+
+
 }

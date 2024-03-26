@@ -113,14 +113,11 @@ export async function fetchUsersFromTransactionId(
     select group_id, amount from splits
     where trans_id=${id}
     `
-    let dateAmount = await sql`
-    select amount, date from transactions
-    where id=${id}
-    `
 
     let result = await sql`
     SELECT 
-    u.firstname, 
+    u.firstname,
+    u.id, 
     COALESCE(s.user_amount, 0) AS user_amount,
     t.date AS date,
     t.amount AS total_amount,
