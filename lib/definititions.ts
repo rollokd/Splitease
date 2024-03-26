@@ -105,7 +105,9 @@ export type GroupMember = {
 
 export type DataBarChart = {
   name: string,
-  total: string
+  total: number,
+  listOfUsers: string[],
+  group_id: string,
 }
 
 type SqlField = {
@@ -160,4 +162,22 @@ export type Debts = {
   paid_by: string,
   user_id: string,
   sum: number
+}
+
+export type DashboardCardType = {
+  name: string,
+  debt: string,
+  other_id: string,
+  user_id: string,
+}
+
+export type GroupCardType = {
+  groupName: string,
+  groupTotals: number,
+  listOfUsers: string[]
+}
+
+export type UserBalancesForGroupType = {
+  userID: string,
+  groupID: string
 }
