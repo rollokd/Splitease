@@ -1,4 +1,3 @@
-import { getTransactionsByGroup } from "@/lib/data";
 import React from "react";
 import TransactionItem from "./transaction-item";
 import { Button } from "../ui/button";
@@ -12,15 +11,14 @@ import {
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
-import { getTransactionsByGroupAndId } from "@/lib/databaseActions/getTransactionsByGroupId";
+import { getTransactionsByGroupAndId } from "@/lib/databaseFunctions/getTransactionsByGroupId";
 
 type Props = { group_id: string; user_id: string };
 
 const TransactionList = async ({ group_id, user_id }: Props) => {
   const transactions = await getTransactionsByGroupAndId(group_id, user_id);
-  // console.log(transactions);
   return (
-    <Card className="flex-1">
+    <Card className="h-full">
       <CardHeader>
         <div className="flex flex-row justify-between items-center">
           <CardTitle>Transactions</CardTitle>
@@ -46,10 +44,9 @@ const TransactionList = async ({ group_id, user_id }: Props) => {
       <Separator />
       <CardContent className="overflow-x-auto">
         {transactions.map((transaction, index) => (
-          <div key={transaction.id}>
+          <div key={index}>
             {index !== 0 && <Separator />}
             <TransactionItem
-              key={transaction.trans_id}
               id={transaction.trans_id}
               username={transaction.firstname}
               amount={transaction.amount}

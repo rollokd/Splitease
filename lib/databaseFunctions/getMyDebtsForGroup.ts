@@ -2,13 +2,10 @@ import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
 import { GroupBalancesByUser } from '../definititions';
 
-export async function fetchUserBalancesForGroup(
-  groupID: string
-) {
+export async function getMyDebtsForGroup(userID: string, groupID: string) {
   noStore();
   try {
-    // i pay 50 quid for dinner - owed 25
-    const result = await sql<GroupBalancesByUser>`
+    const { rows } = await sql<GroupBalancesByUser>`
     WITH
     BALANCES AS (
       SELECT
@@ -19,8 +16,7 @@ export async function fetchUserBalancesForGroup(
         PUBLIC.SPLITS
         LEFT JOIN TRANSACTIONS ON SPLITS.TRANS_ID = TRANSACTIONS.ID
       WHERE
-        PAID = FALSE
-        AND TRANSACTIONS.GROUP_ID = ${groupID}
+        PAID = FALSE AND transactions.group_id = ${groupID}
       GROUP BY
         USER_ID,
         PAID_BY
@@ -31,24 +27,28 @@ export async function fetchUserBalancesForGroup(
       LASTNAME,
       (
         SELECT
-          SUM(BALANCE)
+          BALANCE
         FROM
           BALANCES
         WHERE
-          USER_ID = ID
-      ) AS OWED_AMOUNT,
+          PAID_BY = ${userID}
+          AND USER_ID = ID
+      ) AS LENT_AMOUNT,
       (
         SELECT
-          SUM(BALANCE)
+          BALANCE
         FROM
           BALANCES
         WHERE
-          PAID_BY = ID
-      ) AS LENT_AMOUNT
+          USER_ID = ${userID}
+          AND PAID_BY = ID
+      ) AS OWED_AMOUNT
     FROM
       PUBLIC.USERS
+      LEFT JOIN user_groups ON USERS.ID = USER_GROUPS.USER_ID
+      WHERE user_groups.group_id = ${groupID} AND id != ${userID}
     `
-    return result;
+    return rows
   } catch (error) {
     console.log('Database Error:', error);
     throw new Error('Failed to fetch balance data.');

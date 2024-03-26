@@ -1,17 +1,75 @@
 import { TransactionForm } from "@/components/addTransactions/Form";
-import { getNamesOfUsersInAGroup } from "@/lib/data";
+import { TransEdit } from "@/components/addTransactions/TransEdit"
+import { getNamesOfUsersInAGroup } from "@/lib/transActions/data";
 import { getUserId } from '@/lib/actions';
+import { TransCrumbs } from "@/components/addTransactions/TransCrumbs";
+import {
+  getGroupsName,
+  verifyGroupId,
+  verifyTransId,
+  getGroupNameWithTransId,
+  fetchUsersFromTransactionId
+} from "@/lib/transActions/data";
+import { GroupMembers } from "@/lib/definititions";
 
 export default async function Page({ params }: { params: { id: string } }) {
 
-  let userID;
-  try {
-    userID = await getUserId();
-    if (!userID) throw new Error("User ID not found");
-    console.log('userID', userID);
-  } catch (error) {
-    console.log(error);
+  const verifyGroupID = await verifyGroupId(params.id);
+  const verifyTransID = await verifyTransId(params.id);
+  let groupMembers, groupName, userID;
+  if (verifyGroupID) {
+    try {
+      userID = await getUserId();
+      console.log("eyeD", userID)
+      if (!userID) throw new Error("User ID not found");
+    } catch (error) {
+      console.log(error);
+    }
+
+    groupMembers = await getNamesOfUsersInAGroup(params.id);
+    groupName = await getGroupsName(params.id);
   }
-  const groupMembers = await getNamesOfUsersInAGroup(params.id)
-  return <TransactionForm groupMembers={groupMembers} userID={String(userID)}></TransactionForm>;
+  let getNameTransId, membersOfTrans;
+  if (verifyTransID) {
+    try {
+      getNameTransId = await getGroupNameWithTransId(params.id)
+      membersOfTrans = await fetchUsersFromTransactionId(params.id)
+      userID = await getUserId();
+      if (!userID) throw new Error("User ID not found");
+    } catch (e) {
+      console.log("error", e);
+    }
+  }
+
+  return (
+    <>
+      {verifyGroupID ? (
+        <>
+          <TransCrumbs
+            name={groupName}
+            edit="false"
+          />
+          <TransactionForm
+            groupMembers={groupMembers}
+            userID={String(userID)}
+          >
+          </TransactionForm>
+        </>
+      ) : (
+        <>
+          <TransCrumbs
+            name={getNameTransId}
+            edit="true"
+          />
+          <TransEdit
+            membersOfTrans={membersOfTrans}
+            userID={String(userID)}
+          >
+          </TransEdit>
+        </>
+      )}
+    </>
+  )
+
+
 }

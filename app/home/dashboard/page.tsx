@@ -14,6 +14,7 @@ import { ModeToggle } from '@/components/themeMode';
 import { fetchOneUserBalanceForGroup } from '@/lib/databaseActions/fetchOneUserBalanceForGroup';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserWJunction } from '@/lib/definititions';
+import { redirect } from 'next/navigation'
 
 const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map((user) => user.firstname);
@@ -22,7 +23,20 @@ const getUsers = (userByGroup: UserWJunction[]) => {
 };
 
 export default async function Home() {
-  const userID = (await getUserId()) as string;
+  
+  let userID : string | undefined;
+  try {
+    userID = await getUserId();
+    
+  } catch (error) {
+    console.error('Failed to fetch userID:', error);
+  }
+  if (userID === undefined) {
+    console.error('Failed to fetch userID');
+    redirect('login')
+  }
+
+  
 
   let userGroups = await getUserGroups(userID);
   if (userGroups === undefined) userGroups = [];
@@ -48,26 +62,28 @@ export default async function Home() {
 
   return (
     <>
-      <div className='p-4'>
-        <div className='mb-2'>
+      <div className="p-4">
+      <div className="mb-2">
           {/* <form
             action={async () => {
-              'use server';
+              "use server";
               await signOut();
             }}
           >
             <ModeToggle />
             <Button className="ml-4">
-              <PowerIcon className="w-4" />{' '}
-              <div className="ml-2"> Sign Out</div>{' '}
+              <PowerIcon className="w-4" />{" "}
+              <div className="ml-2"> Sign Out</div>{" "}
             </Button>
           </form> */}
         </div>
+        
+        <div className="mb-4"><h3>Totals</h3></div>
         <Totals userId={userID} />
 
-        <div className='m-4 flex justify-end'>
+        <div className="m-4 flex justify-end">
           <Button>
-            <Link href='/home/create'>Create Group +</Link>
+            <Link href="/home/create">Create Group +</Link>
           </Button>
         </div>
         <div style={{ height: "400px", overflowY: "auto" }}>
