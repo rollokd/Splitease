@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useDebugValue } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -12,74 +12,81 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { createTransaction } from "@/lib/transActions/actions";
+import { TableDataType } from "@/lib/definititions";
+import { updateTransaction } from "@/lib/transActions/actions";
 import { Input } from "@/components/ui/input";
-import { GroupMembers, TableDataType } from "@/lib/definititions";
-import { UseFormReturn, SubmitHandler } from "react-hook-form";
 import { useFormStatus } from 'react-dom';
-import { useParams } from "next/navigation";
-import { TableHead } from "@/components/addTransactions/TableHead";
+import { UseFormReturn, SubmitHandler } from "react-hook-form";
+import { TableHead } from "./TableHead";
 import { increment, decrement, handleStatusClick } from "@/lib/transActions/utils";
+import { useParams } from "next/navigation";
 
 interface TableDataTypeExtended extends TableDataType {
   manuallyAdjusted?: boolean;
   status?: boolean;
 }
-
 const formSchemaTransactions = z.object({
   name: z.string().min(3, {
     message: "Username must be at least 3 characters.",
   }),
   amount: z.number(),
   date: z.coerce.date(),
+  // status: z.boolean(),
+  // user_amount: z.number(),
 });
 type FormValues = z.infer<typeof formSchemaTransactions>;
 
-export function TransactionForm({
-  groupMembers,
-  userID
-}: {
-  groupMembers: GroupMembers[],
-  userID: string
-}) {
-  const [amountInput, setAmountInput] = useState(0);
-  const [tableData, setTableData] = useState<TableDataTypeExtended[]>([]);
-  const { pending } = useFormStatus()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+export function TransEdit(
+  {
+    membersOfTrans,
+    userID
+  }: {
+    membersOfTrans: any,
+    userID: string
+  }
+) {
+  const currentTrans = useParams();
+  const currentWithoutSplits = { name: membersOfTrans[0].transaction_name, initialAmount: membersOfTrans[0].total_amount, initialDate: membersOfTrans[0].date };
+  const currentDate = membersOfTrans[0].date;
+  const day = String(currentDate.getUTCDate()).padStart(2, '0');
+  const month = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
+  const year = currentDate.getUTCFullYear();
+  const formattedDate = `${year}-${month}-${day}`;
 
-  const currentGroup = useParams()
+  const [amountInput, setAmountInput] = useState(0);
+  // const [name, setName] = useState(currentWithoutSplits.name)
+  // const [date, setDate] = useState(currentDate)
+  const [tableData, setTableData] = useState<TableDataTypeExtended[]>([]);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { pending } = useFormStatus()
+  // const { register, setValue, handleSubmit } = useForm<FormValues>()
 
   const form: UseFormReturn<FormValues> = useForm({
     resolver: zodResolver(formSchemaTransactions),
+    defaultValues: {
+      name: membersOfTrans[0].transaction_name,
+      date: formattedDate,
+      amountInput: membersOfTrans[0].total_amount
+    }
   });
-  const { reset } = form;
+
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
+
+    console.log("current table ", tableData)
     setIsSubmitting(true);
+
     const form_data = new FormData();
     let key: keyof typeof values;
     for (key in values) {
       form_data.append(key, String(values[key]));
     }
     form_data.append('paid_by', String(userID))
-    form_data.append('group_id', String(currentGroup.id))
-
-    const createTransactionAndData = createTransaction.bind(null, tableData)
+    console.log("form_data", form_data)
+    console.log("form_data ======> ", form_data)
     try {
-      await createTransactionAndData(form_data);
-      reset({
-        name: "",
-        amount: 0,
-        date: new Date(),
-      });
-      setTableData(
-        groupMembers.map((member) => ({
-          ...member,
-          amount: 0,
-          manuallyAdjusted: false
-        }))
-      );
-      setAmountInput(0);
+      await updateTransaction(currentTrans.id, form_data, tableData);
     } catch (e) {
       console.log("errrorrrr...", e);
     } finally {
@@ -87,60 +94,42 @@ export function TransactionForm({
     }
   };
 
-  useEffect(() => {
-    const participatingMembers = groupMembers.filter(member => member.status !== false);
-    const newAmountPerMember = amountInput / participatingMembers.length;
-
-    const data = groupMembers.map((member) => (
-      {
-        ...member,
-        amount: member.status !== false ? Number(newAmountPerMember.toFixed(2)) : 0,
-        manuallyAdjusted: false
-      }
-    ));
-
-    setTableData(data);
-  }, [amountInput, groupMembers]);
-
-  function adjustMemberShare(index: number, adjustAmount: number): void {
+  function adjustMemberShare(index: number, newAmount: number): void {
     let newData = [...tableData];
 
     if (newData[index].status) {
       newData[index] = {
         ...newData[index],
-        amount: Number((newData[index].amount + adjustAmount).toFixed(2)),
+        user_amount: Number(newAmount.toFixed(2)),
         manuallyAdjusted: true
       };
     }
-    const totalAdjusted = newData.filter(member => member.manuallyAdjusted && member.status).reduce((acc, curr) => acc + curr.amount, 0)
-    const totalAmountLeft = amountInput - totalAdjusted
-    const participatingMembers = newData.filter(member => member.status);
-    const unadjustedMembersCount = participatingMembers.filter(member => !member.manuallyAdjusted).length;
 
-    if (
-      totalAmountLeft < 0 ||
-      (unadjustedMembersCount > 0 &&
-        totalAmountLeft / unadjustedMembersCount < 0.5)
-    ) {
-      alert(
-        "Error: There's insufficient amount. The whole amount needs to be distributed."
-      );
-      return;
-    }
-    const amountPerUnmodifiedValue = (totalAmountLeft / unadjustedMembersCount).toFixed(2);
-
-    newData = newData.map(member => {
-      if (member.status && !member.manuallyAdjusted) {
-        return { ...member, amount: Number(amountPerUnmodifiedValue) };
-      }
-      return member;
-    });
     setTableData(newData);
   }
 
+  useEffect(() => {
+
+    const allUnadjusted = membersOfTrans.every(member => !member.manuallyAdjusted);
+
+    if (allUnadjusted) {
+      const newAmountPerMember = amountInput / membersOfTrans.length;
+      const newData = membersOfTrans.map(member => ({
+        ...member,
+        user_amount: Number(newAmountPerMember.toFixed(2)),
+      }));
+
+      setTableData(newData);
+    }
+
+  }, [amountInput, membersOfTrans]);
+
+
+
+
   return (
     <Form {...form}>
-      <form
+      <form className="space-y-8 mt-5"
         onSubmit={
           pending
             ? (event) => {
@@ -148,7 +137,6 @@ export function TransactionForm({
             }
             : form.handleSubmit(onSubmit)
         }
-        className="space-y-8 mt-5"
       >
         <FormField
           control={form.control}
@@ -157,7 +145,8 @@ export function TransactionForm({
             <FormItem>
               <FormLabel>Transaction name</FormLabel>
               <FormControl>
-                <Input placeholder="type here..." {...field} />
+                <Input placeholder="type here..." {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -173,12 +162,14 @@ export function TransactionForm({
                 <Input
                   placeholder="type here..."
                   {...field}
-                  value={field.value}
+
+                  defaultValue={membersOfTrans[0].total_amount / 100}
                   onChange={(e) => {
                     const newAmount = Number(e.target.value);
-                    setAmountInput(newAmount);
-                    field.onChange(newAmount);
+                    setAmountInput(newAmount)
+                    field.onChange(newAmount)
                   }}
+
                 />
               </FormControl>
               <FormMessage />
@@ -200,6 +191,7 @@ export function TransactionForm({
                       ? field.value.toISOString().split("T")[0]
                       : field.value
                   }
+
                 />
               </FormControl>
               <FormMessage />
@@ -210,7 +202,7 @@ export function TransactionForm({
           <table>
             <TableHead />
             <tbody className="[&_tr:last-child]:border-0">
-              {tableData.map((ele, index) => {
+              {membersOfTrans.map((ele: any, index: number) => {
                 return (
                   <tr key={index}
                     className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted text-left"
@@ -254,8 +246,10 @@ export function TransactionForm({
                       <div className="mx-1 flex-2 pl-2 pr-3">
                         <input
                           className="w-[4rem] mt-3 text-center bg-slate-100"
-                          value={ele.amount}
-                          onChange={(e) => adjustMemberShare(index, Number(e.target.value) - ele.amount)}>
+                          defaultValue={ele.user_amount / 100}
+                          onChange={(e) => adjustMemberShare(index, Number(e.target.value))}
+                        >
+
                         </input>
                       </div>
                       <button
@@ -270,20 +264,20 @@ export function TransactionForm({
 
                     </td>
                   </tr>
-                );
+                )
               })}
             </tbody>
           </table>
         </div>
-
         <Button
           type="submit"
           variant={"sticky"}
           disabled={isSubmitting || pending}
         >
-          {isSubmitting ? "Submitting..." : "Add Transaction"}
+          {isSubmitting ? "Submitting..." : "Submit Changes"}
         </Button>
       </form>
     </Form >
-  );
+
+  )
 }
