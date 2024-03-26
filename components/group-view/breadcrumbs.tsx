@@ -13,7 +13,7 @@ import React from "react";
 type Props = {
   name: string;
   group_id?: string;
-  type?: "create" | "edit" | "transaction" | null;
+  type?: "settle" | "edit" | "transaction" | null;
 };
 
 const GroupCrumbs = ({ name, group_id, type }: Props) => {
