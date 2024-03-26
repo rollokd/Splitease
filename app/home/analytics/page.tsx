@@ -43,55 +43,24 @@ export default async function Home() {
     })
   );
 
-  //const bears = useStore((state) => state.bears);
   return (
     <div className='mt-4'>
-      <Totals userId={userID} />
-
-      
-      <div className="m-4 flex justify-end">
-        <Button>
-          <Link href="/home/create">Create Group +</Link>
-        </Button>
-      </div>
-      <Card className="border-none shadow-none">
-        <CardHeader className='mb-4'>
-          <CardTitle>Groups</CardTitle>
-        </CardHeader>
-
-        <CardContent>
-          <div
-            style={{
-              height: '400px',
-              overflowY: 'auto'
-              // borderColor: 'var(--card)',
-              // borderRadius: '5px',
-              // borderStyle: 'ridge',
-              // borderWidth: '1px'
-            }}
-          >
-            {userID &&
-              groups.map((group) => (
-                <Link
-                  key={group.group_id}
-                  href={`/home/group/${group.group_id}`}
-                >
-                  <GroupCard
-                    key={group.group_id}
-                    group_id={group.group_id}
-                    user_id={userID}
-                  />
-                </Link>
-              ))}
+    <Card className="border-none shadow-none">
+    <CardHeader className='mb-4'>
+      <CardTitle>Analytics</CardTitle>
+    </CardHeader>
+   
+    <CardContent className='m-2'>
+  
+          <div className="flex justify-center pt-5">
+            <GroupChart data={balances}></GroupChart>
           </div>
-          
-          <div className="flex justify-center m-4 pt-1 pb-3">
-            <Link className="w-full" href={`/home/settle_up_dashboard`}>
-              <Button className="w-full">Settle Up</Button>
-            </Link>
+
+          </CardContent>
+          </Card>
           </div>
-        </CardContent>
-      </Card>
-      </div>
+
+     
+ 
   );
 }

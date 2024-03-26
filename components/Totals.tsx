@@ -4,6 +4,7 @@ import { moneyFormat } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
+import Link from 'next/link';
 
 export default async function Totals({ userId }: { userId: string }) {
   let own;
@@ -50,6 +51,7 @@ export default async function Totals({ userId }: { userId: string }) {
           </div>
         </div>
       </CardContent>
+      <CardFooter><Link href="/home/analytics" className='underline ml-4'>Analytics</Link></CardFooter> 
       
     </Card>
   );
