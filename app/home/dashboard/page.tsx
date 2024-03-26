@@ -23,20 +23,16 @@ const getUsers = (userByGroup: UserWJunction[]) => {
 };
 
 export default async function Home() {
-  
-  let userID : string | undefined;
+  let userID: string | undefined;
   try {
     userID = await getUserId();
-    
   } catch (error) {
     console.error('Failed to fetch userID:', error);
   }
   if (userID === undefined) {
     console.error('Failed to fetch userID');
-    redirect('login')
+    redirect('login');
   }
-
-  
 
   let userGroups = await getUserGroups(userID);
   if (userGroups === undefined) userGroups = [];
@@ -59,8 +55,8 @@ export default async function Home() {
 
   return (
     <>
-      <div className="p-4">
-      <div className="mb-2">
+      <div className='p-4'>
+        <div className='mb-2'>
           {/* <form
             action={async () => {
               "use server";
@@ -74,13 +70,15 @@ export default async function Home() {
             </Button>
           </form> */}
         </div>
-        
-        <div className="mb-4"><h3>Totals</h3></div>
+
+        <div className='mb-4'>
+          <h3>Totals</h3>
+        </div>
         <Totals userId={userID} />
 
-        <div className="m-4 flex justify-end">
+        <div className='m-4 flex justify-end'>
           <Button>
-            <Link href="/home/create">Create Group +</Link>
+            <Link href='/home/create'>Create Group +</Link>
           </Button>
         </div>
         <div style={{ height: "400px", overflowY: "auto" }}>
