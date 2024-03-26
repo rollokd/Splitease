@@ -132,7 +132,7 @@ export async function fetchOwnDashboardData(
   try {
     const paidbyMe = await sql`SELECT SUM(amount) AS total_amount
     FROM transactions
-    WHERE paid_by = ${userID};`;
+    WHERE paid_by = ${userID} AND status=false;`;
 
     const userPaid = await sql`
     SELECT SUM(user_amount) AS total_amount
@@ -143,6 +143,9 @@ export async function fetchOwnDashboardData(
 
     const MyPortionofBills =
       await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id=${userID} AND paid=false`;
+console.log('Owed' , paidbyMe.rows[0].total_amount - Number(userPaid.rows[0].total_amount));
+console.log('Owe' , MyPortionofBills.rows[0].total_user_amount);
+console.log('Rollo' , userPaid.rows[0].total_amount);
 
     return {
       paidbyMe:
