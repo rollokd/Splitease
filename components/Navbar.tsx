@@ -24,7 +24,7 @@ const Navbar = () => {
     <nav className="w-full shadow-sm flex justify-between items-center px-2">
       <div>
         <Link href="/home/dashboard/">
-          <Image src={Logo} alt="logo" width={165} height={75} priority />
+          <Image src={Logo} alt="logo" width={100} priority />
         </Link>
       </div>
 

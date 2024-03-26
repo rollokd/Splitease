@@ -28,7 +28,6 @@ export default async function Home() {
       return { name: `${name}...`, total: moneyFormat(balance) };
     })
   );
-  console.log("Balances results: ", balances);
   const groups = await Promise.all(
     userGroups.map(async (group) => {
       // console.log('Group ID: ', group.group_id);
