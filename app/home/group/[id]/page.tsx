@@ -14,7 +14,6 @@ async function Page({ params }: Props) {
   const group_id = params.id;
   const user_id = await getUserId();
   const group = await getGroupById(group_id);
-  if (!user_id) throw new Error("User not found");
   return (
     <div className="flex flex-col gap-3 h-full">
       <div className="px-3 pt-3 flex flex-col gap-3 h-full">
