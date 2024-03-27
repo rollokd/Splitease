@@ -24,11 +24,11 @@ export default async function SettleUpDashBoard() {
     return { id: debt.id, name: debt.firstname, total: moneyFormat(debt.owed_amount - debt.lent_amount) };
   }))
 
-  const filteredBalances = balances.filter(debt => {
-    if (Number(debt.total) != 0) {
-      return true 
-    }
-  })
+  // const filteredBalances = balances.filter(debt => {
+  //   if (Number(debt.total) != 0) {
+  //     return true 
+  //   }
+  // })
   // console.log('Get filteredBalances result: ', filteredBalances);
 
   return (
@@ -50,7 +50,7 @@ export default async function SettleUpDashBoard() {
           </CardDescription> */}
         </CardHeader>
         <div>
-          {filteredBalances.map((balance, index) => (
+          {balances.map((balance, index) => (
             <DashboardCard key={index} name = {balance.name} debt={balance.total} other_id={balance.id} user_id={userID} />
           ))}
         </div>

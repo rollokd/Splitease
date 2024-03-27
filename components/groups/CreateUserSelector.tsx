@@ -9,6 +9,7 @@ import {
   CommandGroup,
   CommandList,
 } from '@/components/ui/command';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 
 const CreateUserSelector = ({
   userID,
@@ -33,16 +34,23 @@ const CreateUserSelector = ({
       <div className='mt-4 mb-4'>
         <Label htmlFor='user-search'>Choose participants</Label>
         <Command className='rounded-lg border shadow-md mt-4'>
-          <Search onSearch={handleSearch} />
+          <Search onSearch={handleSearch} id='user-search' />
           <CommandList>
             <CommandGroup heading='Search Results'>
               {searchResults.map((user) => (
                 <button
+                  type='button'
                   key={user.id}
                   className='flex justify-between items-center w-full p-2'
                   onClick={() => handleAddUser(user)}
                 >
-                  <UserIcon />
+                  <Avatar>
+                    <AvatarFallback>
+                      {`${user.firstname} ${user.lastname}`
+                        .match(/\b(\w)/g)
+                        ?.join('') ?? 'N/A'}
+                    </AvatarFallback>
+                  </Avatar>
                   {`${user.firstname} ${user.lastname}`}
                   <Plus />
                 </button>
@@ -64,7 +72,13 @@ const CreateUserSelector = ({
                     key={user.id}
                     className='flex justify-stretch items-center w-full p-2'
                   >
-                    <UserIcon />
+                    <Avatar>
+                      <AvatarFallback>
+                        {`${user.firstname} ${user.lastname}`
+                          .match(/\b(\w)/g)
+                          ?.join('') ?? 'N/A'}
+                      </AvatarFallback>
+                    </Avatar>
                     <span
                       className={`ml-2 ${
                         user.id === userID ? 'font-bold' : ''

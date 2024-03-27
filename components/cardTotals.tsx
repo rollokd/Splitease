@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-
 const svgIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -22,22 +21,20 @@ interface CardTotalsProps {
   amount: string;
 }
 
-
-const cardTotals = ({myColor ,title,amount } : CardTotalsProps) => {
+const cardTotals = ({ myColor, title, amount }: CardTotalsProps) => {
   return (
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className={`text-sm font-medium ${myColor}`}>
-            {title}
-          </CardTitle>
-          {svgIcon}
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">${amount}</div>
-        </CardContent>
-      </Card>
-  )
-}
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className={`text-sm font-medium ${myColor}`}>
+          {title}
+        </CardTitle>
+        {svgIcon}
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">${amount}</div>
+      </CardContent>
+    </Card>
+  );
+};
 
-export default cardTotals
-
+export default cardTotals;
