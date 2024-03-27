@@ -32,7 +32,7 @@ export async function getTransactionsByGroup(
   noStore();
   try {
     const { rows } = await sql<UserTransaction>`
-      SELECT transactions.id AS trans_id, group_id, name, amount, paid_by,status, date, users.id, firstname,lastname, email FROM transactions
+      SELECT transactions.id AS trans_id, group_id, name, amount, paid_by, status, date, users.id, firstname,lastname, email FROM transactions
       Left JOIN users
 	    ON users.id = transactions.paid_by
       WHERE group_id = ${group_id}`;

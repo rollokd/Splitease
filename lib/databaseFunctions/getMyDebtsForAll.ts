@@ -1,11 +1,10 @@
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
-import { GroupBalancesByUser } from '../definititions';
 
-export async function getMyDebtsForGroup(userID: string, groupID: string) {
+export async function getMyDebtsForAll(userID: string ) {
   noStore();
   try {
-    const { rows } = await sql<GroupBalancesByUser>`
+    const { rows } = await sql`
     WITH
     BALANCES AS (
       SELECT
@@ -16,13 +15,13 @@ export async function getMyDebtsForGroup(userID: string, groupID: string) {
         PUBLIC.SPLITS
         LEFT JOIN TRANSACTIONS ON SPLITS.TRANS_ID = TRANSACTIONS.ID
       WHERE
-        PAID = FALSE AND transactions.group_id = ${groupID}
+        PAID = FALSE
       GROUP BY
         USER_ID,
         PAID_BY
     )
     SELECT
-      ID AS USER_ID,
+      ID,
       FIRSTNAME,
       LASTNAME,
       (
@@ -33,7 +32,7 @@ export async function getMyDebtsForGroup(userID: string, groupID: string) {
         WHERE
           PAID_BY = ${userID}
           AND USER_ID = ID
-      ) AS LENT_AMOUNT,
+      ) AS OWED_AMOUNT,
       (
         SELECT
           BALANCE
@@ -42,11 +41,10 @@ export async function getMyDebtsForGroup(userID: string, groupID: string) {
         WHERE
           USER_ID = ${userID}
           AND PAID_BY = ID
-      ) AS OWED_AMOUNT
+      ) AS LENT_AMOUNT
     FROM
       PUBLIC.USERS
-      LEFT JOIN user_groups ON USERS.ID = USER_GROUPS.USER_ID
-      WHERE user_groups.group_id = ${groupID} AND id != ${userID}
+      WHERE id != ${userID}
     `
     return rows
   } catch (error) {
