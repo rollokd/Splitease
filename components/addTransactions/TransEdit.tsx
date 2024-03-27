@@ -12,19 +12,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { EditTransGroupMembers } from "@/lib/definititions";
+import { EditTransGroupMembers, TableDataTypeExtended } from "@/lib/definititions";
 import { updateTransaction } from "@/lib/transActions/actions";
 import { Input } from "@/components/ui/input";
 import { useFormStatus } from 'react-dom';
 import { UseFormReturn, SubmitHandler } from "react-hook-form";
 import { TableHead } from "./TableHead";
 import { useParams } from "next/navigation";
+import EditDeleteBtn from "@/components/addTransactions/editDeleteBtns"
 
-
-interface TableDataTypeExtended extends EditTransGroupMembers {
-  manuallyAdjusted: boolean;
-  status: boolean;
-}
 type RouteParams = {
   id: string
 }
@@ -48,7 +44,7 @@ export function TransEdit(
 ) {
 
   const { id } = useParams<RouteParams>();
-
+  console.log(membersOfTrans)
   const currentDate = membersOfTrans[0].date;
   const day = String(currentDate.getUTCDate()).padStart(2, '0');
   const month = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
@@ -196,7 +192,7 @@ export function TransEdit(
 
   return (
     <Form {...form}>
-      <form className="space-y-8 mt-5"
+      <form className="w-full space-y-8 mt-5"
         onSubmit={
           pending
             ? (event) => {
@@ -299,7 +295,7 @@ export function TransEdit(
                       >
                         <span
                           onClick={() => handleStatusClick(index)}
-                          className={`relative px-1 py-1 transition-all ease-in duration-75 ${ele.status ? "bg-gradient-to-br from-slate-700 to-blue-500" : "bg-slate-300 dark:bg-gray-900"
+                          className={`relative px-1 py-1 transition-all ease-in duration-75 ${ele.status ? "bg-gradient-to-br from-slate-700 to-primary" : "bg-slate-300 dark:bg-gray-900"
                             } rounded-md group-hover:bg-opacity-0`}
                         >
 
@@ -310,26 +306,15 @@ export function TransEdit(
                     <td
                       className="flex flex-row  py-4 pl-2 align-middle pr-0"
                     >
-
-                      <button
-                        type="button"
+                      <Button
+                        size="icon"
+                        variant="round"
                         onClick={() => decrement(index)}
-                        className="relative inline-flex  mr-3 items-center justify-center mt-3 p-.5 mb-3 overflow-hidden text-sm font-medium text-black rounded-lg group bg-gradient-to-br from-black to-slate-700"
                       >
-                        <span className="relative px-[.6rem] py-1.2 transition-all ease-in duration-75 bg-white">
-                          -
-                        </span>
-                      </button>
+                        -
+                      </Button>
                       <div className="mx-1 flex-2 pl-2 pr-3">
-                        {/* <input
-                          className="w-[4rem] mt-3 text-center bg-slate-100"
-                          value={(ele.user_amount).toFixed(2)}
-                          onChange={(e) => {
-                            adjustMemberShare(index, Number(e.target.value))
-                          }
-                        }
-                        >
-                          </input> */}
+
                         <Input
                           value={(ele.user_amount).toFixed(2)}
                           onChange={(e) => {
@@ -339,15 +324,13 @@ export function TransEdit(
                         />
 
                       </div>
-                      <button
-                        type="button"
+                      <Button
+                        size="icon"
+                        variant="round"
                         onClick={() => increment(index)}
-                        className="relative inline-flex items-center justify-center mt-3 p-.5 mb-3 overflow-hidden text-sm font-medium text-black rounded-lg group bg-gradient-to-br from-black to-slate-700"
                       >
-                        <span className="relative px-2  py-1.2 transition-all ease-in duration-75 bg-white">
-                          +
-                        </span>
-                      </button>
+                        +
+                      </Button>
 
                     </td>
                   </tr>
@@ -356,13 +339,24 @@ export function TransEdit(
             </tbody>
           </table>
         </div>
-        <Button
-          type="submit"
-          variant={"sticky"}
-          disabled={isSubmitting || pending}
-        >
-          {isSubmitting ? "Submitting..." : "Submit Changes"}
-        </Button>
+        <EditDeleteBtn
+          isSubmitting={isSubmitting}
+          pending={pending}
+          groupId={membersOfTrans[0].group_id}
+        />
+        {/* <div className='mt-6 flex flex-col gap-3 p-6'>
+          <Link href='/group/' passHref>
+            <Button className='w-full py-3'>Cancel</Button>
+          </Link>
+          <Button
+            type="submit"
+            variant={"sticky"}
+            disabled={isSubmitting || pending}
+          >
+            {isSubmitting ? "Submitting..." : "Submit Changes"}
+          </Button>
+
+        </div> */}
       </form>
     </Form >
 

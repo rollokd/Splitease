@@ -75,7 +75,10 @@ export type TransInsert = {
   group_id: string
 }
 export type TableDataType = GroupMembers & forNow;
-
+export type TableDataTypeExtended = EditTransGroupMembers & {
+  manuallyAdjusted: boolean;
+  status: boolean;
+};
 //<=== transactions
 
 export type Junction = {
