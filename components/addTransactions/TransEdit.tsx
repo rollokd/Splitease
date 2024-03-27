@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { string, z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -25,6 +25,9 @@ interface TableDataTypeExtended extends EditTransGroupMembers {
   manuallyAdjusted: boolean;
   status: boolean;
 }
+type RouteParams = {
+  id: string
+}
 const formSchemaTransactions = z.object({
   name: z.string().min(3, {
     message: "Username must be at least 3 characters.",
@@ -44,7 +47,8 @@ export function TransEdit(
   }
 ) {
 
-  const currentTrans = useParams();
+  const { id } = useParams<RouteParams>();
+
   const currentDate = membersOfTrans[0].date;
   const day = String(currentDate.getUTCDate()).padStart(2, '0');
   const month = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
@@ -55,38 +59,10 @@ export function TransEdit(
   const [tableData, setTableData] = useState<TableDataTypeExtended[]>([]);
 
   const [name, setName] = useState<string>(membersOfTrans[0].transaction_name);
-  const [date, setDate] = useState<typeof date>(new Date(membersOfTrans[0].date));
+  const [date, setDate] = useState<Date>(membersOfTrans[0].date);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { pending } = useFormStatus()
   const [amountChanged, setAmountChanged] = useState(false);
-
-  const form: UseFormReturn<FormValues> = useForm({
-    resolver: zodResolver(formSchemaTransactions),
-    defaultValues: {
-      name: membersOfTrans[0].transaction_name,
-      date: formattedDate,
-      amount: membersOfTrans[0].total_amount / 100
-    }
-  });
-
-
-  const onSubmit: SubmitHandler<FormValues> = async (values) => {
-    setIsSubmitting(true);
-
-    const form_data = new FormData();
-    let key: keyof typeof values;
-    for (key in values) {
-      form_data.append(key, String(values[key]));
-    }
-    form_data.append('paid_by', String(userID))
-    try {
-      await updateTransaction(currentTrans.id, form_data, tableData);
-    } catch (e) {
-      console.log("errrorrrr...", e);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   useEffect(() => {
     const newData = membersOfTrans.map((member) => ({
@@ -103,6 +79,35 @@ export function TransEdit(
     }
     setTableData(newData);
   }, [amountInput, name, date, membersOfTrans, amountChanged]);
+
+  const form: UseFormReturn<FormValues> = useForm({
+    resolver: zodResolver(formSchemaTransactions),
+    defaultValues: {
+      name: membersOfTrans[0].transaction_name,
+      date: new Date(formattedDate),
+      amount: membersOfTrans[0].total_amount / 100
+    }
+  });
+
+
+  const onSubmit: SubmitHandler<FormValues> = async (values) => {
+    setIsSubmitting(true);
+
+    const form_data = new FormData();
+    let key: keyof typeof values;
+    for (key in values) {
+      form_data.append(key, String(values[key]));
+    }
+    form_data.append('paid_by', String(userID))
+    try {
+      await updateTransaction(id, form_data, tableData);
+    } catch (e) {
+      console.log("errrorrrr...", e);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
 
   function redistributeAmount(data: TableDataTypeExtended[]) {
     const participatingMembers = data.filter((member) => member.status);
@@ -316,16 +321,23 @@ export function TransEdit(
                         </span>
                       </button>
                       <div className="mx-1 flex-2 pl-2 pr-3">
-                        <input
+                        {/* <input
                           className="w-[4rem] mt-3 text-center bg-slate-100"
                           value={(ele.user_amount).toFixed(2)}
                           onChange={(e) => {
                             adjustMemberShare(index, Number(e.target.value))
                           }
-                          }
+                        }
                         >
+                          </input> */}
+                        <Input
+                          value={(ele.user_amount).toFixed(2)}
+                          onChange={(e) => {
+                            adjustMemberShare(index, Number(e.target.value))
+                          }
+                          }
+                        />
 
-                        </input>
                       </div>
                       <button
                         type="button"
