@@ -1,15 +1,13 @@
-import CardTotals from './cardTotals';
-import { fetchOwnDashboardData } from '../lib/data';
-import { moneyFormat } from '@/lib/utils';
+import CardTotals from "./cardTotals";
+import { fetchOwnDashboardData } from "../lib/data";
+import { moneyFormat, prettyMoney } from "@/lib/utils";
 
 export default async function Totals({ userId }: { userId: string }) {
   let own;
   try {
     own = await fetchOwnDashboardData(userId);
-    
   } catch (error) {
-    console.log('fetchOwnDashboardData:', error);
-    
+    console.log("fetchOwnDashboardData:", error);
   }
 
   let paidbyMeMoney = own?.paidbyMe;
@@ -21,7 +19,7 @@ export default async function Totals({ userId }: { userId: string }) {
       <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-6">
         <div className="flex-1">
           <CardTotals
-            myColor="text-green-500"
+            myColor=""
             title="Owed"
             amount={moneyFormat(paidbyMeMoney)}
           />

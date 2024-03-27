@@ -18,8 +18,8 @@ type Props = { group_id: string; user_id: string };
 const TransactionList = async ({ group_id, user_id }: Props) => {
   const transactions = await getTransactionsByGroupAndId(group_id, user_id);
   return (
-    <Card className="h-full">
-      <CardHeader>
+    <Card className="h-full border-none">
+      <CardHeader className="sticky top-0 bg-card rounded-lg">
         <div className="flex flex-row justify-between items-center">
           <CardTitle>Transactions</CardTitle>
           <div className="flex flex-row items-center gap-2">
@@ -28,24 +28,27 @@ const TransactionList = async ({ group_id, user_id }: Props) => {
                 <SelectValue placeholder="Filter" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="light">All</SelectItem>
-                <SelectItem value="dark">Settled</SelectItem>
-                <SelectItem value="system">Outstanding</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="settled">Settled</SelectItem>
+                <SelectItem value="outstanding">Outstanding</SelectItem>
               </SelectContent>
             </Select>
             <Link href={`/home/group/${group_id}/addTransactions`} passHref>
-              <Button className="bg-blue-500 w-10" size={"sm"}>
-                +
+              <Button
+                className="bg-primary text-primary-foreground"
+                size={"sm"}
+              >
+                Add +
               </Button>
             </Link>
           </div>
         </div>
       </CardHeader>
-      <Separator />
-      <CardContent className="overflow-x-auto">
+      {/* <Separator /> */}
+      <CardContent className="overflow-y-auto">
         {transactions.map((transaction, index) => (
           <div key={index}>
-            {index !== 0 && <Separator />}
+            {/* {index !== 0 && <Separator />}  */}
             <TransactionItem
               id={transaction.trans_id}
               username={transaction.firstname}

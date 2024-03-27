@@ -39,10 +39,7 @@ const TransactionItem = (props: Props) => {
     return prettyMoney(props.amount_owed);
   }, [props.amount_lent, props.amount_owed]);
   return (
-    <div
-      className="flex flex-row justify-between rounded-md px-2 py-1"
-      key={props.id}
-    >
+    <div className="flex flex-row justify-between rounded-md p-2">
       <div className="flex flex-col">
         <div>{props.name}</div>
         <div className="text-muted-foreground">
@@ -56,8 +53,8 @@ const TransactionItem = (props: Props) => {
           )}
           <p
             className={cn(
-              "font-semibold text-green-600",
-              isOwed && "text-red-600",
+              "font-semibold text-primary",
+              isOwed && "text-destructive",
               isSettled && "text-muted-foreground"
             )}
           >
