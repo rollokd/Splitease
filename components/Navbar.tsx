@@ -7,8 +7,10 @@ import { MdGroupAdd } from "react-icons/md";
 import { SignOut } from "@/lib/actions";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
+  const pathname = usePathname();
   const router = useRouter();
   const handleSignOutClick = async () => {
     try {
@@ -19,6 +21,11 @@ const Navbar = () => {
     }
   };
 
+  let display = true;
+  if (pathname === "/login" || pathname === "/sign") {
+    display = false;
+  }
+
   return (
     <nav className="flex flex-row w-full shadow-sm justify-between items-center px-2">
       <div>
@@ -26,32 +33,46 @@ const Navbar = () => {
           <Image
             src={"/Logo.png"}
             alt="logo"
-            width={100}
-            height={100}
+            width={150}
+            height={53}
+            className="block dark:hidden mt-4"
+            priority
+          />
+          <Image
+            src={"/Logo-black.png"}
+            alt="logo"
+            width={150}
+            height={53}
+            className="hidden dark:block mt-4"
             priority
           />
         </Link>
       </div>
 
       <div>
-        <ul className="flex flex-row items-center">
-          <Link href="/home/create">
-            <li className="px-4 py-2 cursor-pointer">
-              <MdGroupAdd className="cursor-pointer text-xl mx-2" />
-            </li>
-          </Link>
+        <ul className="flex flex-row items-center mt-4">
+          {display && (
+            <Link href="/home/create">
+              <li className="px-4 py-2 cursor-pointer">
+                <MdGroupAdd className="cursor-pointer text-xl mx-2" />
+              </li>
+            </Link>
+          )}
           <li className="px-4 py-2 cursor-pointer">
             <ModeToggle />
           </li>
-          <Button
-            onClick={async (e) => {
-              e.preventDefault();
-              await handleSignOutClick();
-            }}
-            className="cursor-pointer flex items-center"
-          >
-            <PowerIcon className="w-5 h-5" />
-          </Button>
+          {display && (
+            <Button
+              onClick={async (e) => {
+                e.preventDefault();
+                await handleSignOutClick();
+              }}
+              className="cursor-pointer flex items-center"
+              aria-label="Logout"
+            >
+              <PowerIcon className="w-5 h-5" />
+            </Button>
+          )}
         </ul>
       </div>
     </nav>

@@ -1,7 +1,7 @@
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
-//Query return specific debts you have with every person 
-export async function getMyDebtsForAll(userID: string ) {
+//Query returns the totals of your debts (amount owed and lent)
+export async function getTotalDebts(userID: string ) {
   noStore();
   try {
     const { rows } = await sql`
@@ -46,11 +46,17 @@ export async function getMyDebtsForAll(userID: string ) {
       FROM
         PUBLIC.USERS
         WHERE id != ${userID}
+    ),
+    FILTERED_BALANCES AS (
+      SELECT * FROM BALANCES_EXTENDED
+      WHERE OWED_AMOUNT IS NOT NULL OR LENT_AMOUNT IS NOT NULL
     )
-    SELECT * FROM BALANCES_EXTENDED
-	  WHERE OWED_AMOUNT IS NOT NULL OR LENT_AMOUNT IS NOT NULL
+    SELECT
+      SUM(OWED_AMOUNT) AS TOTAL_OWED_AMOUNT,
+      SUM(LENT_AMOUNT) AS TOTAL_LENT_AMOUNT
+    FROM FILTERED_BALANCES;
     `
-    return rows
+    return rows[0]
   } catch (error) {
     console.log('Database Error:', error);
     throw new Error('Failed to fetch balance data.');
