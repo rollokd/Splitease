@@ -41,6 +41,15 @@ export type GroupMembers = {
   status?: boolean
   user_amount?: number
 }
+export type EditTransGroupMembers = {
+  id: string
+  firstname: string
+  group_id: string
+  user_amount: number
+  total_amount: number
+  transaction_name: string
+  date: Date
+}
 export type forNow = {
   amount: number
 
@@ -79,10 +88,10 @@ export interface UserProps {
   groupID: string;
 }
 
-export type UserTransaction = Transaction & User & { trans_id: string, amount_lent:number, amount_owed:number }
+export type UserTransaction = Transaction & User & { trans_id: string, amount_lent: number, amount_owed: number }
 
 export type GroupBalancesByUser = {
-  user_id:string,
+  user_id: string,
   firstname: string,
   lastname: string,
   owed_amount: number,

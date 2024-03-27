@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { TableDataType } from "@/lib/definititions";
+import { EditTransGroupMembers, TableDataType } from "@/lib/definititions";
 import { updateTransaction } from "@/lib/transActions/actions";
 import { Input } from "@/components/ui/input";
 import { useFormStatus } from 'react-dom';
@@ -21,18 +21,16 @@ import { TableHead } from "./TableHead";
 import { increment, decrement, handleStatusClick } from "@/lib/transActions/utils";
 import { useParams } from "next/navigation";
 
-interface TableDataTypeExtended extends TableDataType {
-  manuallyAdjusted?: boolean;
-  status?: boolean;
+interface TableDataTypeExtended extends EditTransGroupMembers {
+  manuallyAdjusted: boolean;
+  status: boolean;
 }
 const formSchemaTransactions = z.object({
   name: z.string().min(3, {
     message: "Username must be at least 3 characters.",
   }),
   amount: z.number(),
-  date: z.coerce.date(),
-  // status: z.boolean(),
-  // user_amount: z.number(),
+  date: z.coerce.date()
 });
 type FormValues = z.infer<typeof formSchemaTransactions>;
 
@@ -41,23 +39,23 @@ export function TransEdit(
     membersOfTrans,
     userID
   }: {
-    membersOfTrans: any,
+    membersOfTrans: EditTransGroupMembers[],
     userID: string
   }
 ) {
+  console.log("members", membersOfTrans)
   const currentTrans = useParams();
-  const currentWithoutSplits = { name: membersOfTrans[0].transaction_name, initialAmount: membersOfTrans[0].total_amount, initialDate: membersOfTrans[0].date };
   const currentDate = membersOfTrans[0].date;
   const day = String(currentDate.getUTCDate()).padStart(2, '0');
   const month = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const year = currentDate.getUTCFullYear();
   const formattedDate = `${year}-${month}-${day}`;
 
-  const [amountInput, setAmountInput] = useState(0);
-  // const [name, setName] = useState(currentWithoutSplits.name)
-  // const [date, setDate] = useState(currentDate)
-  const [tableData, setTableData] = useState<TableDataTypeExtended[]>([]);
+  const [amountInput, setAmountInput] = useState(membersOfTrans[0].total_amount);
+  const [tableData, setTableData] = useState<TableDataTypeExtended[]>([])
 
+  const [name, setName] = useState<string>(membersOfTrans[0].transaction_name)
+  const [date, setDate] = useState<typeof date>(new Date(membersOfTrans[0].date))
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { pending } = useFormStatus()
   // const { register, setValue, handleSubmit } = useForm<FormValues>()
@@ -67,7 +65,7 @@ export function TransEdit(
     defaultValues: {
       name: membersOfTrans[0].transaction_name,
       date: formattedDate,
-      amountInput: membersOfTrans[0].total_amount
+      amount: membersOfTrans[0].total_amount / 100
     }
   });
 
@@ -75,7 +73,7 @@ export function TransEdit(
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
 
     console.log("current table ", tableData)
-    setIsSubmitting(true);
+    // setIsSubmitting(true);
 
     const form_data = new FormData();
     let key: keyof typeof values;
@@ -83,46 +81,87 @@ export function TransEdit(
       form_data.append(key, String(values[key]));
     }
     form_data.append('paid_by', String(userID))
+    console.log(tableData.map(ele => console.log("table data adjustedAMount", ele.manuallyAdjusted, "status ===>", ele.status)))
     console.log("form_data", form_data)
     console.log("form_data ======> ", form_data)
-    try {
-      await updateTransaction(currentTrans.id, form_data, tableData);
-    } catch (e) {
-      console.log("errrorrrr...", e);
-    } finally {
-      setIsSubmitting(false);
-    }
+    // try {
+    //   await updateTransaction(currentTrans.id, form_data, tableData);
+    // } catch (e) {
+    //   console.log("errrorrrr...", e);
+    // } finally {
+    //   setIsSubmitting(false);
+    // }
   };
 
-  function adjustMemberShare(index: number, newAmount: number): void {
+  useEffect(() => {
+    const participatingMembers = membersOfTrans.filter(member => member.status !== false);
+    const newAmountPerMember = amountInput / participatingMembers.length;
+
+
+    const newData = membersOfTrans.map(member => ({
+      ...member,
+      transaction_name: name,
+      total_amount: amountInput,
+      // user_amount: member.status !== false ? Number(newAmountPerMember.toFixed(2)) : member.user_amount,
+      user_amount: Number(newAmountPerMember.toFixed(2)),
+      date: date,
+      manuallyAdjusted: false
+    }));
+
+    setTableData(newData);
+
+
+  }, [amountInput, name, date, membersOfTrans]);
+
+  // function adjustMemberShare(index: number, newAmount: number): void {
+  //   let newData = [...tableData];
+
+  //   if (newData[index].status) {
+  //     newData[index] = {
+  //       ...newData[index],
+  //       user_amount: Number(newAmount.toFixed(2)),
+  //       manuallyAdjusted: true
+  //     };
+  //   }
+
+  //   setTableData(newData);
+  // }
+  function adjustMemberShare(index: number, adjustAmount: number): void {
     let newData = [...tableData];
 
     if (newData[index].status) {
       newData[index] = {
         ...newData[index],
-        user_amount: Number(newAmount.toFixed(2)),
+        user_amount: Number(adjustAmount.toFixed(2)),
         manuallyAdjusted: true
       };
     }
+    const totalAdjusted = newData.filter(member => member.manuallyAdjusted && member.status).reduce((acc, curr) => acc + curr.amount, 0)
+    const totalAmountLeft = amountInput - totalAdjusted
+    const participatingMembers = newData.filter(member => member.status);
+    const unadjustedMembersCount = participatingMembers.filter(member => !member.manuallyAdjusted).length;
 
+    if (
+      totalAmountLeft < 0 ||
+      (unadjustedMembersCount > 0 &&
+        totalAmountLeft / unadjustedMembersCount < 0.5)
+    ) {
+      alert(
+        "Error: There's insufficient amount. The whole amount needs to be distributed."
+      );
+      return;
+    }
+    const amountPerUnmodifiedValue = (totalAmountLeft / unadjustedMembersCount).toFixed(2);
+
+    newData = newData.map(member => {
+      if (member.status && !member.manuallyAdjusted) {
+        return { ...member, user_amount: Number(amountPerUnmodifiedValue) };
+      }
+      return member;
+    });
     setTableData(newData);
   }
 
-  useEffect(() => {
-
-    const allUnadjusted = membersOfTrans.every(member => !member.manuallyAdjusted);
-
-    if (allUnadjusted) {
-      const newAmountPerMember = amountInput / membersOfTrans.length;
-      const newData = membersOfTrans.map(member => ({
-        ...member,
-        user_amount: Number(newAmountPerMember.toFixed(2)),
-      }));
-
-      setTableData(newData);
-    }
-
-  }, [amountInput, membersOfTrans]);
 
 
 
@@ -146,6 +185,11 @@ export function TransEdit(
               <FormLabel>Transaction name</FormLabel>
               <FormControl>
                 <Input placeholder="type here..." {...field}
+                  onChange={(e) => {
+                    const newName = String(e.target.value);
+                    setName(newName)
+                    field.onChange(newName)
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -163,7 +207,6 @@ export function TransEdit(
                   placeholder="type here..."
                   {...field}
 
-                  defaultValue={membersOfTrans[0].total_amount / 100}
                   onChange={(e) => {
                     const newAmount = Number(e.target.value);
                     setAmountInput(newAmount)
@@ -191,6 +234,11 @@ export function TransEdit(
                       ? field.value.toISOString().split("T")[0]
                       : field.value
                   }
+                  onChange={(e) => {
+                    const newDate = new Date(e.target.value);
+                    setDate(newDate)
+                    field.onChange(newDate)
+                  }}
 
                 />
               </FormControl>
@@ -202,7 +250,7 @@ export function TransEdit(
           <table>
             <TableHead />
             <tbody className="[&_tr:last-child]:border-0">
-              {membersOfTrans.map((ele: any, index: number) => {
+              {tableData.map((ele: any, index: number) => {
                 return (
                   <tr key={index}
                     className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted text-left"
@@ -246,8 +294,10 @@ export function TransEdit(
                       <div className="mx-1 flex-2 pl-2 pr-3">
                         <input
                           className="w-[4rem] mt-3 text-center bg-slate-100"
-                          defaultValue={ele.user_amount / 100}
-                          onChange={(e) => adjustMemberShare(index, Number(e.target.value))}
+                          value={(ele.user_amount / 100).toFixed(2)}
+                          onChange={(e) =>
+
+                            adjustMemberShare(index, Number(e.target.value))}
                         >
 
                         </input>
