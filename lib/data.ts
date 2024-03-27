@@ -130,31 +130,42 @@ export async function fetchOwnDashboardData(
   userID: string
 ): Promise<Own | undefined> {
   try {
-    const paidbyMe = await sql`SELECT SUM(amount) AS total_amount
-    FROM transactions
-    WHERE paid_by = ${userID} AND status=false;`;
+    // const paidbyMe = await sql`SELECT SUM(amount) AS total_amount
+    // FROM transactions
+    // WHERE paid_by = ${userID} AND status=false;`;
 
-    const userPaid = await sql`
+    const SumOfEverybodysSlpitsNotSettle = await sql`
     SELECT SUM(user_amount) AS total_amount
     FROM transactions
     LEFT JOIN splits
     ON transactions.id = splits.trans_id
-    WHERE paid_by = ${userID} AND user_id = ${userID};`;
+    WHERE paid_by = ${userID} AND paid=false`;
 
-    const MyPortionofBills =
+    //   const userPaid = await sql`
+    // SELECT SUM(user_amount) AS total_amount
+    // FROM splits WHERE user_id = ${userID} AND paid=false`;
+
+    const SumOfMySlpitsNotSettle =
       await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id=${userID} AND paid=false`;
-console.log('Owed' , paidbyMe.rows[0].total_amount - Number(userPaid.rows[0].total_amount));
-console.log('Owe' , MyPortionofBills.rows[0].total_user_amount);
-console.log('Rollo' , userPaid.rows[0].total_amount);
+    
+    
+      
+      console.log(
+        'Collect',
+        SumOfEverybodysSlpitsNotSettle.rows[0].total_amount
+        );
+        
+        //console.log('my split of  the transation', userPaid.rows[0].total_amount);
+    
+        console.log('Debt', SumOfMySlpitsNotSettle.rows[0].total_user_amount);
 
     return {
       paidbyMe:
-        paidbyMe.rows[0].total_amount - Number(userPaid.rows[0].total_amount),
-      myPortionOfBills: MyPortionofBills.rows[0].total_user_amount,
+      SumOfEverybodysSlpitsNotSettle.rows[0].total_amount,
+      myPortionOfBills: SumOfMySlpitsNotSettle.rows[0].total_user_amount,
       total:
-        paidbyMe.rows[0].total_amount -
-        Number(userPaid.rows[0].total_amount) -
-        MyPortionofBills.rows[0].total_user_amount,
+      SumOfEverybodysSlpitsNotSettle.rows[0].total_amount -
+      SumOfMySlpitsNotSettle.rows[0].total_user_amount
     };
   } catch (error) {
     console.error('Error querying the database:', error);

@@ -25,31 +25,31 @@ export default async function Totals({ userId }: { userId: string }) {
       </CardHeader>
      
       <CardContent className='m-2'>
-        <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-6">
+      <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-6">
+        <div className="flex-1">
+          <CardTotals
+            myColor="text-green-500"
+            title="Owed / Collect"
+            amount={moneyFormat(paidbyMeMoney)}
+          />
+        </div>
+        <div className="flex-1">
+          <CardTotals
+            myColor="text-red-500"
+            title="Owe / Debt"
+            amount={moneyFormat(myPortionOfBillsMoney)}
+          />
+        </div>
+        <div className="flex-1">
           <div className="flex-1">
             <CardTotals
-              myColor="text-green-600"
-              title="Owed"
-              amount={moneyFormat(paidbyMeMoney)}
+              myColor=""
+              title="+ Get - Pay "
+              amount={moneyFormat(totalMoney)}
             />
-          </div>
-          <div className="flex-1">
-            <CardTotals
-              myColor="text-red-500"
-              title="Owe"
-              amount={moneyFormat(myPortionOfBillsMoney)}
-            />
-          </div>
-          <div className="flex-1">
-            <div className="flex-1">
-              <CardTotals
-                myColor=""
-                title="Total"
-                amount={moneyFormat(totalMoney)}
-              />
-            </div>
           </div>
         </div>
+      </div>
       </CardContent>
       <CardFooter><Link href="/home/analytics" className='underline ml-4'>Analytics</Link></CardFooter> 
       
