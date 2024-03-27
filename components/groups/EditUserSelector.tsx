@@ -1,15 +1,15 @@
-import { User } from "@/lib/definititions";
-import React from "react";
-import Search from "../search";
-import { UserIcon, Plus, Minus } from "lucide-react";
+import { User } from '@/lib/definititions';
+import React from 'react';
+import Search from '../search';
+import { UserIcon, Plus, Minus } from 'lucide-react';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandList,
-} from "@/components/ui/command";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback } from "../ui/avatar";
+} from '@/components/ui/command';
+import { Label } from '@/components/ui/label';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 
 const EditUserSelector = ({
   userID,
@@ -31,24 +31,24 @@ const EditUserSelector = ({
   return (
     <>
       {/* Search and Add Users */}
-      <div className="mt-4 mb-4">
-        <Label htmlFor="user-search">Choose participants</Label>
-        <Command className="rounded-lg border shadow-md mt-4">
-          <Search onSearch={handleSearch} />
+      <div className='mt-4 mb-4'>
+        <Label htmlFor='user-search'>Choose participants</Label>
+        <Command className='rounded-lg border shadow-md mt-4'>
+          <Search onSearch={handleSearch} id='user-search' />
           <CommandList>
-            <CommandGroup heading="Search Results">
+            <CommandGroup heading='Search Results'>
               {searchResults.map((user) => (
                 <button
-                  type="button"
+                  type='button'
                   key={user.id}
-                  className="flex justify-between items-center w-full p-2"
+                  className='flex justify-between items-center w-full p-2'
                   onClick={() => handleAddUser(user)}
                 >
                   <Avatar>
                     <AvatarFallback>
                       {`${user.firstname} ${user.lastname}`
                         .match(/\b(\w)/g)
-                        ?.join("") ?? "N/A"}
+                        ?.join('') ?? 'N/A'}
                     </AvatarFallback>
                   </Avatar>
                   {`${user.firstname} ${user.lastname}`}
@@ -61,36 +61,36 @@ const EditUserSelector = ({
       </div>
 
       {/* Selected Users */}
-      <div className="mt-4 mb-4">
-        <Label htmlFor="selected-users">Selected participants</Label>
-        <Command className="rounded-lg border shadow-md mt-4">
+      <div className='mt-4 mb-4'>
+        <Label htmlFor='selected-users'>Selected participants</Label>
+        <Command className='rounded-lg border shadow-md mt-4'>
           <CommandList>
             {selectedUsers.length > 0 ? (
-              <CommandGroup heading="Selected Users">
+              <CommandGroup heading='Selected Users'>
                 {selectedUsers.map((user) => (
                   <div
                     key={user.id}
-                    className="flex justify-start items-center w-full p-2"
+                    className='flex justify-start items-center w-full p-2'
                   >
                     <Avatar>
                       <AvatarFallback>
                         {`${user.firstname} ${user.lastname}`
                           .match(/\b(\w)/g)
-                          ?.join("") ?? "N/A"}
+                          ?.join('') ?? 'N/A'}
                       </AvatarFallback>
                     </Avatar>
                     <span
                       className={`ml-2 ${
-                        user.id === userID ? "font-bold" : ""
+                        user.id === userID ? 'font-bold' : ''
                       }`}
                     >
                       {`${user.firstname} ${user.lastname}`}
                     </span>
                     {user.id !== userID && (
                       <button
-                        type="button"
+                        type='button'
                         onClick={() => handleRemoveUser(user.id)}
-                        className="ml-auto"
+                        className='ml-auto'
                       >
                         <Minus />
                       </button>
