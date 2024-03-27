@@ -58,6 +58,8 @@ const Navbar = () => {
               await handleSignOutClick();
             }}
             className='cursor-pointer flex items-center'
+            aria-label="Logout"
+
           >
             <PowerIcon className='w-5 h-5' />
           </Button>
