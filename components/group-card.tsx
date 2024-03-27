@@ -5,14 +5,11 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-
-import { fetchUserBalance, getUsersbyGroup, getNameGroup } from "@/lib/data";
-import { GroupCardType } from "@/lib/definititions";
-import { moneyFormat } from "@/lib/utils";
-import { fetchUserBalancesForGroup } from "@/lib/databaseFunctions/fetchUserBalancesForGroup";
+  CardTitle
+} from '@/components/ui/card';
+import { GroupCardType } from '@/lib/definititions';
+import { moneyFormat } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 export const GroupCard: React.FC<GroupCardType> = async ({
   groupName,
@@ -27,22 +24,25 @@ export const GroupCard: React.FC<GroupCardType> = async ({
 
   return (
     <Card className="mb-2">
-      <CardHeader style={{ paddingBottom: "8px", paddingTop: "8px" }}>
+      <CardHeader style={{ paddingBottom: '8px', paddingTop: '8px' }}>
         <div className="flex justify-between">
-          <CardTitle style={{ margin: "1px" }}>{groupName}</CardTitle>
-          <CardDescription style={{ margin: "1px" }}>
-            $ {moneyFormat(groupTotals)}{" "}
+          <CardTitle className="text-xl font-medium tracking-wide" style={{ margin: '1px' }}>{groupName}</CardTitle>
+          <CardDescription className={cn(
+              "font-semibold text-green-500",
+              Number(groupTotals) < 0 && "text-red-500",
+            )} style={{ margin: '1px' }}>
+            $ {moneyFormat(groupTotals)}{' '}
           </CardDescription>
         </div>
       </CardHeader>
-      <CardContent style={{ paddingBottom: "8px" }}>
-        {listOfUsers.length <= 4
-          ? listOfUsers.join(", ")
-          : `${listOfUsers.slice(0, 4).join(", ")}...`}
+      <CardContent style={{ paddingBottom: '8px' }}>
+        {listOfUsers.length <= 5
+          ? listOfUsers.join(', ')
+          : `${listOfUsers.slice(0, 5).join(', ')}...`}
       </CardContent>
       {/* <CardFooter className="flex justify-between">
-        nothing at the moment
-      </CardFooter> */}
+      nothing at the moment
+    </CardFooter> */}
     </Card>
   );
 };

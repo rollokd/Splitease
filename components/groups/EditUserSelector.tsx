@@ -9,6 +9,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Label } from '@/components/ui/label';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 
 const EditUserSelector = ({
   userID,
@@ -43,7 +44,13 @@ const EditUserSelector = ({
                   className='flex justify-between items-center w-full p-2'
                   onClick={() => handleAddUser(user)}
                 >
-                  <UserIcon />
+                  <Avatar>
+                    <AvatarFallback>
+                      {`${user.firstname} ${user.lastname}`
+                        .match(/\b(\w)/g)
+                        ?.join('') ?? 'N/A'}
+                    </AvatarFallback>
+                  </Avatar>
                   {`${user.firstname} ${user.lastname}`}
                   <Plus />
                 </button>
@@ -65,7 +72,13 @@ const EditUserSelector = ({
                     key={user.id}
                     className='flex justify-start items-center w-full p-2'
                   >
-                    <UserIcon />
+                    <Avatar>
+                      <AvatarFallback>
+                        {`${user.firstname} ${user.lastname}`
+                          .match(/\b(\w)/g)
+                          ?.join('') ?? 'N/A'}
+                      </AvatarFallback>
+                    </Avatar>
                     <span
                       className={`ml-2 ${
                         user.id === userID ? 'font-bold' : ''

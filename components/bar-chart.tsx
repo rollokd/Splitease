@@ -10,10 +10,7 @@ import {
 } from "recharts";
 import { DataBarChart } from "@/lib/definititions";
 
-interface GroupChartProps {
-  data: DataBarChart[];
-}
-export const GroupChart: React.FC<GroupChartProps> = ({ data }) => {
+export const GroupChart: React.FC<{ data: DataBarChart[] }> = ({ data }) => {
   //Calculate maximum value
   const maxValue = Math.round(
     Math.max(...data.map((entry) => Number(entry.total)))
@@ -36,7 +33,7 @@ export const GroupChart: React.FC<GroupChartProps> = ({ data }) => {
         }}
       >
         <XAxis
-          dataKey="name"
+          dataKey="shortName"
           stroke={"#888888"}
           fontSize={12}
           tickLine={true}
@@ -47,7 +44,7 @@ export const GroupChart: React.FC<GroupChartProps> = ({ data }) => {
           fontSize={12}
           tickLine={true}
           axisLine={true}
-          tickFormatter={(value) => `$${value.toFixed(2)}`}
+          tickFormatter={(value) => `$${value.toFixed(0)}`}
           // domain={[lowerBound, upperBound]}
           domain={[minValue, maxValue]}
         />
