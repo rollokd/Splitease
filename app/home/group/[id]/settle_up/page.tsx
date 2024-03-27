@@ -1,11 +1,19 @@
 export const dynamic = "force-dynamic";
 import GroupCrumbs from "@/components/group-view/breadcrumbs";
 import SettleCard from "@/components/group-view/settle-card";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getUserId } from "@/lib/actions";
 import { getGroupById } from "@/lib/data";
 import { getMyDebtsForGroup } from "@/lib/databaseFunctions/getMyDebtsForGroup";
+import Link from "next/link";
 
 type Props = { params: { id: string } };
 
@@ -23,11 +31,11 @@ const SettleUp = async ({ params }: Props) => {
   return (
     <div className="flex flex-col p-3 gap-3">
       <GroupCrumbs name={group?.name} group_id={group_id} type={"settle"} />
-      <Card>
+      <Card className="border-none">
         <CardHeader>
           <CardTitle>{group?.name}</CardTitle>
         </CardHeader>
-        <Separator />
+        {/* <Separator /> */}
         <CardContent>
           {debts.map((debt, index) => (
             <SettleCard
@@ -39,6 +47,11 @@ const SettleUp = async ({ params }: Props) => {
             />
           ))}
         </CardContent>
+        <CardFooter className="justify-center p-3">
+          <Link href={`/home/group/${group_id}`}>
+            <Button>Back to group</Button>
+          </Link>
+        </CardFooter>
       </Card>
     </div>
   );

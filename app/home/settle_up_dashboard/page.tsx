@@ -5,31 +5,31 @@ import GroupCrumbs from "@/components/group-view/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { getUserId } from "@/lib/actions";
 import { moneyFormat } from "@/lib/utils";
-type Props = { params: { id: string } };
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { getMyDebtsForAll } from "@/lib/databaseFunctions/getMyDebtsForAll";
 
-export default async function SettleUpDashBoard({ params }: Props) {
-  let userID : string = '';
+export default async function SettleUpDashBoard() {
 
-  try {
-    userID = await getUserId() as unknown as string;
-    console.log('User ID from dashboard settle up: ', userID);
-  } catch (error) {
-    console.log(error);
-  }
+  const userID = (await getUserId()) as string;
+  // console.log('User ID from dashboard settle up: ', userID);
+  const balancesArray = await getMyDebtsForAll(userID)
+  const balances = await Promise.all(balancesArray.map(async (debt) => {
+    return { id: debt.id, name: debt.firstname, total: moneyFormat(debt.owed_amount - debt.lent_amount) };
+  }))
 
-  //const userID='3106eb8a-3288-4b62-a077-3b24bd640d9a'
-
-  let debts = await getDebts(userID);
-  if (debts === undefined) debts = [];
-  // console.log('Get debts result: ', debts);
-
-  const balances = await Promise.all(debts.map(async (debt) => {
-    //Get what that person owes me
-    let balance = await getSpecificDebt(userID, debt.paid_by);
-    if (balance === undefined) balance = 0;
-    return { name: debt.paid_by, total: moneyFormat(balance - Number(debt.sum)) };
-  }));
-  // console.log('Get balances result: ', balances);
+  // const filteredBalances = balances.filter(debt => {
+  //   if (Number(debt.total) != 0) {
+  //     return true 
+  //   }
+  // })
+  // console.log('Get filteredBalances result: ', filteredBalances);
 
   return (
     <>
@@ -37,19 +37,29 @@ export default async function SettleUpDashBoard({ params }: Props) {
       <GroupCrumbs name={'SettleUp'} />
     </div>
     <div className="flex flex-col items-center justify-center p-10">
-      <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+      {/* <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
         Balances
-      </h4>
-      <div>
-        {balances.map((balance, index) => (
-          <DashboardCard key={index} user_id = {balance.name} debt={balance.total} />
-        ))}
-      </div>
-      <div className="p-5">
+      </h4> */}
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            Balances
+          </CardTitle>
+          {/* <CardDescription>
+            per person
+          </CardDescription> */}
+        </CardHeader>
+        <div>
+          {balances.map((balance, index) => (
+            <DashboardCard key={index} name = {balance.name} debt={balance.total} other_id={balance.id} user_id={userID} />
+          ))}
+        </div>
+      </Card>
+      {/* <div className="p-5">
         <Button className='bg-green-500'>
           Settle Up
         </Button>
-      </div>
+      </div> */}
     </div>
     </>
   );

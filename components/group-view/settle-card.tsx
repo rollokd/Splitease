@@ -15,7 +15,6 @@ type Props = {
 
 const SettleCard = ({ debt, index, user_id, group_id }: Props) => {
   const [paid, setPaid] = useState(false);
-  console.log("debt", debt);
   return (
     <div key={index}>
       {index !== 0 && <Separator />}

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 type Props = {
   onSearch: (query: string) => void;
+  id: string;
 };
 
 export default function Search({ onSearch }: Props) {

@@ -32,7 +32,7 @@ export async function getTransactionsByGroup(
   noStore();
   try {
     const { rows } = await sql<UserTransaction>`
-      SELECT transactions.id AS trans_id, group_id, name, amount, paid_by,status, date, users.id, firstname,lastname, email FROM transactions
+      SELECT transactions.id AS trans_id, group_id, name, amount, paid_by, status, date, users.id, firstname,lastname, email FROM transactions
       Left JOIN users
 	    ON users.id = transactions.paid_by
       WHERE group_id = ${group_id}`;
@@ -130,28 +130,26 @@ export async function fetchOwnDashboardData(
   userID: string
 ): Promise<Own | undefined> {
   try {
-    const paidbyMe = await sql`SELECT SUM(amount) AS total_amount
-    FROM transactions
-    WHERE paid_by = ${userID};`;
+    // const paidbyMe = await sql`SELECT SUM(amount) AS total_amount
+    // FROM transactions
+    // WHERE paid_by = ${userID} AND status=false;`;
 
-    const userPaid = await sql`
+    const SumOfEverybodysSlpitsNotSettle = await sql`
     SELECT SUM(user_amount) AS total_amount
     FROM transactions
     LEFT JOIN splits
     ON transactions.id = splits.trans_id
-    WHERE paid_by = ${userID} AND user_id = ${userID};`;
+    WHERE paid_by = ${userID} AND paid=false`;
 
-    const MyPortionofBills =
+    const SumOfMySlpitsNotSettle =
       await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id=${userID} AND paid=false`;
-
     return {
       paidbyMe:
-        paidbyMe.rows[0].total_amount - Number(userPaid.rows[0].total_amount),
-      myPortionOfBills: MyPortionofBills.rows[0].total_user_amount,
+      SumOfEverybodysSlpitsNotSettle.rows[0].total_amount,
+      myPortionOfBills: SumOfMySlpitsNotSettle.rows[0].total_user_amount,
       total:
-        paidbyMe.rows[0].total_amount -
-        Number(userPaid.rows[0].total_amount) -
-        MyPortionofBills.rows[0].total_user_amount,
+      SumOfEverybodysSlpitsNotSettle.rows[0].total_amount -
+      SumOfMySlpitsNotSettle.rows[0].total_user_amount
     };
   } catch (error) {
     console.error('Error querying the database:', error);

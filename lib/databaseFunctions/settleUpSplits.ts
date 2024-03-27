@@ -1,3 +1,5 @@
+'use server'
+
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
 import { updateTransactions } from './updateTransactions';
@@ -34,11 +36,10 @@ export async function settleUpSplits(
     WHERE
     splits.id = TS.split_id
     `
-    // await updateTransactions();
-    console.log('query', query);
+    await updateTransactions();
     return query
   }catch (err) {
-    console.error('Database Error:', err);
+    console.error('Database Error server side:', err);
     throw new Error('Failed to update your debts.');
   }
 }

@@ -1,3 +1,5 @@
+'use server'
+
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
 // get all transactions for a group with user info
@@ -11,7 +13,7 @@ export async function updateTransactions() {
           TRANSACTIONS.ID AS LEFT_ID
         FROM
           TRANSACTIONS
-          LEFT JOIN SPLITS ON SPLITS.TRANS_ID = TRANSACTIONS.ID
+        LEFT JOIN SPLITS ON SPLITS.TRANS_ID = TRANSACTIONS.ID
         WHERE
           PAID = FALSE
       )
@@ -29,7 +31,7 @@ export async function updateTransactions() {
         )
       `
     return query
-  }catch (err) {
+  } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to update the transactions.');
   }
