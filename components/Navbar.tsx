@@ -21,6 +21,11 @@ const Navbar = () => {
     }
   };
 
+  let display = true;
+  if (pathname === '/login' || pathname === '/sign') {
+    display = false;
+  }
+
  
   
 
@@ -49,7 +54,7 @@ const Navbar = () => {
 
       <div>
         <ul className='flex flex-row items-center mt-4'>
-        {pathname !== '/login' && pathname !== '/signup' && (
+        {display  && (
           <Link href='/home/create'>
             <li className='px-4 py-2 cursor-pointer'>
               <MdGroupAdd className='cursor-pointer text-xl mx-2' />
@@ -59,7 +64,7 @@ const Navbar = () => {
           <li className='px-4 py-2 cursor-pointer'>
             <ModeToggle />
           </li>
-          {pathname !== '/login' && pathname !== '/signup' && (
+          {display && (
             <Button
               onClick={async (e) => {
                 e.preventDefault();
