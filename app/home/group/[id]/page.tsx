@@ -16,7 +16,7 @@ async function Page({ params }: Props) {
   const group = await getGroupById(group_id);
   if (!user_id) throw new Error("User not found");
   return (
-    <div className="flex flex-col">
+    <div className="h-full flex flex-col">
       <div className="flex flex-row items-center justify-between p-4">
         <GroupCrumbs name={group?.name} group_id={group_id} />
         <Link href={`/home/edit/${group_id}`} passHref>
@@ -29,7 +29,7 @@ async function Page({ params }: Props) {
         <GroupBalances user_id={user_id ?? ""} group_id={group_id} />
         <TransactionList group_id={group_id} user_id={user_id} />
       </div>
-      <div className="fixed bottom-0 bg-background p-4 w-full">
+      <div className="sticky bottom-0 bg-background p-4 w-full mt-auto">
         <Link href={`${group_id}/settle_up`} passHref>
           <Button className="w-full">Settle Up</Button>
         </Link>

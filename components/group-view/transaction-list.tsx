@@ -18,7 +18,7 @@ type Props = { group_id: string; user_id: string };
 const TransactionList = async ({ group_id, user_id }: Props) => {
   const transactions = await getTransactionsByGroupAndId(group_id, user_id);
   return (
-    <Card className="h-full border-none">
+    <Card className="flex flex-col h-full border-none">
       <CardHeader className="sticky top-0 bg-card rounded-lg">
         <div className="flex flex-row justify-between items-center">
           <CardTitle>Transactions</CardTitle>
@@ -44,21 +44,18 @@ const TransactionList = async ({ group_id, user_id }: Props) => {
           </div>
         </div>
       </CardHeader>
-      {/* <Separator /> */}
-      <CardContent className="overflow-y-auto">
+      <CardContent className="flex flex-col overflow-y-auto">
         {transactions.map((transaction, index) => (
-          <div key={index}>
-            {/* {index !== 0 && <Separator />}  */}
-            <TransactionItem
-              id={transaction.trans_id}
-              username={transaction.firstname}
-              amount={transaction.amount}
-              name={transaction.name}
-              user_id={user_id}
-              amount_owed={transaction.amount_owed}
-              amount_lent={transaction.amount_lent}
-            />
-          </div>
+          <TransactionItem
+            key={index}
+            id={transaction.trans_id}
+            username={transaction.firstname}
+            amount={transaction.amount}
+            name={transaction.name}
+            user_id={user_id}
+            amount_owed={transaction.amount_owed}
+            amount_lent={transaction.amount_lent}
+          />
         ))}
       </CardContent>
     </Card>
