@@ -7,8 +7,10 @@ import { MdGroupAdd } from 'react-icons/md';
 import { SignOut } from '@/lib/actions';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
+import { usePathname  } from 'next/navigation'
 
 const Navbar = () => {
+  const pathname = usePathname()
   const router = useRouter();
   const handleSignOutClick = async () => {
     try {
@@ -18,6 +20,9 @@ const Navbar = () => {
       console.error('Error signing out:', error);
     }
   };
+
+ 
+  
 
   return (
     <nav className='w-full shadow-sm flex justify-between items-center px-2'>
@@ -44,25 +49,28 @@ const Navbar = () => {
 
       <div>
         <ul className='flex flex-row items-center mt-4'>
+        {pathname !== '/login' && pathname !== '/signup' && (
           <Link href='/home/create'>
             <li className='px-4 py-2 cursor-pointer'>
               <MdGroupAdd className='cursor-pointer text-xl mx-2' />
             </li>
           </Link>
+        )}
           <li className='px-4 py-2 cursor-pointer'>
             <ModeToggle />
           </li>
-          <Button
-            onClick={async (e) => {
-              e.preventDefault();
-              await handleSignOutClick();
-            }}
-            className='cursor-pointer flex items-center'
-            aria-label="Logout"
-
-          >
-            <PowerIcon className='w-5 h-5' />
-          </Button>
+          {pathname !== '/login' && pathname !== '/signup' && (
+            <Button
+              onClick={async (e) => {
+                e.preventDefault();
+                await handleSignOutClick();
+              }}
+              className='cursor-pointer flex items-center'
+              aria-label="Logout"
+            >
+              <PowerIcon className='w-5 h-5' />
+            </Button>
+          )}
         </ul>
       </div>
     </nav>
