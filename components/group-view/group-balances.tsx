@@ -27,7 +27,7 @@ async function GroupBalances({ user_id, group_id }: Props) {
             key={index}
             className="flex flex-col items-center justify-center"
           >
-            <Avatar className="z-[0]">
+            <Avatar>
               <AvatarFallback>
                 {`${balance.firstname} ${balance.lastname}`
                   .match(/\b(\w)/g)
