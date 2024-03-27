@@ -1,27 +1,27 @@
-import { TransactionForm } from "@/components/addTransactions/Form";
-import { TransEdit } from "@/components/addTransactions/TransEdit"
-import { getNamesOfUsersInAGroup } from "@/lib/transActions/data";
+import { TransactionForm } from '@/components/addTransactions/Form';
+import { TransEdit } from '@/components/addTransactions/TransEdit';
+import { getNamesOfUsersInAGroup } from '@/lib/transActions/data';
 import { getUserId } from '@/lib/actions';
-import { TransCrumbs } from "@/components/addTransactions/TransCrumbs";
+import { TransCrumbs } from '@/components/addTransactions/TransCrumbs';
 import {
   getGroupsName,
   verifyGroupId,
   verifyTransId,
   getGroupNameWithTransId,
-  fetchUsersFromTransactionId
-} from "@/lib/transActions/data";
-import { GroupMembers } from "@/lib/definititions";
+  fetchUsersFromTransactionId,
+} from '@/lib/transActions/data';
+import { GroupMembers } from '@/lib/definititions';
 
 export default async function Page({ params }: { params: { id: string } }) {
-
   const verifyGroupID = await verifyGroupId(params.id);
   const verifyTransID = await verifyTransId(params.id);
-  let groupMembers, groupName, userID;
+  let groupMembers: GroupMembers[] = [];
+  let groupName, userID;
   if (verifyGroupID) {
     try {
       userID = await getUserId();
-      console.log("eyeD", userID)
-      if (!userID) throw new Error("User ID not found");
+      console.log('eyeD', userID);
+      if (!userID) throw new Error('User ID not found');
     } catch (error) {
       console.log(error);
     }
@@ -32,12 +32,12 @@ export default async function Page({ params }: { params: { id: string } }) {
   let getNameTransId, membersOfTrans;
   if (verifyTransID) {
     try {
-      getNameTransId = await getGroupNameWithTransId(params.id)
-      membersOfTrans = await fetchUsersFromTransactionId(params.id)
+      getNameTransId = await getGroupNameWithTransId(params.id);
+      membersOfTrans = await fetchUsersFromTransactionId(params.id);
       userID = await getUserId();
-      if (!userID) throw new Error("User ID not found");
+      if (!userID) throw new Error('User ID not found');
     } catch (e) {
-      console.log("error", e);
+      console.log('error', e);
     }
   }
 
@@ -45,31 +45,21 @@ export default async function Page({ params }: { params: { id: string } }) {
     <>
       {verifyGroupID ? (
         <>
-          <TransCrumbs
-            name={groupName}
-            edit="false"
-          />
+          <TransCrumbs name={groupName} edit='false' />
           <TransactionForm
             groupMembers={groupMembers}
             userID={String(userID)}
-          >
-          </TransactionForm>
+          ></TransactionForm>
         </>
       ) : (
         <>
-          <TransCrumbs
-            name={getNameTransId}
-            edit="true"
-          />
+          <TransCrumbs name={getNameTransId} edit='true' />
           <TransEdit
             membersOfTrans={membersOfTrans}
             userID={String(userID)}
-          >
-          </TransEdit>
+          ></TransEdit>
         </>
       )}
     </>
-  )
-
-
+  );
 }
