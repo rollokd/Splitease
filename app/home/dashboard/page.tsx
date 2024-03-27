@@ -50,7 +50,7 @@ export default async function Home() {
   );
 
   return (
-    <div className="mt-4">
+    <div className="m-4">
       <Totals userId={userID} />
 
       <div className="m-4 flex justify-end">
