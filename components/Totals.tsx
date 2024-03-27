@@ -22,10 +22,13 @@ export default async function Totals({ userId }: { userId: string }) {
   let totalMoney = own?.total ?? 0;
 
   let myTitle;
+  let myColor;
   if (Math.sign(totalMoney) === -1) {
     myTitle = 'Pay';
+    myColor = 'text-red-500';
   } else {
     myTitle = 'Receive';
+    myColor = 'text-green-500';
   }
 
   return (
@@ -39,21 +42,21 @@ export default async function Totals({ userId }: { userId: string }) {
           <div className="flex-1">
             <CardTotals
               myColor="text-green-500"
-              title="Owed / Collect"
+              title="Collect"
               amount={moneyFormat(paidbyMeMoney)}
             />
           </div>
           <div className="flex-1">
             <CardTotals
               myColor="text-red-500"
-              title="Owe / Debt"
+              title="Debt"
               amount={moneyFormat(myPortionOfBillsMoney)}
             />
           </div>
           <div className="flex-1">
             <div className="flex-1">
               <CardTotals
-                myColor=""
+                myColor={myColor}
                 title={myTitle}
                 amount={moneyFormat(totalMoney)}
               />

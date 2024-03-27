@@ -26,10 +26,10 @@ export const GroupCard: React.FC<GroupCardType> = async ({
     <Card className="mb-2">
       <CardHeader style={{ paddingBottom: '8px', paddingTop: '8px' }}>
         <div className="flex justify-between">
-          <CardTitle style={{ margin: '1px' }}>{groupName}</CardTitle>
+          <CardTitle className="text-xl font-medium tracking-wide" style={{ margin: '1px' }}>{groupName}</CardTitle>
           <CardDescription className={cn(
-              "font-semibold text-green-600",
-              Number(groupTotals) < 0 && "text-red-600",
+              "font-semibold text-green-500",
+              Number(groupTotals) < 0 && "text-red-500",
             )} style={{ margin: '1px' }}>
             $ {moneyFormat(groupTotals)}{' '}
           </CardDescription>
