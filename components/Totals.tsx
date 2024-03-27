@@ -1,21 +1,24 @@
 import CardTotals from './cardTotals';
 import { fetchOwnDashboardData } from '../lib/data';
 import { moneyFormat } from '@/lib/utils';
+import { getTotalDebts } from '@/lib/databaseFunctions/getTotalDebts';
 
 export default async function Totals({ userId }: { userId: string }) {
   let own;
   try {
     own = await fetchOwnDashboardData(userId);
-    
   } catch (error) {
     console.log('fetchOwnDashboardData:', error);
-    
   }
-
   let paidbyMeMoney = own?.paidbyMe;
   let myPortionOfBillsMoney = own?.myPortionOfBills;
-  // let totalMoney = (own?.total ?? 0) / 100;
   let totalMoney = own?.total;
+
+  const totals = await getTotalDebts(userId);
+  console.log('Totals: ', totals)
+  paidbyMeMoney = totals.total_owed_amount;
+  myPortionOfBillsMoney = totals.total_lent_amount;
+  totalMoney = Number(paidbyMeMoney) - Number(myPortionOfBillsMoney);
   return (
     <>
       <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-6">

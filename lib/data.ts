@@ -132,14 +132,14 @@ export async function fetchOwnDashboardData(
   try {
     const paidbyMe = await sql`SELECT SUM(amount) AS total_amount
     FROM transactions
-    WHERE paid_by = ${userID};`;
+    WHERE paid_by = ${userID} AND status=false;`;
 
     const userPaid = await sql`
     SELECT SUM(user_amount) AS total_amount
     FROM transactions
     LEFT JOIN splits
     ON transactions.id = splits.trans_id
-    WHERE paid_by = ${userID} AND user_id = ${userID};`;
+    WHERE paid_by = ${userID} AND user_id = ${userID} AND paid=false;`;
 
     const MyPortionofBills =
       await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id=${userID} AND paid=false`;

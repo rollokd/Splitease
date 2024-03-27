@@ -38,6 +38,7 @@ const CreateUserSelector = ({
             <CommandGroup heading='Search Results'>
               {searchResults.map((user) => (
                 <button
+                  type="button"
                   key={user.id}
                   className='flex justify-between items-center w-full p-2'
                   onClick={() => handleAddUser(user)}
