@@ -12,7 +12,6 @@ import { redirect } from 'next/navigation';
 
 const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map((user) => user.firstname);
-  // console.log(firstnames);
   return firstnames;
 };
 
@@ -50,19 +49,28 @@ export default async function Home() {
   );
 
   return (
-    <div className="m-4">
+    <div className="m-2">
       <Totals userId={userID} />
+      {/* <div className='mb-2'></div>  */}
 
-      <div className="m-4 flex justify-end">
+      {/* <div className="m-4 flex justify-end">
         <Button>
           <Link href="/home/create">Create Group +</Link>
         </Button>
-      </div>
+      </div> */}
       <Card className="border-none shadow-none">
         <CardHeader className="mb-4">
+        <div className="transform translate-y-2">
           <CardTitle>Groups</CardTitle>
+         </div>
+        <div className='flex justify-end'>
+          <Button>
+          <Link href="/home/create">Create Group +</Link>
+        </Button>
+        </div>
+        
         </CardHeader>
-
+       
         <CardContent>
           <div
             style={{

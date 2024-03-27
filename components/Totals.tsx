@@ -32,12 +32,19 @@ export default async function Totals({ userId }: { userId: string }) {
   }
 
   return (
-    <Card className="border-none shadow-none">
-      <CardHeader className="mb-4">
-        <CardTitle>Balances</CardTitle>
+    <Card className="border-none shadow-none mb-2">
+      <CardHeader>
+        <div className="transform translate-y-2">
+          <CardTitle>Balances</CardTitle>
+        </div>
+        <span className="flex justify-end">
+          <Link href="/home/analytics" className="underline ml-4">
+            Analytics
+          </Link>
+        </span>
       </CardHeader>
 
-      <CardContent className="m-2">
+      <CardContent className="">
         <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-6">
           <div className="flex-1">
             <CardTotals
@@ -65,9 +72,9 @@ export default async function Totals({ userId }: { userId: string }) {
         </div>
       </CardContent>
       <CardFooter>
-        <Link href="/home/analytics" className="underline ml-4">
+        {/* <Link href="/home/analytics" className="underline ml-4">
           Analytics
-        </Link>
+        </Link> */}
       </CardFooter>
     </Card>
   );
