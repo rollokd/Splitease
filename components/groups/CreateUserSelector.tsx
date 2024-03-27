@@ -33,7 +33,7 @@ const CreateUserSelector = ({
       <div className='mt-4 mb-4'>
         <Label htmlFor='user-search'>Choose participants</Label>
         <Command className='rounded-lg border shadow-md mt-4'>
-          <Search onSearch={handleSearch} />
+          <Search onSearch={handleSearch} id='user-search' />
           <CommandList>
             <CommandGroup heading='Search Results'>
               {searchResults.map((user) => (
