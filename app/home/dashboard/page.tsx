@@ -20,8 +20,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserWJunction } from "@/lib/definititions";
 import { redirect } from "next/navigation";
 
-
-
 const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map((user) => user.firstname);
   // console.log(firstnames);
@@ -82,26 +80,19 @@ export default async function Home() {
               // borderWidth: '1px'
             }}
           >
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  Groups
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {userID &&
-                  groupBalances.map(( group ) => (
-                    <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
-                      <GroupCard
-                        key={group.group_id}
-                        groupName={group.name}
-                        groupTotals={Number(group.total)}
-                        listOfUsers={group.listOfUsers}
-                      />
-                    </Link>
-                  ))}
-              </CardContent>
-            </Card>
+            <div>
+              {userID &&
+                groupBalances.map(( group ) => (
+                  <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
+                    <GroupCard
+                      key={group.group_id}
+                      groupName={group.name}
+                      groupTotals={Number(group.total)}
+                      listOfUsers={group.listOfUsers}
+                    />
+                  </Link>
+                ))}
+            </div>
             {/* <div>
               {userID &&
                 groupBalances.map(( group ) => (
@@ -117,9 +108,9 @@ export default async function Home() {
             </div> */}
           </div>
         </CardContent>
-        <div className='flex justify-center pt-5 mt-5 mb-10'>
+        {/* <div className='flex justify-center pt-5 mt-5 mb-10'>
           {userID && <GroupChart data={groupBalances}></GroupChart>}
-        </div>
+        </div> */}
         <div className="flex justify-center m-4 pt-1 pb-3 fixed inset-x-0 bottom-0">
           <Link className="w-full" href={`/home/settle_up_dashboard`}>
             <Button className="w-full">Settle Up</Button>
