@@ -157,7 +157,7 @@ export function TransactionForm({
             <FormItem>
               <FormLabel>Transaction name</FormLabel>
               <FormControl>
-                <Input placeholder="type here..." {...field} />
+                <Input placeholder="input a name of a transaction" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -168,11 +168,12 @@ export function TransactionForm({
           name="amount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>amount</FormLabel>
+              <FormLabel>Amount</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="type here..."
+                  placeholder="input an amount to split"
                   {...field}
+                  type="number"
                   value={field.value}
                   onChange={(e) => {
                     const newAmount = Number(e.target.value);
@@ -190,7 +191,7 @@ export function TransactionForm({
           name="date"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>date</FormLabel>
+              <FormLabel>Date</FormLabel>
               <FormControl>
                 <Input
                   type="date"

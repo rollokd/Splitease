@@ -9,19 +9,19 @@ export function TableHead() {
           scope="col"
           className="p-4 align-middle"
         >
-          name
+          Name
         </th>
         <th
           scope="col"
           className="p-4 align-middle"
         >
-          status
+          Status
         </th>
 
         <th
           scope="col"
           className="p-4 align-middle"
-        >amount</th>
+        >Amount</th>
 
       </tr>
     </thead>

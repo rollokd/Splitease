@@ -49,6 +49,8 @@ export type EditTransGroupMembers = {
   total_amount: number
   transaction_name: string
   date: Date
+  amount: number
+  status: boolean
 }
 export type forNow = {
   amount: number
