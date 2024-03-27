@@ -150,7 +150,7 @@ export interface DataItem {
   name: string;
   value: number;
 }
-export interface GroupPieChartProps {
+export interface PieChartProps {
   data: DataItem[];
 }
 

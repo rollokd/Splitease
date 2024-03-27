@@ -19,6 +19,7 @@ import { fetchOneUserBalanceForGroup } from "@/lib/databaseFunctions/fetchOneUse
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserWJunction } from "@/lib/definititions";
 import { redirect } from "next/navigation";
+import { BarChart3 } from "lucide-react";
 
 const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map((user) => user.firstname);
@@ -55,11 +56,15 @@ export default async function Home() {
   // console.log('groupBalances results from dashboard page: ', groupBalances);
 
   return (
-    <div className='mt-4'>
+    <div className='mt-4 pl-2 pr-2'>
       <Totals userId={userID} />
-
-      
-      <div className="m-4 flex justify-end">
+      <div className="m-4 flex justify-between items-center">
+        <Link href="/home/analytics" className='underline ml-4'>
+          <Button variant={'outline'}>
+            <BarChart3 className="mr-2" />
+            Analytics
+          </Button>
+        </Link>
         <Button>
           <Link href="/home/create">Create Group +</Link>
         </Button>
@@ -68,7 +73,6 @@ export default async function Home() {
         <CardHeader className='mb-4'>
           <CardTitle>Groups</CardTitle>
         </CardHeader>
-
         <CardContent>
           <div
             style={{
@@ -80,7 +84,7 @@ export default async function Home() {
               // borderWidth: '1px'
             }}
           >
-            <div>
+            <div className="mb-14">
               {userID &&
                 groupBalances.map(( group ) => (
                   <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
@@ -93,30 +97,17 @@ export default async function Home() {
                   </Link>
                 ))}
             </div>
-            {/* <div>
-              {userID &&
-                groupBalances.map(( group ) => (
-                  <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
-                    <GroupCard
-                      key={group.group_id}
-                      groupName={group.name}
-                      groupTotals={Number(group.total)}
-                      listOfUsers={group.listOfUsers}
-                    />
-                  </Link>
-                ))}
-            </div> */}
           </div>
         </CardContent>
-        {/* <div className='flex justify-center pt-5 mt-5 mb-10'>
-          {userID && <GroupChart data={groupBalances}></GroupChart>}
-        </div> */}
-        <div className="flex justify-center m-4 pt-1 pb-3 fixed inset-x-0 bottom-0">
-          <Link className="w-full" href={`/home/settle_up_dashboard`}>
-            <Button className="w-full">Settle Up</Button>
-          </Link>
-        </div>
       </Card>
+      {/* <div className='flex justify-center pt-5 mt-5 mb-10'>
+        {userID && <GroupChart data={groupBalances}></GroupChart>}
+      </div> */}
+      <div className="flex justify-center m-4 fixed inset-x-0 bottom-0">
+        <Link className="w-full" href={`/home/settle_up_dashboard`}>
+          <Button className="w-full">Settle Up</Button>
+        </Link>
+      </div>
     </div>
   );
 }

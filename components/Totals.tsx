@@ -28,14 +28,14 @@ export default async function Totals({ userId }: { userId: string }) {
         <div className="flex-1">
           <CardTotals
             myColor="text-green-500"
-            title="Owed / Collect"
+            title="Owed/Collect"
             amount={moneyFormat(paidbyMeMoney)}
           />
         </div>
         <div className="flex-1">
           <CardTotals
             myColor="text-red-500"
-            title="Owe / Debt"
+            title="Owe/Debt"
             amount={moneyFormat(myPortionOfBillsMoney)}
           />
         </div>
@@ -50,8 +50,9 @@ export default async function Totals({ userId }: { userId: string }) {
         </div>
       </div>
       </CardContent>
-      <CardFooter><Link href="/home/analytics" className='underline ml-4'>Analytics</Link></CardFooter> 
-      
+      {/* <CardFooter>
+        <Link href="/home/analytics" className='underline ml-4'>Analytics</Link>
+      </CardFooter>  */}
     </Card>
   );
 }
