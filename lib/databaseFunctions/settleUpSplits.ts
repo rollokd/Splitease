@@ -37,7 +37,6 @@ export async function settleUpSplits(
     splits.id = TS.split_id
     `
     await updateTransactions();
-    console.log('query: ', query);
     return query
   }catch (err) {
     console.error('Database Error server side:', err);

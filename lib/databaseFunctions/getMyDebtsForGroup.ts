@@ -22,7 +22,7 @@ export async function getMyDebtsForGroup(userID: string, groupID: string) {
         PAID_BY
     )
     SELECT
-      ID,
+      ID AS USER_ID,
       FIRSTNAME,
       LASTNAME,
       (

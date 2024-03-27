@@ -1,7 +1,10 @@
 import CardTotals from './cardTotals';
 import { fetchOwnDashboardData } from '../lib/data';
 import { moneyFormat } from '@/lib/utils';
-import { getTotalDebts } from '@/lib/databaseFunctions/getTotalDebts';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import { Separator } from './ui/separator';
+import Link from 'next/link';
 
 export default async function Totals({ userId }: { userId: string }) {
   let own;
@@ -14,25 +17,25 @@ export default async function Totals({ userId }: { userId: string }) {
   let myPortionOfBillsMoney = own?.myPortionOfBills;
   let totalMoney = own?.total;
 
-  const totals = await getTotalDebts(userId);
-  console.log('Totals: ', totals)
-  paidbyMeMoney = totals.total_owed_amount;
-  myPortionOfBillsMoney = totals.total_lent_amount;
-  totalMoney = Number(paidbyMeMoney) - Number(myPortionOfBillsMoney);
   return (
-    <>
+    <Card className="border-none shadow-none">
+      <CardHeader className='mb-4'>
+        <CardTitle>Balances</CardTitle>
+      </CardHeader>
+     
+      <CardContent className='m-2'>
       <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-6">
         <div className="flex-1">
           <CardTotals
             myColor="text-green-500"
-            title="Owed"
+            title="Owed / Collect"
             amount={moneyFormat(paidbyMeMoney)}
           />
         </div>
         <div className="flex-1">
           <CardTotals
             myColor="text-red-500"
-            title="Owe"
+            title="Owe / Debt"
             amount={moneyFormat(myPortionOfBillsMoney)}
           />
         </div>
@@ -40,12 +43,15 @@ export default async function Totals({ userId }: { userId: string }) {
           <div className="flex-1">
             <CardTotals
               myColor=""
-              title="Total"
+              title="+ Get - Pay "
               amount={moneyFormat(totalMoney)}
             />
           </div>
         </div>
       </div>
-    </>
+      </CardContent>
+      <CardFooter><Link href="/home/analytics" className='underline ml-4'>Analytics</Link></CardFooter> 
+      
+    </Card>
   );
 }

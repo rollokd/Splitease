@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   Card,
   CardContent,
@@ -11,12 +11,15 @@ import { GroupCardType } from '@/lib/definititions';
 import { moneyFormat } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
-export const GroupCard: React.FC<GroupCardType> = async ({ groupName, groupTotals, listOfUsers }) => {
-
+export const GroupCard: React.FC<GroupCardType> = async ({
+  groupName,
+  groupTotals,
+  listOfUsers,
+}) => {
   //const groupName = await getNameGroup(user_id, group_id);
 
   function deleteGroup() {
-    console.log('delete group');
+    console.log("delete group");
   }
 
   return (
