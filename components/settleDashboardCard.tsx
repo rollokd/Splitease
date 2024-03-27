@@ -24,7 +24,6 @@ export const DashboardCard: React.FC<DashboardCardType> = async ({ name, debt, o
   const { toast } = useToast()
 
   const handleSettleClick = () => {
-    // settleUpSplits(user_id, other_id)
     settleSplitsDashboard(user_id, other_id)
       .then(() => {
         toast({

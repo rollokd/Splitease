@@ -79,7 +79,7 @@ export default async function Home() {
           </Button>
         </div>
         <div style={{ height: "400px", overflowY: "auto" }}>
-          {/* <Card>
+          <Card>
             <CardHeader>
               <CardTitle>
                 Groups
@@ -98,8 +98,8 @@ export default async function Home() {
                   </Link>
                 ))}
             </CardContent>
-          </Card> */}
-          <div>
+          </Card>
+          {/* <div>
             {userID &&
               groupBalances.map(( group ) => (
                 <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
@@ -111,7 +111,7 @@ export default async function Home() {
                   />
                 </Link>
               ))}
-          </div>
+          </div> */}
         </div>
         <div className='flex justify-center pt-5 mt-5 mb-10'>
           {userID && <GroupChart data={groupBalances}></GroupChart>}
