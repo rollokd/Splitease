@@ -3,11 +3,13 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 
 const ActionButtons = () => (
-  <div className='mt-6 flex flex-col gap-3 p-6'>
+  <div className='sticky bottom-0 bg-background mt-6 flex flex-row gap-5 p-4 '>
     <Link href='/dashboard' passHref>
-      <Button className='w-full py-3'>Cancel</Button>
+      <Button className='bg-secondary text-secondary-foreground  py-4 w-[35vw]'>
+        Cancel
+      </Button>
     </Link>
-    <Button type='submit' className='py-3'>
+    <Button type='submit' className='py-4 w-[35vw]'>
       Create Group
     </Button>
   </div>

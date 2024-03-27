@@ -118,9 +118,8 @@ export default function EditGroupForm({
           handleRemoveUser={handleRemoveUser}
         />
       </div>
-      <div className='mt-auto'>
-        <ActionButtons />
-      </div>
+
+      <ActionButtons />
     </form>
   );
 }
