@@ -7,25 +7,25 @@ import { Button } from '@/components/ui/button';
 function EditDeleteBtn({
   isSubmitting,
   pending,
-  groupId
+  groupId,
+  text
 }: {
   isSubmitting: boolean,
   pending: boolean,
-  groupId: string
+  groupId: string,
+  text: string
 }) {
   return (
-    <div className='mt-6 w-full flex flex-row gap-3 p-4'>
+    <div className='mt-6 w-full flex flex-row gap-3 p-4 sticky bottom-0 bg-background'>
       <Link href={`/home/group/${groupId}`} className='w-1/2'>
         <Button className='w-full '>Cancel</Button>
       </Link>
       <Button
         type='submit'
         className='w-1/2'
-        variant={"sticky"}
-
         disabled={isSubmitting || pending}
       >
-        {isSubmitting ? "Submitting..." : "Submit Changes"}
+        {isSubmitting ? "Submitting..." : `${text}`}
       </Button>
     </div>
   )

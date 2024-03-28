@@ -79,6 +79,9 @@ export type TableDataTypeExtended = EditTransGroupMembers & {
   manuallyAdjusted: boolean;
   status: boolean;
 };
+export type RouteParams = {
+  id: string
+}
 //<=== transactions
 
 export type Junction = {

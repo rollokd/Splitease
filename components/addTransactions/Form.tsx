@@ -14,12 +14,13 @@ import {
 } from "@/components/ui/form";
 import { createTransaction } from "@/lib/transActions/actions";
 import { Input } from "@/components/ui/input";
-import { GroupMembers, TableDataType } from "@/lib/definititions";
+import { GroupMembers, TableDataType, RouteParams } from "@/lib/definititions";
 import { UseFormReturn, SubmitHandler } from "react-hook-form";
 import { useFormStatus } from 'react-dom';
 import { useParams } from "next/navigation";
 import { TableHead } from "@/components/addTransactions/TableHead";
 import { increment, decrement, handleStatusClick } from "@/lib/transActions/utils";
+import EditDeleteBtn from "@/components/addTransactions/editDeleteBtns";
 
 interface TableDataTypeExtended extends TableDataType {
   manuallyAdjusted?: boolean;
@@ -47,7 +48,7 @@ export function TransactionForm({
   const { pending } = useFormStatus()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const currentGroup = useParams()
+  const currentGroup = useParams<RouteParams>()
 
   const form: UseFormReturn<FormValues> = useForm({
     resolver: zodResolver(formSchemaTransactions),
@@ -173,7 +174,7 @@ export function TransactionForm({
                 <Input
                   placeholder="input an amount to split"
                   {...field}
-                  type="number"
+
                   value={field.value}
                   onChange={(e) => {
                     const newAmount = Number(e.target.value);
@@ -207,8 +208,8 @@ export function TransactionForm({
             </FormItem>
           )}
         />
-        <div>
-          <table>
+        <div className="flex justify-center">
+          <table className="w-1/4 ">
             <TableHead />
             <tbody className="[&_tr:last-child]:border-0">
               {tableData.map((ele, index) => {
@@ -242,33 +243,28 @@ export function TransactionForm({
                     <td
                       className="flex flex-row  py-4 pl-2 align-middle pr-0"
                     >
-
-                      <button
-                        type="button"
+                      <Button
+                        size="icon"
+                        variant="round"
                         onClick={() => decrement(index, adjustMemberShare, tableData)}
-                        className="relative inline-flex  mr-3 items-center justify-center mt-3 p-.5 mb-3 overflow-hidden text-sm font-medium text-black rounded-lg group bg-gradient-to-br from-black to-slate-700"
                       >
-                        <span className="relative px-[.6rem] py-1.2 transition-all ease-in duration-75 bg-white">
-                          -
-                        </span>
-                      </button>
+                        -
+                      </Button>
                       <div className="mx-1 flex-2 pl-2 pr-3">
-                        <input
-                          className="w-[4rem] mt-3 text-center bg-slate-100"
-                          value={ele.amount}
-                          onChange={(e) => adjustMemberShare(index, Number(e.target.value) - ele.amount)}>
-                        </input>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => increment(index, adjustMemberShare, tableData)}
-                        className="relative inline-flex items-center justify-center mt-3 p-.5 mb-3 overflow-hidden text-sm font-medium text-black rounded-lg group bg-gradient-to-br from-black to-slate-700"
-                      >
-                        <span className="relative px-2  py-1.2 transition-all ease-in duration-75 bg-white">
-                          +
-                        </span>
-                      </button>
 
+                        <Input
+                          value={ele.amount}
+                          onChange={(e) => adjustMemberShare(index, Number(e.target.value) - ele.amount)}
+                        />
+                      </div>
+
+                      <Button
+                        size="icon"
+                        variant="round"
+                        onClick={() => increment(index, adjustMemberShare, tableData)}
+                      >
+                        +
+                      </Button>
                     </td>
                   </tr>
                 );
@@ -277,13 +273,13 @@ export function TransactionForm({
           </table>
         </div>
 
-        <Button
-          type="submit"
-          variant={"sticky"}
-          disabled={isSubmitting || pending}
-        >
-          {isSubmitting ? "Submitting..." : "Add Transaction"}
-        </Button>
+
+        <EditDeleteBtn
+          isSubmitting={isSubmitting}
+          pending={pending}
+          groupId={currentGroup.id}
+          text="Add Transaction"
+        />
       </form>
     </Form >
   );

@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { EditTransGroupMembers, TableDataTypeExtended } from "@/lib/definititions";
+import { EditTransGroupMembers, TableDataTypeExtended, RouteParams } from "@/lib/definititions";
 import { updateTransaction } from "@/lib/transActions/actions";
 import { Input } from "@/components/ui/input";
 import { useFormStatus } from 'react-dom';
@@ -21,9 +21,7 @@ import { TableHead } from "./TableHead";
 import { useParams } from "next/navigation";
 import EditDeleteBtn from "@/components/addTransactions/editDeleteBtns"
 
-type RouteParams = {
-  id: string
-}
+
 const formSchemaTransactions = z.object({
   name: z.string().min(3, {
     message: "Username must be at least 3 characters.",
@@ -193,6 +191,7 @@ export function TransEdit(
   return (
     <Form {...form}>
       <form className="w-full space-y-8 mt-5"
+
         onSubmit={
           pending
             ? (event) => {
@@ -271,8 +270,8 @@ export function TransEdit(
             </FormItem>
           )}
         />
-        <div>
-          <table>
+        <div className="flex justify-center">
+          <table className="w-1/4 ">
             <TableHead />
             <tbody className="[&_tr:last-child]:border-0">
               {tableData.map((ele: EditTransGroupMembers, index: number) => {
@@ -298,7 +297,6 @@ export function TransEdit(
                           className={`relative px-1 py-1 transition-all ease-in duration-75 ${ele.status ? "bg-gradient-to-br from-slate-700 to-primary" : "bg-slate-300 dark:bg-gray-900"
                             } rounded-md group-hover:bg-opacity-0`}
                         >
-
                         </span>
                       </button>
                     </td>
@@ -314,7 +312,6 @@ export function TransEdit(
                         -
                       </Button>
                       <div className="mx-1 flex-2 pl-2 pr-3">
-
                         <Input
                           value={(ele.user_amount).toFixed(2)}
                           onChange={(e) => {
@@ -322,7 +319,6 @@ export function TransEdit(
                           }
                           }
                         />
-
                       </div>
                       <Button
                         size="icon"
@@ -331,7 +327,6 @@ export function TransEdit(
                       >
                         +
                       </Button>
-
                     </td>
                   </tr>
                 )
@@ -343,20 +338,8 @@ export function TransEdit(
           isSubmitting={isSubmitting}
           pending={pending}
           groupId={membersOfTrans[0].group_id}
+          text="Submit Changes"
         />
-        {/* <div className='mt-6 flex flex-col gap-3 p-6'>
-          <Link href='/group/' passHref>
-            <Button className='w-full py-3'>Cancel</Button>
-          </Link>
-          <Button
-            type="submit"
-            variant={"sticky"}
-            disabled={isSubmitting || pending}
-          >
-            {isSubmitting ? "Submitting..." : "Submit Changes"}
-          </Button>
-
-        </div> */}
       </form>
     </Form >
 
