@@ -219,7 +219,7 @@ export function TransactionForm({
           )}
         />
         <div className="flex flex-col w-full justify-center">
-          <table className="w-1/4 ">
+          <table className="">
             <TableHead />
             <tbody className="[&_tr:last-child]:border-0">
               {tableData.map((ele, index) => {
