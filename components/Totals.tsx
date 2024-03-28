@@ -32,7 +32,7 @@ export default async function Totals({ userId }: { userId: string }) {
   }
 
   return (
-    <Card className="border-none shadow-none mb-2">
+    <Card className="border-none shadow-none m-2">
       <CardHeader>
         <div className="transform translate-y-2">
           <CardTitle>Balances</CardTitle>
