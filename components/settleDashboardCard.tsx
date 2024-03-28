@@ -54,7 +54,7 @@ export const DashboardCard: React.FC<DashboardCardType> = async ({ name, debt, o
                 {/* <Switch id="settled-switch" />
                 <Label htmlFor="settled-switch"></Label> */}
               </div>
-              <Button 
+              <Button className="w-{18}"
                 onClick={(event) => handleClick(event)} >
                 {Number(debt) > 0 ? "Receive" : "Pay Now"}
               </Button>
