@@ -35,10 +35,13 @@ export default async function Totals({ userId }: { userId: string }) {
           <CardTitle>Balances</CardTitle>
         </div>
         <span className="flex justify-end">
-          <Link href="/home/analytics" className="underline ml-4">
-            Analytics
+          <Link href="/home/analytics" className='underline ml-4'>
+            <Button variant={'outline'}>
+              <BarChart3 className="mr-2" />
+              Analytics
+            </Button>
           </Link>
-        </div>
+        </span>
       </CardHeader>
      
       <CardContent className='m-2'>
