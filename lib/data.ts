@@ -1,6 +1,16 @@
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
-import { UserWJunction, Group, UserTransaction, User, Own, GroupMember, Name, Debts, GroupUsersBasic } from './definititions';
+import {
+  UserWJunction,
+  Group,
+  UserTransaction,
+  User,
+  Own,
+  GroupMember,
+  Name,
+  Debts,
+  GroupUsersBasic,
+} from './definititions';
 
 // get group from group id
 export async function getGroupById(group_id: string) {
@@ -22,7 +32,7 @@ export async function getTransactionsByGroup(
   noStore();
   try {
     const { rows } = await sql<UserTransaction>`
-      SELECT transactions.id AS trans_id, group_id, name, amount, paid_by,status, date, users.id, firstname,lastname, email FROM transactions
+      SELECT transactions.id AS trans_id, group_id, name, amount, paid_by, status, date, users.id, firstname,lastname, email FROM transactions
       Left JOIN users
 	    ON users.id = transactions.paid_by
       WHERE group_id = ${group_id}`;
@@ -33,10 +43,7 @@ export async function getTransactionsByGroup(
   }
 }
 
-export async function fetchUserBalance(
-  userID: string,
-  groupID: string
-) {
+export async function fetchUserBalance(userID: string, groupID: string) {
   noStore();
   try {
     const totalPaid = await sql`
@@ -84,10 +91,7 @@ export async function getUsersbyGroup(group_id: string) {
   }
 }
 
-export async function getNameGroup(
-  userID: string,
-  groupID: string
-) {
+export async function getNameGroup(userID: string, groupID: string) {
   noStore();
   try {
     const { rows } = await sql<GroupMember>`
@@ -96,9 +100,9 @@ export async function getNameGroup(
     JOIN user_groups ON users.id = user_groups.user_id
     JOIN groups ON groups.id = user_groups.group_id
     WHERE users.id = ${userID} and group_id = ${groupID}
-    `
+    `;
     // console.log('getNameGroup: ', rows);
-    return rows[0]
+    return rows[0];
   } catch (error) {
     console.log('Database Error:', error);
   }
@@ -122,35 +126,36 @@ export async function getNameGroup(
 //   }
 // }
 
-export async function fetchOwnDashboardData(userID: string): Promise<Own | undefined> {
+export async function fetchOwnDashboardData(
+  userID: string
+): Promise<Own | undefined> {
   try {
-    const paidbyMe = await sql`SELECT SUM(amount) AS total_amount
-    FROM transactions
-    WHERE paid_by = ${userID};`;
+    // const paidbyMe = await sql`SELECT SUM(amount) AS total_amount
+    // FROM transactions
+    // WHERE paid_by = ${userID} AND status=false;`;
 
-    const userPaid = await sql`
+    const SumOfEverybodysSlpitsNotSettle = await sql`
     SELECT SUM(user_amount) AS total_amount
     FROM transactions
     LEFT JOIN splits
     ON transactions.id = splits.trans_id
-    WHERE paid_by = ${userID} AND user_id = ${userID};`;
+    WHERE paid_by = ${userID} AND paid=false`;
 
-    const MyPortionofBills =
+    const SumOfMySlpitsNotSettle =
       await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id=${userID} AND paid=false`;
-
     return {
-      paidbyMe: paidbyMe.rows[0].total_amount - Number(userPaid.rows[0].total_amount),
-      myPortionOfBills: MyPortionofBills.rows[0].total_user_amount,
+      paidbyMe:
+      SumOfEverybodysSlpitsNotSettle.rows[0].total_amount,
+      myPortionOfBills: SumOfMySlpitsNotSettle.rows[0].total_user_amount,
       total:
-        paidbyMe.rows[0].total_amount -
-        Number(userPaid.rows[0].total_amount) -
-        MyPortionofBills.rows[0].total_user_amount,
+      SumOfEverybodysSlpitsNotSettle.rows[0].total_amount -
+      SumOfMySlpitsNotSettle.rows[0].total_user_amount
     };
   } catch (error) {
     console.error('Error querying the database:', error);
   }
 }
-
+/// CREATE GROUP & EDIT GROUP DATA
 export async function fetchUsers() {
   try {
     const data = await sql<User>`
@@ -177,10 +182,9 @@ export async function fetchGroupUsers(group_id: string) {
     throw new Error('Failed to fetch group data.');
   }
 }
+//////////////////////////////////////////////////////
 
-export async function getUserGroups(
-  userID: string
-) {
+export async function getUserGroups(userID: string) {
   noStore();
   try {
     const { rows } = await sql<GroupMember>`
@@ -205,9 +209,9 @@ export async function getDebts(userID: string) {
     JOIN splits ON transactions.id = splits.trans_id
     WHERE user_id = ${userID} AND paid=false
     GROUP BY paid_by;
-    `
+    `;
     // console.log('getDebts result: ', rows);
-    return rows
+    return rows;
   } catch (error) {
     console.log('Database Error:', error);
   }
@@ -221,9 +225,9 @@ export async function getSpecificDebt(userID: string, paid_by: string) {
     ON transactions.id = splits.trans_id
     WHERE transactions.paid_by = ${userID} AND splits.user_id = ${paid_by} AND paid=false
     GROUP BY paid_by, user_id;
-    `
+    `;
     // console.log('getSpecificDebt result: ', rows[0].sum);
-    return Number(rows[0].sum)
+    return Number(rows[0].sum);
   } catch (error) {
     console.log('Database Error:', error);
   }
@@ -236,9 +240,9 @@ export async function getName(userID: string) {
     SELECT users.firstname
     FROM users
     WHERE users.id = ${userID}
-    `
+    `;
     // console.log('getName Result: ', rows);
-    return rows[0].firstname
+    return rows[0].firstname;
   } catch (error) {
     console.log('Database Error:', error);
   }

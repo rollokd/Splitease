@@ -47,6 +47,8 @@ export async function fetchUserBalancesForGroup(
       ) AS LENT_AMOUNT
     FROM
       PUBLIC.USERS
+      LEFT JOIN user_groups ON USERS.ID = USER_GROUPS.USER_ID
+      WHERE user_groups.group_id = ${groupID};
     `
     return result;
   } catch (error) {

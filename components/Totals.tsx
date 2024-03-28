@@ -1,42 +1,81 @@
-import CardTotals from './cardTotals';
-import { fetchOwnDashboardData } from '../lib/data';
-import { moneyFormat } from '@/lib/utils';
-import { RevenueChartSkeleton } from '@/components/ui/skeletons';
+import CardTotals from "./cardTotals";
+import { fetchOwnDashboardData } from "../lib/data";
+import { moneyFormat } from "@/lib/utils";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import Link from "next/link";
 
 export default async function Totals({ userId }: { userId: string }) {
-  const own = await fetchOwnDashboardData(userId);
-
+  let own;
+  try {
+    own = await fetchOwnDashboardData(userId);
+  } catch (error) {
+    console.log("fetchOwnDashboardData:", error);
+  }
   let paidbyMeMoney = own?.paidbyMe;
   let myPortionOfBillsMoney = own?.myPortionOfBills;
-  // let totalMoney = (own?.total ?? 0) / 100;
-  let totalMoney = own?.total;
+  let totalMoney = own?.total ?? 0;
+
+  let myTitle;
+  let myColor;
+  if (Math.sign(totalMoney) === -1) {
+    myTitle = "Pay";
+    myColor = "text-red-500";
+  } else {
+    myTitle = "Receive";
+    myColor = "text-green-500";
+  }
+
   return (
-    <>
-      <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-6">
-        <div className="flex-1">
-          <CardTotals
-            myColor="text-green-500"
-            title="Owed"
-            amount={moneyFormat(paidbyMeMoney)}
-          />
+    <Card className="border-none shadow-none mb-2">
+      <CardHeader>
+        <div className="transform translate-y-2">
+          <CardTitle>Balances</CardTitle>
         </div>
-        <div className="flex-1">
-          <CardTotals
-            myColor="text-red-500"
-            title="Owe"
-            amount={moneyFormat(myPortionOfBillsMoney)}
-          />
-        </div>
-        <div className="flex-1">
+        <span className="flex justify-end">
+          <Link href="/home/analytics" className="underline ml-4">
+            Analytics
+          </Link>
+        </span>
+      </CardHeader>
+
+      <CardContent className="">
+        <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-6">
           <div className="flex-1">
             <CardTotals
-              myColor=""
-              title="Total"
-              amount={moneyFormat(totalMoney)}
+              myColor="text-green-500"
+              title="Collect"
+              amount={moneyFormat(paidbyMeMoney)}
             />
           </div>
+          <div className="flex-1">
+            <CardTotals
+              myColor="text-red-500"
+              title="Debt"
+              amount={moneyFormat(myPortionOfBillsMoney)}
+            />
+          </div>
+          <div className="flex-1">
+            <div className="flex-1">
+              <CardTotals
+                myColor={myColor}
+                title={myTitle}
+                amount={moneyFormat(totalMoney)}
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    </>
+      </CardContent>
+      <CardFooter>
+        {/* <Link href="/home/analytics" className="underline ml-4">
+          Analytics
+        </Link> */}
+      </CardFooter>
+    </Card>
   );
 }

@@ -3,9 +3,6 @@ import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { User, UserTransaction, UserWJunction } from "./definititions"
 import numeral from 'numeral'
-import 'numeral/locales/en-gb';
-
-numeral.locale('en-gb');
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -20,7 +17,7 @@ export function moneyFormat(n: number | undefined) : string {
   return (n / 100).toFixed(2)
 }
 export function prettyMoney(amount: number) {
-  return numeral(amount/100).format("$0[,]0[.]00")
+  return numeral(amount/100).format("$0[,]0.00")
 }
 
 export function capitalizeFirstLetter(string: string) {
