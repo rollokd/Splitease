@@ -42,7 +42,6 @@ export function TransEdit(
 ) {
 
   const { id } = useParams<RouteParams>();
-  console.log(membersOfTrans)
   const currentDate = membersOfTrans[0].date;
   const day = String(currentDate.getUTCDate()).padStart(2, '0');
   const month = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
@@ -57,6 +56,16 @@ export function TransEdit(
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { pending } = useFormStatus()
   const [amountChanged, setAmountChanged] = useState(false);
+
+  // useEffect(() => {
+  //   console.log("before 2")
+  //   const idSet = new Set(tableData.map(ele => ele.id));
+  //   if (idSet.size !== tableData.length) {
+  //     console.log("Duplicate IDs detected in tableData");
+  //   } else {
+  //     console.log("there's no duplicate data")
+  //   }
+  // }, [tableData]);
 
   useEffect(() => {
     const newData = membersOfTrans.map((member) => ({
@@ -276,7 +285,7 @@ export function TransEdit(
             <tbody className="[&_tr:last-child]:border-0">
               {tableData.map((ele: EditTransGroupMembers, index: number) => {
                 return (
-                  <tr key={index}
+                  <tr key={`trans-${ele.id}`}
                     className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted text-left"
                   >
                     <th

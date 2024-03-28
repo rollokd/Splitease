@@ -113,7 +113,7 @@ export async function updateTransaction(
   select * from transactions
   WHERE id=${transactionId}
   `
-  console.log(groupID.rows[0].group_id)
+  console.log(" ======> actions line 116 ", groupID.rows[0].group_id)
 
 
   const value = await sql`
@@ -127,11 +127,24 @@ export async function updateTransaction(
 
   await sql`DELETE FROM splits WHERE trans_id = ${transactionId}`;
 
-  tableData.forEach(async (ele) => {
-    console.log("test 2: ele amount test", ele.user_amount)
+  // tableData.forEach(async (ele) => {
+  //   console.log("test 2: ele amount test", ele.user_amount)
+  //   let userAmount = ele.user_amount * 100;
+  //   let paid = ele.id === paid_by;
+  //   await createSplit({
+  //     user_id: ele.id,
+  //     user_amount: userAmount,
+  //     paid: paid,
+  //   }, {
+  //     trans_id: transactionId,
+  //     amount: amountInPennies,
+  //     group_id: groupID.rows[0].group_id
+  //   });
+  // });
+  await Promise.all(tableData.map(ele => {
     let userAmount = ele.user_amount * 100;
     let paid = ele.id === paid_by;
-    await createSplit({
+    return createSplit({
       user_id: ele.id,
       user_amount: userAmount,
       paid: paid,
@@ -140,7 +153,8 @@ export async function updateTransaction(
       amount: amountInPennies,
       group_id: groupID.rows[0].group_id
     });
-  });
+  }));
+
 
   revalidatePath(`/home/group/${groupID.rows[0].group_id}`);
   redirect(`/home/group/${groupID.rows[0].group_id}`);
