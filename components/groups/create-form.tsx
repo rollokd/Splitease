@@ -51,6 +51,7 @@ export default function CreateGroupForm({
   const handleAddUser = (user: User) => {
     if (!selectedUsers.find((selectedUser) => selectedUser.id === user.id)) {
       setSelectedUsers((prevSelectedUsers) => [...prevSelectedUsers, user]);
+      setSearchQuery('');
     }
     setSearchResults((prevSearchResults) =>
       prevSearchResults.filter((searchResult) => searchResult.id !== user.id)
