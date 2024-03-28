@@ -157,7 +157,7 @@ export function TransEdit(
       );
       return;
     }
-    const amountPerUnmodifiedValue = (totalAmountLeft / unadjustedMembersCount);
+    const amountPerUnmodifiedValue = Number(totalAmountLeft / unadjustedMembersCount);
 
     newData = newData.map(member => {
       if (member.status && !member.manuallyAdjusted) {
@@ -237,9 +237,7 @@ export function TransEdit(
               <FormControl>
                 <Input
                   placeholder="input an amount"
-                  {...field}
-                  // type="number"
-                  value={field.value}
+                  {...field} value={field.value}
                   onChange={(e) => {
                     const newAmount = Number(e.target.value);
                     setAmountInput(newAmount);
@@ -316,7 +314,11 @@ export function TransEdit(
                       <Button
                         size="icon"
                         variant="round"
-                        onClick={() => decrement(index)}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          decrement(index)
+                        }
+                        }
                       >
                         -
                       </Button>
@@ -332,7 +334,10 @@ export function TransEdit(
                       <Button
                         size="icon"
                         variant="round"
-                        onClick={() => increment(index)}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          increment(index)
+                        }}
                       >
                         +
                       </Button>

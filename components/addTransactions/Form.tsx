@@ -246,7 +246,10 @@ export function TransactionForm({
                       <Button
                         size="icon"
                         variant="round"
-                        onClick={() => decrement(index, adjustMemberShare, tableData)}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          decrement(index, adjustMemberShare, tableData)
+                        }}
                       >
                         -
                       </Button>
@@ -261,7 +264,10 @@ export function TransactionForm({
                       <Button
                         size="icon"
                         variant="round"
-                        onClick={() => increment(index, adjustMemberShare, tableData)}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          increment(index, adjustMemberShare, tableData)
+                        }}
                       >
                         +
                       </Button>

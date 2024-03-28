@@ -142,7 +142,7 @@ export async function updateTransaction(
   //   });
   // });
   await Promise.all(tableData.map(ele => {
-    let userAmount = ele.user_amount * 100;
+    let userAmount = Number(ele.user_amount.toFixed(2)) * 100;
     let paid = ele.id === paid_by;
     return createSplit({
       user_id: ele.id,
