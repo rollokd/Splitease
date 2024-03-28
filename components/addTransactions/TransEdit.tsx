@@ -282,7 +282,7 @@ export function TransEdit({
             </FormItem>
           )}
         />
-        <div className="flex align-center">
+        <div className="flex flex-col w-full justify-center">
           <table className=" ">
             <TableHead />
             <tbody className="[&_tr:last-child]:border-0">
