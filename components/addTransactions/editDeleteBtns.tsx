@@ -18,7 +18,7 @@ function EditDeleteBtn({
   return (
     <div className='mt-6 w-full flex flex-row gap-3 p-4 sticky bottom-0 bg-background'>
       <Link href={`/home/group/${groupId}`} className='w-1/2'>
-        <Button className='w-full '>Cancel</Button>
+        <Button className='w-full bg-secondary text-secondary-foreground'>Cancel</Button>
       </Link>
       <Button
         type='submit'
