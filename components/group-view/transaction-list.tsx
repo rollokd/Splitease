@@ -23,7 +23,7 @@ const TransactionList = async ({ group_id, user_id }: Props) => {
         <div className="flex flex-row justify-between items-center">
           <CardTitle>Transactions</CardTitle>
           <div className="flex flex-row items-center gap-2">
-            <Select>
+            {/* <Select>
               <SelectTrigger className="w-0.2">
                 <SelectValue placeholder="Filter" />
               </SelectTrigger>
@@ -32,7 +32,7 @@ const TransactionList = async ({ group_id, user_id }: Props) => {
                 <SelectItem value="settled">Settled</SelectItem>
                 <SelectItem value="outstanding">Outstanding</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
             <Link href={`/home/group/${group_id}/addTransactions`} passHref>
               <Button
                 className="bg-primary text-primary-foreground"

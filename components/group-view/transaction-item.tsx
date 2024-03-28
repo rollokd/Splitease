@@ -69,10 +69,7 @@ const TransactionItem = (props: Props) => {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel className="p-1">Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <Link
-              href={`/home/group/${props.user_id}/edit-transaction`}
-              passHref
-            >
+            <Link href={`/home/group/${props.id}/addTransactions`} passHref>
               <DropdownMenuItem className="gap-2">
                 <Pencil className="h-4" /> Edit
               </DropdownMenuItem>

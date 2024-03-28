@@ -1,14 +1,14 @@
-export const dynamic = 'force-dynamic';
-import { GroupCard } from '@/components/group-card';
-import { getUserGroups, getUsersbyGroup } from '../../../lib/data';
-import Totals from '../../../components/Totals';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { getUserId } from '@/lib/actions';
-import { fetchOneUserBalanceForGroup } from '@/lib/databaseFunctions/fetchOneUserBalanceForGroup';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { UserWJunction } from '@/lib/definititions';
-import { redirect } from 'next/navigation';
+export const dynamic = "force-dynamic";
+import { GroupCard } from "@/components/group-card";
+import { getUserGroups, getUsersbyGroup } from "../../../lib/data";
+import Totals from "../../../components/Totals";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { getUserId } from "@/lib/actions";
+import { fetchOneUserBalanceForGroup } from "@/lib/databaseFunctions/fetchOneUserBalanceForGroup";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { UserWJunction } from "@/lib/definititions";
+import { redirect } from "next/navigation";
 
 const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map((user) => user.firstname);
@@ -20,11 +20,11 @@ export default async function Home() {
   try {
     userID = await getUserId();
   } catch (error) {
-    console.error('Failed to fetch userID:', error);
+    console.error("Failed to fetch userID:", error);
   }
   if (userID === undefined) {
-    console.error('Failed to fetch userID');
-    redirect('login');
+    console.error("Failed to fetch userID");
+    redirect("login");
   }
 
   let userGroups = await getUserGroups(userID);
@@ -34,7 +34,7 @@ export default async function Home() {
       let { rows } = await fetchOneUserBalanceForGroup(userID, group.group_id);
       let shortName = group.name;
       if (shortName.length >= 5) {
-        shortName = `${shortName.slice(0, 7).replace(/\s$/, '')}..`;
+        shortName = `${shortName.slice(0, 7).replace(/\s$/, "")}..`;
       }
       const userByGroup = await getUsersbyGroup(group.group_id);
       const listOfUsers = getUsers(userByGroup || []);
@@ -43,50 +43,50 @@ export default async function Home() {
         shortName: shortName,
         total: rows[0].lent_amount - rows[0].owed_amount,
         listOfUsers: listOfUsers,
-        group_id: group.group_id
+        group_id: group.group_id,
       };
     })
   );
 
   return (
-    <div className='mt-4 pl-2 pr-2'>
+    <div className="flex flex-col h-full">
       <Totals userId={userID} />
-      <Card className="border-none shadow-none">
-        <CardHeader className='mb-4 flex flex-row justify-between items-center'>
-          <CardTitle>Groups</CardTitle>
-          <div className="flex justify-between items-center transform translate-y-4">
+      {/* <div className='mb-2'></div>  */}
+
+      {/* <div className="m-4 flex justify-end">
+        <Button>
+          <Link href="/home/create">Create Group +</Link>
+        </Button>
+      </div> */}
+      <Card className="flex flex-col border-none shadow-none h-screen m-2">
+        <CardHeader className="sticky top-0 bg-card mb-4">
+          <div className="transform translate-y-2">
+            <CardTitle>Groups</CardTitle>
+          </div>
+          <div className="flex justify-end">
             <Button>
               <Link href="/home/create">Create Group +</Link>
             </Button>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="h-[500px] overflow-y-auto" >
-            <div>
-              {userID &&
-                groupBalances.map((group) => (
-                  <Link
-                    key={group.group_id}
-                    href={`/home/group/${group.group_id}`}
-                  >
-                    <GroupCard
-                      key={group.group_id}
-                      groupName={group.name}
-                      groupTotals={Number(group.total)}
-                      listOfUsers={group.listOfUsers}
-                    />
-                  </Link>
-                ))}
-            </div>
-          </div>
+
+        <CardContent className="flex-1">
+          {userID &&
+            groupBalances.map((group) => (
+              <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
+                <GroupCard
+                  key={group.group_id}
+                  groupName={group.name}
+                  groupTotals={Number(group.total)}
+                  listOfUsers={group.listOfUsers}
+                />
+              </Link>
+            ))}
         </CardContent>
       </Card>
-      {/* <div className='flex justify-center pt-5 mt-5 mb-10'>
-        {userID && <GroupChart data={groupBalances}></GroupChart>}
-      </div> */}
-      <div className="flex justify-center m-4 sticky bg-background bottom-0">
+      <div className="flex justify-center w-full p-4 sticky bg-background bottom-0 mt-auto">
         <Link className="w-full" href={`/home/settle_up_dashboard`}>
-          <Button className="w-full">Settle Up Balances </Button>
+          <Button className="w-full">Settle Up</Button>
         </Link>
       </div>
     </div>

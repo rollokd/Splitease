@@ -14,9 +14,10 @@ type Props = {
   name: string;
   group_id?: string;
   type?: "settle" | "edit" | "transaction" | null;
+  edit?: boolean;
 };
 
-const GroupCrumbs = ({ name, group_id, type }: Props) => {
+const GroupCrumbs = ({ name, group_id, type, edit }: Props) => {
   return (
     <Breadcrumb>
       <BreadcrumbList className="text-lg">
@@ -39,7 +40,9 @@ const GroupCrumbs = ({ name, group_id, type }: Props) => {
             <BreadcrumbItem>
               <BreadcrumbPage>
                 {type === "transaction"
-                  ? "Add Transaction"
+                  ? edit
+                    ? "Edit Transaction"
+                    : "Add Transaction"
                   : `${capitalizeFirstLetter(type)} Group`}
               </BreadcrumbPage>
             </BreadcrumbItem>

@@ -49,31 +49,29 @@ const Navbar = () => {
         </Link>
       </div>
 
-      <div>
-        <ul className="flex flex-row items-center mt-4">
-          {display && (
-            <Link href="/home/create">
-              <li className="px-4 py-2 cursor-pointer">
-                <MdGroupAdd className="cursor-pointer text-xl mx-2" />
-              </li>
-            </Link>
-          )}
-          <li className="px-4 py-2 cursor-pointer">
-            <ModeToggle />
-          </li>
-          {display && (
-            <Button
-              onClick={async (e) => {
-                e.preventDefault();
-                await handleSignOutClick();
-              }}
-              className="cursor-pointer flex items-center"
-              aria-label="Logout"
-            >
-              <PowerIcon className="w-5 h-5" />
+      <div className="flex flex-row items-center mt-4">
+        {display && (
+          <Link href="/home/create">
+            <Button variant={"outline"} size={"icon"}>
+              <MdGroupAdd className="cursor-pointer text-xl mx-2" />
             </Button>
-          )}
-        </ul>
+          </Link>
+        )}
+        <div className="px-4 py-2 cursor-pointer">
+          <ModeToggle />
+        </div>
+        {display && (
+          <Button
+            onClick={async (e) => {
+              e.preventDefault();
+              await handleSignOutClick();
+            }}
+            className="cursor-pointer flex items-center"
+            aria-label="Logout"
+          >
+            <PowerIcon className="w-5 h-5" />
+          </Button>
+        )}
       </div>
     </nav>
   );
