@@ -3,6 +3,7 @@ import { TransEdit } from "@/components/addTransactions/TransEdit"
 import { getNamesOfUsersInAGroup } from "@/lib/transActions/data";
 import { getUserId } from '@/lib/actions';
 import { TransCrumbs } from "@/components/addTransactions/TransCrumbs";
+
 import {
   getGroupsName,
   verifyGroupId,
@@ -10,6 +11,7 @@ import {
   getGroupNameWithTransId,
   fetchUsersFromTransactionId
 } from "@/lib/transActions/data";
+import GroupCrumbs from "@/components/group-view/breadcrumbs";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const [verifyGroupID, verifyTransID] = await Promise.all([
@@ -56,10 +58,16 @@ export default async function Page({ params }: { params: { id: string } }) {
     <>
       {verifyGroupID ? (
         <>
-          <TransCrumbs
+          {/* <TransCrumbs
             name={groupName}
             edit="false"
-          />
+          /> */}
+          <GroupCrumbs
+            name={groupName}
+            group_id={params.id}
+            edit={false}
+            type="transaction"
+          ></GroupCrumbs>
           <TransactionForm
             groupMembers={groupMembers}
             userID={String(userID)}
@@ -68,10 +76,16 @@ export default async function Page({ params }: { params: { id: string } }) {
         </>
       ) : (
         <>
-          <TransCrumbs
+          {/* <TransCrumbs
             name={getNameTransId}
             edit="true"
-          />
+          /> */}
+          <GroupCrumbs
+            name={getNameTransId}
+            group_id={membersOfTrans[0].group_id}
+            edit={true}
+            type="transaction"
+          ></GroupCrumbs>
           <TransEdit
             membersOfTrans={membersOfTrans}
             userID={String(userID)}
