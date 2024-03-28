@@ -16,10 +16,14 @@ import { createTransaction } from "@/lib/transActions/actions";
 import { Input } from "@/components/ui/input";
 import { GroupMembers, TableDataType, RouteParams } from "@/lib/definititions";
 import { UseFormReturn, SubmitHandler } from "react-hook-form";
-import { useFormStatus } from 'react-dom';
+import { useFormStatus } from "react-dom";
 import { useParams } from "next/navigation";
 import { TableHead } from "@/components/addTransactions/TableHead";
-import { increment, decrement, handleStatusClick } from "@/lib/transActions/utils";
+import {
+  increment,
+  decrement,
+  handleStatusClick,
+} from "@/lib/transActions/utils";
 import EditDeleteBtn from "@/components/addTransactions/editDeleteBtns";
 
 interface TableDataTypeExtended extends TableDataType {
@@ -38,17 +42,17 @@ type FormValues = z.infer<typeof formSchemaTransactions>;
 
 export function TransactionForm({
   groupMembers,
-  userID
+  userID,
 }: {
-  groupMembers: GroupMembers[],
-  userID: string
+  groupMembers: GroupMembers[];
+  userID: string;
 }) {
   const [amountInput, setAmountInput] = useState(0);
   const [tableData, setTableData] = useState<TableDataTypeExtended[]>([]);
-  const { pending } = useFormStatus()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { pending } = useFormStatus();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const currentGroup = useParams<RouteParams>()
+  const currentGroup = useParams<RouteParams>();
 
   const form: UseFormReturn<FormValues> = useForm({
     resolver: zodResolver(formSchemaTransactions),
@@ -62,10 +66,10 @@ export function TransactionForm({
     for (key in values) {
       form_data.append(key, String(values[key]));
     }
-    form_data.append('paid_by', String(userID))
-    form_data.append('group_id', String(currentGroup.id))
+    form_data.append("paid_by", String(userID));
+    form_data.append("group_id", String(currentGroup.id));
 
-    const createTransactionAndData = createTransaction.bind(null, tableData)
+    const createTransactionAndData = createTransaction.bind(null, tableData);
     try {
       await createTransactionAndData(form_data);
       reset({
@@ -77,7 +81,7 @@ export function TransactionForm({
         groupMembers.map((member) => ({
           ...member,
           amount: 0,
-          manuallyAdjusted: false
+          manuallyAdjusted: false,
         }))
       );
       setAmountInput(0);
@@ -89,16 +93,17 @@ export function TransactionForm({
   };
 
   useEffect(() => {
-    const participatingMembers = groupMembers.filter(member => member.status !== false);
+    const participatingMembers = groupMembers.filter(
+      (member) => member.status !== false
+    );
     const newAmountPerMember = amountInput / participatingMembers.length;
 
-    const data = groupMembers.map((member) => (
-      {
-        ...member,
-        amount: member.status !== false ? Number(newAmountPerMember.toFixed(2)) : 0,
-        manuallyAdjusted: false
-      }
-    ));
+    const data = groupMembers.map((member) => ({
+      ...member,
+      amount:
+        member.status !== false ? Number(newAmountPerMember.toFixed(2)) : 0,
+      manuallyAdjusted: false,
+    }));
 
     setTableData(data);
   }, [amountInput, groupMembers]);
@@ -110,13 +115,17 @@ export function TransactionForm({
       newData[index] = {
         ...newData[index],
         amount: Number((newData[index].amount + adjustAmount).toFixed(2)),
-        manuallyAdjusted: true
+        manuallyAdjusted: true,
       };
     }
-    const totalAdjusted = newData.filter(member => member.manuallyAdjusted && member.status).reduce((acc, curr) => acc + curr.amount, 0)
-    const totalAmountLeft = amountInput - totalAdjusted
-    const participatingMembers = newData.filter(member => member.status);
-    const unadjustedMembersCount = participatingMembers.filter(member => !member.manuallyAdjusted).length;
+    const totalAdjusted = newData
+      .filter((member) => member.manuallyAdjusted && member.status)
+      .reduce((acc, curr) => acc + curr.amount, 0);
+    const totalAmountLeft = amountInput - totalAdjusted;
+    const participatingMembers = newData.filter((member) => member.status);
+    const unadjustedMembersCount = participatingMembers.filter(
+      (member) => !member.manuallyAdjusted
+    ).length;
 
     if (
       totalAmountLeft < 0 ||
@@ -128,9 +137,11 @@ export function TransactionForm({
       );
       return;
     }
-    const amountPerUnmodifiedValue = (totalAmountLeft / unadjustedMembersCount).toFixed(2);
+    const amountPerUnmodifiedValue = (
+      totalAmountLeft / unadjustedMembersCount
+    ).toFixed(2);
 
-    newData = newData.map(member => {
+    newData = newData.map((member) => {
       if (member.status && !member.manuallyAdjusted) {
         return { ...member, amount: Number(amountPerUnmodifiedValue) };
       }
@@ -145,11 +156,11 @@ export function TransactionForm({
         onSubmit={
           pending
             ? (event) => {
-              event.preventDefault();
-            }
+                event.preventDefault();
+              }
             : form.handleSubmit(onSubmit)
         }
-        className="space-y-8 mt-5"
+        className="w-full space-y-8 mt-5"
       >
         <FormField
           control={form.control}
@@ -174,7 +185,6 @@ export function TransactionForm({
                 <Input
                   placeholder="input an amount to split"
                   {...field}
-
                   value={field.value}
                   onChange={(e) => {
                     const newAmount = Number(e.target.value);
@@ -214,7 +224,8 @@ export function TransactionForm({
             <tbody className="[&_tr:last-child]:border-0">
               {tableData.map((ele, index) => {
                 return (
-                  <tr key={index}
+                  <tr
+                    key={index}
                     className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted text-left"
                   >
                     <th
@@ -223,41 +234,49 @@ export function TransactionForm({
                     >
                       {ele.firstname}
                     </th>
-                    <td
-                      className=" pl-6 align-middle [&:has([role=checkbox])]:pr-0"
-                    >
+                    <td className=" pl-6 align-middle [&:has([role=checkbox])]:pr-0">
                       <button
                         type="button"
                         className="relative inline-flex items-center justify-center overflow-hidden  text-sm font-large text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none"
                       >
                         <span
-                          onClick={() => handleStatusClick(index, tableData, setTableData, amountInput)}
-                          className={`relative px-1 py-1 transition-all ease-in duration-75 ${ele.status ? "bg-gradient-to-br from-slate-700 to-blue-500" : "bg-slate-300 dark:bg-gray-900"
-                            } rounded-md group-hover:bg-opacity-0`}
-                        >
-
-                        </span>
+                          onClick={() =>
+                            handleStatusClick(
+                              index,
+                              tableData,
+                              setTableData,
+                              amountInput
+                            )
+                          }
+                          className={`relative px-1 py-1 transition-all ease-in duration-75 ${
+                            ele.status
+                              ? "bg-gradient-to-br from-slate-700 to-blue-500"
+                              : "bg-slate-300 dark:bg-gray-900"
+                          } rounded-md group-hover:bg-opacity-0`}
+                        ></span>
                       </button>
                     </td>
 
-                    <td
-                      className="flex flex-row  py-4 pl-2 align-middle pr-0"
-                    >
+                    <td className="flex flex-row  py-4 pl-2 align-middle pr-0">
                       <Button
                         size="icon"
                         variant="round"
                         onClick={(e) => {
-                          e.preventDefault()
-                          decrement(index, adjustMemberShare, tableData)
+                          e.preventDefault();
+                          decrement(index, adjustMemberShare, tableData);
                         }}
                       >
                         -
                       </Button>
                       <div className="mx-1 flex-2 pl-2 pr-3">
-
                         <Input
                           value={ele.amount}
-                          onChange={(e) => adjustMemberShare(index, Number(e.target.value) - ele.amount)}
+                          onChange={(e) =>
+                            adjustMemberShare(
+                              index,
+                              Number(e.target.value) - ele.amount
+                            )
+                          }
                         />
                       </div>
 
@@ -265,8 +284,8 @@ export function TransactionForm({
                         size="icon"
                         variant="round"
                         onClick={(e) => {
-                          e.preventDefault()
-                          increment(index, adjustMemberShare, tableData)
+                          e.preventDefault();
+                          increment(index, adjustMemberShare, tableData);
                         }}
                       >
                         +
@@ -279,7 +298,6 @@ export function TransactionForm({
           </table>
         </div>
 
-
         <EditDeleteBtn
           isSubmitting={isSubmitting}
           pending={pending}
@@ -287,6 +305,6 @@ export function TransactionForm({
           text="Add Transaction"
         />
       </form>
-    </Form >
+    </Form>
   );
 }
