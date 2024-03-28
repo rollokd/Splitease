@@ -56,7 +56,7 @@ export const DashboardCard: React.FC<DashboardCardType> = async ({ name, debt, o
               </div>
               <Button 
                 onClick={(event) => handleClick(event)} >
-                Pay Now
+                {Number(debt) > 0 ? "Receive" : "Pay Now"}
               </Button>
             </div>
           </div>

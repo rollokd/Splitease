@@ -1,8 +1,9 @@
 "use client"
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useState, useEffect } from 'react';
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
 import { CustomizedLabelProps, DataItem, PieChartProps } from '@/lib/definititions';
+
 // const data = [
 //   { name: 'Group A', value: 400 },
 //   { name: 'Group B', value: 300 },
@@ -16,6 +17,7 @@ const COLORS = ["hsl(var(--primary))", "hsl(var(--destructive))"];
 const RADIAN = Math.PI / 180;
 
 export default class TotalsPieChart extends PureComponent<PieChartProps> {
+
   render() {
     const { data } = this.props;
     const renderCustomizedLabel = ({
@@ -31,9 +33,10 @@ export default class TotalsPieChart extends PureComponent<PieChartProps> {
       const x = cx + radius * Math.cos(-midAngle * RADIAN);
       const y = cy + radius * Math.sin(-midAngle * RADIAN);
       const name = data[index].name;
+      const isDarkMode = document.documentElement.classList.contains('dark');
 
       return (
-        <text x={x} y={y} fill="black" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+        <text x={x} y={y} fill={isDarkMode ? "White" : "Dark"} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
           {`${name}: ${(percent * 100).toFixed(0)}%`}
         </text>
       );
