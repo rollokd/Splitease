@@ -1,28 +1,17 @@
-export const dynamic = "force-dynamic";
-// import { GroupCard } from '@/components/group-card-test';
-import { GroupCard } from "@/components/group-card";
-import { GroupChart } from "../../../components/bar-chart";
-import {
-  getUserGroups,
-  fetchUserBalance,
-  getUsersbyGroup,
-} from "../../../lib/data";
-import Totals from "../../../components/Totals";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { signOut, auth } from "@/auth";
-import { PowerIcon } from "@heroicons/react/24/outline";
-import { getUserId } from "@/lib/actions";
-import { moneyFormat } from "@/lib/utils";
-import { ModeToggle } from "@/components/themeMode";
-import { fetchOneUserBalanceForGroup } from "@/lib/databaseFunctions/fetchOneUserBalanceForGroup";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserWJunction } from "@/lib/definititions";
-import { redirect } from "next/navigation";
+export const dynamic = 'force-dynamic';
+import { GroupCard } from '@/components/group-card';
+import { getUserGroups, getUsersbyGroup } from '../../../lib/data';
+import Totals from '../../../components/Totals';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { getUserId } from '@/lib/actions';
+import { fetchOneUserBalanceForGroup } from '@/lib/databaseFunctions/fetchOneUserBalanceForGroup';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { UserWJunction } from '@/lib/definititions';
+import { redirect } from 'next/navigation';
 
 const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map((user) => user.firstname);
-  // console.log(firstnames);
   return firstnames;
 };
 
@@ -31,11 +20,11 @@ export default async function Home() {
   try {
     userID = await getUserId();
   } catch (error) {
-    console.error("Failed to fetch userID:", error);
+    console.error('Failed to fetch userID:', error);
   }
   if (userID === undefined) {
-    console.error("Failed to fetch userID");
-    redirect("login");
+    console.error('Failed to fetch userID');
+    redirect('login');
   }
 
   let userGroups = await getUserGroups(userID);
@@ -49,10 +38,15 @@ export default async function Home() {
       }
       const userByGroup = await getUsersbyGroup(group.group_id);
       const listOfUsers = getUsers(userByGroup || []);
-      return { name: group.name, shortName: shortName, total: rows[0].lent_amount - rows[0].owed_amount, listOfUsers: listOfUsers, group_id: group.group_id };
+      return {
+        name: group.name,
+        shortName: shortName,
+        total: rows[0].lent_amount - rows[0].owed_amount,
+        listOfUsers: listOfUsers,
+        group_id: group.group_id
+      };
     })
   );
-  // console.log('groupBalances results from dashboard page: ', groupBalances);
 
   return (
     <div className='mt-4 pl-2 pr-2'>
@@ -70,8 +64,11 @@ export default async function Home() {
           <div className="h-[500px] overflow-y-auto" >
             <div>
               {userID &&
-                groupBalances.map(( group ) => (
-                  <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
+                groupBalances.map((group) => (
+                  <Link
+                    key={group.group_id}
+                    href={`/home/group/${group.group_id}`}
+                  >
                     <GroupCard
                       key={group.group_id}
                       groupName={group.name}

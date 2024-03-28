@@ -141,24 +141,8 @@ export async function fetchOwnDashboardData(
     ON transactions.id = splits.trans_id
     WHERE paid_by = ${userID} AND paid=false`;
 
-    //   const userPaid = await sql`
-    // SELECT SUM(user_amount) AS total_amount
-    // FROM splits WHERE user_id = ${userID} AND paid=false`;
-
     const SumOfMySlpitsNotSettle =
       await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id=${userID} AND paid=false`;
-    
-    
-      
-      console.log(
-        'Collect',
-        SumOfEverybodysSlpitsNotSettle.rows[0].total_amount
-        );
-        
-        //console.log('my split of  the transation', userPaid.rows[0].total_amount);
-    
-        console.log('Debt', SumOfMySlpitsNotSettle.rows[0].total_user_amount);
-
     return {
       paidbyMe:
       SumOfEverybodysSlpitsNotSettle.rows[0].total_amount,

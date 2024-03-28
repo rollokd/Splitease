@@ -41,6 +41,17 @@ export type GroupMembers = {
   status?: boolean
   user_amount?: number
 }
+export type EditTransGroupMembers = {
+  id: string
+  firstname: string
+  group_id: string
+  user_amount: number
+  total_amount: number
+  transaction_name: string
+  date: Date
+  amount: number
+  status: boolean
+}
 export type forNow = {
   amount: number
 
@@ -64,7 +75,13 @@ export type TransInsert = {
   group_id: string
 }
 export type TableDataType = GroupMembers & forNow;
-
+export type TableDataTypeExtended = EditTransGroupMembers & {
+  manuallyAdjusted: boolean;
+  status: boolean;
+};
+export type RouteParams = {
+  id: string
+}
 //<=== transactions
 
 export type Junction = {
@@ -79,10 +96,10 @@ export interface UserProps {
   groupID: string;
 }
 
-export type UserTransaction = Transaction & User & { trans_id: string, amount_lent:number, amount_owed:number }
+export type UserTransaction = Transaction & User & { trans_id: string, amount_lent: number, amount_owed: number }
 
 export type GroupBalancesByUser = {
-  user_id:string,
+  user_id: string,
   firstname: string,
   lastname: string,
   owed_amount: number,

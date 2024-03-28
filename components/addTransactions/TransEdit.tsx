@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect, useDebugValue } from "react";
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { string, z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,27 +12,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { TableDataType } from "@/lib/definititions";
+import { EditTransGroupMembers, TableDataTypeExtended, RouteParams } from "@/lib/definititions";
 import { updateTransaction } from "@/lib/transActions/actions";
 import { Input } from "@/components/ui/input";
 import { useFormStatus } from 'react-dom';
 import { UseFormReturn, SubmitHandler } from "react-hook-form";
 import { TableHead } from "./TableHead";
-import { increment, decrement, handleStatusClick } from "@/lib/transActions/utils";
 import { useParams } from "next/navigation";
+import EditDeleteBtn from "@/components/addTransactions/editDeleteBtns"
 
-interface TableDataTypeExtended extends TableDataType {
-  manuallyAdjusted?: boolean;
-  status?: boolean;
-}
+
 const formSchemaTransactions = z.object({
   name: z.string().min(3, {
     message: "Username must be at least 3 characters.",
   }),
   amount: z.number(),
-  date: z.coerce.date(),
-  // status: z.boolean(),
-  // user_amount: z.number(),
+  date: z.coerce.date()
 });
 type FormValues = z.infer<typeof formSchemaTransactions>;
 
@@ -41,40 +36,64 @@ export function TransEdit(
     membersOfTrans,
     userID
   }: {
-    membersOfTrans: any,
+    membersOfTrans: EditTransGroupMembers[],
     userID: string
   }
 ) {
-  const currentTrans = useParams();
-  const currentWithoutSplits = { name: membersOfTrans[0].transaction_name, initialAmount: membersOfTrans[0].total_amount, initialDate: membersOfTrans[0].date };
+
+  const { id } = useParams<RouteParams>();
   const currentDate = membersOfTrans[0].date;
   const day = String(currentDate.getUTCDate()).padStart(2, '0');
   const month = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const year = currentDate.getUTCFullYear();
   const formattedDate = `${year}-${month}-${day}`;
 
-  const [amountInput, setAmountInput] = useState(0);
-  // const [name, setName] = useState(currentWithoutSplits.name)
-  // const [date, setDate] = useState(currentDate)
+  const [amountInput, setAmountInput] = useState(membersOfTrans[0].total_amount / 100);
   const [tableData, setTableData] = useState<TableDataTypeExtended[]>([]);
 
+  const [name, setName] = useState<string>(membersOfTrans[0].transaction_name);
+  const [date, setDate] = useState<Date>(membersOfTrans[0].date);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { pending } = useFormStatus()
-  // const { register, setValue, handleSubmit } = useForm<FormValues>()
+  const [amountChanged, setAmountChanged] = useState(false);
+
+  // useEffect(() => {
+  //   console.log("before 2")
+  //   const idSet = new Set(tableData.map(ele => ele.id));
+  //   if (idSet.size !== tableData.length) {
+  //     console.log("Duplicate IDs detected in tableData");
+  //   } else {
+  //     console.log("there's no duplicate data")
+  //   }
+  // }, [tableData]);
+
+  useEffect(() => {
+    const newData = membersOfTrans.map((member) => ({
+      ...member,
+      transaction_name: name,
+      total_amount: amountInput,
+      user_amount: member.status !== false && !amountChanged ? (member.user_amount / 100) : 0,
+      manuallyAdjusted: false,
+      status: member.status,
+    }));
+
+    if (amountChanged) {
+      redistributeAmount(newData);
+    }
+    setTableData(newData);
+  }, [amountInput, name, date, membersOfTrans, amountChanged]);
 
   const form: UseFormReturn<FormValues> = useForm({
     resolver: zodResolver(formSchemaTransactions),
     defaultValues: {
       name: membersOfTrans[0].transaction_name,
-      date: formattedDate,
-      amountInput: membersOfTrans[0].total_amount
+      date: new Date(formattedDate),
+      amount: membersOfTrans[0].total_amount / 100
     }
   });
 
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
-
-    console.log("current table ", tableData)
     setIsSubmitting(true);
 
     const form_data = new FormData();
@@ -83,10 +102,8 @@ export function TransEdit(
       form_data.append(key, String(values[key]));
     }
     form_data.append('paid_by', String(userID))
-    console.log("form_data", form_data)
-    console.log("form_data ======> ", form_data)
     try {
-      await updateTransaction(currentTrans.id, form_data, tableData);
+      await updateTransaction(id, form_data, tableData);
     } catch (e) {
       console.log("errrorrrr...", e);
     } finally {
@@ -94,42 +111,96 @@ export function TransEdit(
     }
   };
 
-  function adjustMemberShare(index: number, newAmount: number): void {
+
+  function redistributeAmount(data: TableDataTypeExtended[]) {
+    const participatingMembers = data.filter((member) => member.status);
+    const newAmountPerMember = amountInput / participatingMembers.length;
+
+    data.forEach((member) => {
+      if (member.status && !member.manuallyAdjusted) {
+        member.user_amount = Number(newAmountPerMember.toFixed(2));
+      } else if (!member.status) {
+        member.user_amount = 0;
+      }
+    });
+    setTableData(data)
+  }
+
+
+
+  function adjustMemberShare(index: number, adjustAmount: number): void {
     let newData = [...tableData];
 
     if (newData[index].status) {
       newData[index] = {
         ...newData[index],
-        user_amount: Number(newAmount.toFixed(2)),
-        manuallyAdjusted: true
+        user_amount: Number((newData[index].user_amount + adjustAmount).toFixed(2)),
+        manuallyAdjusted: true,
       };
+
     }
+    const totalAdjusted = newData
+      .filter(member => member.manuallyAdjusted && member.status)
+      .reduce((acc, curr) => acc + curr.user_amount, 0)
+
+    const totalAmountLeft = amountInput - totalAdjusted
+    const participatingMembers = newData.filter(member => member.status);
+    const unadjustedMembersCount = participatingMembers.filter(member => !member.manuallyAdjusted).length;
+
+    if (
+      totalAmountLeft < 0 ||
+      (unadjustedMembersCount > 0 &&
+        totalAmountLeft / unadjustedMembersCount < 0.5)
+    ) {
+      alert(
+        "Error: There's insufficient amount. The whole amount needs to be distributed."
+      );
+      return;
+    }
+    const amountPerUnmodifiedValue = (totalAmountLeft / unadjustedMembersCount);
+
+    newData = newData.map(member => {
+      if (member.status && !member.manuallyAdjusted) {
+        return { ...member, user_amount: amountPerUnmodifiedValue };
+      }
+      return member;
+    });
 
     setTableData(newData);
   }
 
-  useEffect(() => {
+  function handleStatusClick(index: number) {
+    const newData = [...tableData];
+    newData[index].status = !newData[index].status;
+    redistributeAmount(newData);
+    setTableData(newData);
+  }
 
-    const allUnadjusted = membersOfTrans.every(member => !member.manuallyAdjusted);
 
-    if (allUnadjusted) {
-      const newAmountPerMember = amountInput / membersOfTrans.length;
-      const newData = membersOfTrans.map(member => ({
-        ...member,
-        user_amount: Number(newAmountPerMember.toFixed(2)),
-      }));
-
-      setTableData(newData);
+  function decrement(index: number) {
+    const decrementAmount = 0.5;
+    if (tableData[index].user_amount - decrementAmount >= 0) {
+      adjustMemberShare(index, -decrementAmount);
+    } else {
+      console.log("Cannot decrement below zero, bud");
     }
+  }
 
-  }, [amountInput, membersOfTrans]);
-
-
+  function increment(index: number) {
+    const incrementAmount = 0.5;
+    if (Number(tableData[index].user_amount) + incrementAmount >= 0) {
+      adjustMemberShare(index, incrementAmount);
+    }
+    else {
+      console.log("Cannot increment beyond the total amount");
+    }
+  }
 
 
   return (
     <Form {...form}>
-      <form className="space-y-8 mt-5"
+      <form className="w-full space-y-8 mt-5"
+
         onSubmit={
           pending
             ? (event) => {
@@ -146,6 +217,11 @@ export function TransEdit(
               <FormLabel>Transaction name</FormLabel>
               <FormControl>
                 <Input placeholder="type here..." {...field}
+                  onChange={(e) => {
+                    const newName = String(e.target.value);
+                    setName(newName)
+                    field.onChange(newName)
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -157,19 +233,19 @@ export function TransEdit(
           name="amount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>amount</FormLabel>
+              <FormLabel>Amount</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="type here..."
+                  placeholder="input an amount"
                   {...field}
-
-                  defaultValue={membersOfTrans[0].total_amount / 100}
+                  // type="number"
+                  value={field.value}
                   onChange={(e) => {
                     const newAmount = Number(e.target.value);
-                    setAmountInput(newAmount)
-                    field.onChange(newAmount)
+                    setAmountInput(newAmount);
+                    setAmountChanged(true)
+                    field.onChange(newAmount);
                   }}
-
                 />
               </FormControl>
               <FormMessage />
@@ -181,7 +257,7 @@ export function TransEdit(
           name="date"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>date</FormLabel>
+              <FormLabel>Date</FormLabel>
               <FormControl>
                 <Input
                   type="date"
@@ -191,6 +267,11 @@ export function TransEdit(
                       ? field.value.toISOString().split("T")[0]
                       : field.value
                   }
+                  onChange={(e) => {
+                    const newDate = new Date(e.target.value);
+                    setDate(newDate)
+                    field.onChange(newDate)
+                  }}
 
                 />
               </FormControl>
@@ -198,13 +279,13 @@ export function TransEdit(
             </FormItem>
           )}
         />
-        <div>
-          <table>
+        <div className="flex justify-center">
+          <table className="w-1/4 ">
             <TableHead />
             <tbody className="[&_tr:last-child]:border-0">
-              {membersOfTrans.map((ele: any, index: number) => {
+              {tableData.map((ele: EditTransGroupMembers, index: number) => {
                 return (
-                  <tr key={index}
+                  <tr key={`trans-${ele.id}`}
                     className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted text-left"
                   >
                     <th
@@ -221,11 +302,10 @@ export function TransEdit(
                         className="relative inline-flex items-center justify-center overflow-hidden  text-sm font-large text-gray-900 rounded-lg group bg-gradient-to-br from-slate-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none"
                       >
                         <span
-                          onClick={() => handleStatusClick(index, tableData, setTableData, amountInput)}
-                          className={`relative px-1 py-1 transition-all ease-in duration-75 ${ele.status ? "bg-gradient-to-br from-slate-700 to-blue-500" : "bg-slate-300 dark:bg-gray-900"
+                          onClick={() => handleStatusClick(index)}
+                          className={`relative px-1 py-1 transition-all ease-in duration-75 ${ele.status ? "bg-gradient-to-br from-slate-700 to-primary" : "bg-slate-300 dark:bg-gray-900"
                             } rounded-md group-hover:bg-opacity-0`}
                         >
-
                         </span>
                       </button>
                     </td>
@@ -233,35 +313,29 @@ export function TransEdit(
                     <td
                       className="flex flex-row  py-4 pl-2 align-middle pr-0"
                     >
-
-                      <button
-                        type="button"
-                        onClick={() => decrement(index, adjustMemberShare, tableData)}
-                        className="relative inline-flex  mr-3 items-center justify-center mt-3 p-.5 mb-3 overflow-hidden text-sm font-medium text-black rounded-lg group bg-gradient-to-br from-black to-slate-700"
+                      <Button
+                        size="icon"
+                        variant="round"
+                        onClick={() => decrement(index)}
                       >
-                        <span className="relative px-[.6rem] py-1.2 transition-all ease-in duration-75 bg-white">
-                          -
-                        </span>
-                      </button>
+                        -
+                      </Button>
                       <div className="mx-1 flex-2 pl-2 pr-3">
-                        <input
-                          className="w-[4rem] mt-3 text-center bg-slate-100"
-                          defaultValue={ele.user_amount / 100}
-                          onChange={(e) => adjustMemberShare(index, Number(e.target.value))}
-                        >
-
-                        </input>
+                        <Input
+                          value={(ele.user_amount).toFixed(2)}
+                          onChange={(e) => {
+                            adjustMemberShare(index, Number(e.target.value))
+                          }
+                          }
+                        />
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => increment(index, adjustMemberShare, tableData)}
-                        className="relative inline-flex items-center justify-center mt-3 p-.5 mb-3 overflow-hidden text-sm font-medium text-black rounded-lg group bg-gradient-to-br from-black to-slate-700"
+                      <Button
+                        size="icon"
+                        variant="round"
+                        onClick={() => increment(index)}
                       >
-                        <span className="relative px-2  py-1.2 transition-all ease-in duration-75 bg-white">
-                          +
-                        </span>
-                      </button>
-
+                        +
+                      </Button>
                     </td>
                   </tr>
                 )
@@ -269,13 +343,12 @@ export function TransEdit(
             </tbody>
           </table>
         </div>
-        <Button
-          type="submit"
-          variant={"sticky"}
-          disabled={isSubmitting || pending}
-        >
-          {isSubmitting ? "Submitting..." : "Submit Changes"}
-        </Button>
+        <EditDeleteBtn
+          isSubmitting={isSubmitting}
+          pending={pending}
+          groupId={membersOfTrans[0].group_id}
+          text="Submit Changes"
+        />
       </form>
     </Form >
 
