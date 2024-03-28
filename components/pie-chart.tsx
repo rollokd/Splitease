@@ -2,7 +2,7 @@
 
 import React, { PureComponent } from 'react';
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
-import { CustomizedLabelProps, DataItem, GroupPieChartProps } from '@/lib/definititions';
+import { CustomizedLabelProps, DataItem, PieChartProps } from '@/lib/definititions';
 // const data = [
 //   { name: 'Group A', value: 400 },
 //   { name: 'Group B', value: 300 },
@@ -10,11 +10,12 @@ import { CustomizedLabelProps, DataItem, GroupPieChartProps } from '@/lib/defini
 //   { name: 'Group D', value: 200 },
 // ];
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+// const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = ["hsl(var(--primary))", "hsl(var(--destructive))"];
 
 const RADIAN = Math.PI / 180;
 
-export default class GroupPieChart extends PureComponent<GroupPieChartProps> {
+export default class TotalsPieChart extends PureComponent<PieChartProps> {
   render() {
     const { data } = this.props;
     const renderCustomizedLabel = ({
@@ -29,7 +30,7 @@ export default class GroupPieChart extends PureComponent<GroupPieChartProps> {
       const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
       const x = cx + radius * Math.cos(-midAngle * RADIAN);
       const y = cy + radius * Math.sin(-midAngle * RADIAN);
-      const name = filteredData[index].name;
+      const name = data[index].name;
 
       return (
         <text x={x} y={y} fill="black" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
@@ -38,14 +39,11 @@ export default class GroupPieChart extends PureComponent<GroupPieChartProps> {
       );
     };
 
-    const filteredData = data.filter(item => item.value !== 0);
-
-
     return (
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height={200}>
         <PieChart width={400} height={400}>
           <Pie
-            data={filteredData}
+            data={data}
             cx="50%"
             cy="50%"
             labelLine={false}
@@ -54,8 +52,8 @@ export default class GroupPieChart extends PureComponent<GroupPieChartProps> {
             fill="#8884d8"
             dataKey="value"
           >
-            {filteredData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index]} />
             ))}
           </Pie>
         </PieChart>

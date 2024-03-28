@@ -9,6 +9,7 @@ import {
   Cell,
 } from "recharts";
 import { DataBarChart } from "@/lib/definititions";
+import { Title } from "@radix-ui/react-dialog";
 
 export const GroupChart: React.FC<{ data: DataBarChart[] }> = ({ data }) => {
   //Calculate maximum value

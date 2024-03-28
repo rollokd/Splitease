@@ -11,6 +11,9 @@ import { moneyFormat } from '@/lib/utils';
 import { redirect } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { UserWJunction } from '@/lib/definititions';
+import GroupCrumbs from '@/components/group-view/breadcrumbs';
+import { getTotalDebts } from '@/lib/databaseFunctions/getTotalDebts';
+import TotalsPieChart from "@/components/pie-chart";
 
 const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map((user) => user.firstname);
@@ -45,22 +48,45 @@ export default async function Home() {
     })
   );
 
-  return (
-    <div className='mt-4'>
-      <Card className="border-none shadow-none">
-        <CardHeader className='mb-4'>
-          <CardTitle>Analytics</CardTitle>
-        </CardHeader>
-    
-        <CardContent className='m-2'>
-          <div className="flex justify-center pt-5">
-            <GroupChart data={groupBalances}></GroupChart>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+  const totalBalances = await getTotalDebts(userID);
+  const pieChartData = [
+    {
+      name: "Pay",
+      value: Number(totalBalances.total_owed_amount)
+    },
+    {
+      name: "Receive",
+      value: Number(totalBalances.total_lent_amount)
+    },
+  ];
 
-     
- 
+  return (
+    <>
+      <div className='p-5' >
+        <GroupCrumbs name={'Analytics'} />
+      </div>
+      <div className='mt-4'>
+        <Card className="border-none shadow-none">
+          <CardHeader className='mb-4 ml-4'>
+            <CardTitle>Group Balances</CardTitle>
+          </CardHeader>
+          <CardContent >
+            <div className="flex justify-center pt-5 w-full">
+              <GroupChart data={groupBalances}></GroupChart>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="border-none shadow-none">
+          <CardHeader className='mb-4 ml-4'>
+            <CardTitle>Group Debts</CardTitle>
+          </CardHeader>
+          <CardContent >
+            <div className="flex justify-center pt-5 w-full">
+              <TotalsPieChart  data={pieChartData}></TotalsPieChart>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 }

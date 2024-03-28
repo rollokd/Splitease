@@ -13,28 +13,29 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { DashboardCardType } from "@/lib/definititions";
 import { Button } from "./ui/button";
-import { settleUpSplits } from "@/lib/databaseFunctions/settleUpSplits";
 import { settleSplitsDashboard } from "@/lib/serverActions/settleSplitsDashboard";
 import { cn } from "@/lib/utils";
-import { revalidatePath } from "next/cache";
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
+import { toast } from 'react-hot-toast';
 
 export const DashboardCard: React.FC<DashboardCardType> = async ({ name, debt, other_id, user_id }) => {
-  const { toast } = useToast()
 
-  const handleSettleClick = () => {
-    settleSplitsDashboard(user_id, other_id)
-      .then(() => {
-        toast({
-          title: "Success!",
-          description: "Settlement has been successfully processed.",
-          action: (<ToastAction altText="View Details">View</ToastAction>),
-        });
-      })
-      .catch((error) => {
-        console.error("Failed to settle splits on client side:", error);
+  const handleSettleClick = async () => {
+    try {
+      await settleSplitsDashboard(user_id, other_id);
+      toast.success('Settlement successfully processed', {
+        duration: 2000,
       });
+    } catch(error) {
+      console.error("Failed to settle splits on client side:", error);
+      toast.error('Error Settling', {
+        duration: 2000,
+      });
+    };
+  };
+
+  const handleClick = (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
+    handleSettleClick();
   };
 
   return (
@@ -54,8 +55,8 @@ export const DashboardCard: React.FC<DashboardCardType> = async ({ name, debt, o
                 <Label htmlFor="settled-switch"></Label> */}
               </div>
               <Button 
-                onClick={handleSettleClick} >
-                Settle
+                onClick={(event) => handleClick(event)} >
+                Pay Now
               </Button>
             </div>
           </div>

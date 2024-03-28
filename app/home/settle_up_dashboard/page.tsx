@@ -34,7 +34,7 @@ export default async function SettleUpDashBoard() {
   return (
     <>
     <div className="p-5">
-      <GroupCrumbs name={'SettleUp'} />
+      <GroupCrumbs name={'Settle Up Balances'} />
     </div>
     <div className="flex flex-col items-center justify-center p-10">
       {/* <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
