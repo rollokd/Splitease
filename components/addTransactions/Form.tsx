@@ -218,7 +218,7 @@ export function TransactionForm({
             </FormItem>
           )}
         />
-        <div className="flex justify-center">
+        <div className="flex flex-col w-full justify-center">
           <table className="w-1/4 ">
             <TableHead />
             <tbody className="[&_tr:last-child]:border-0">
