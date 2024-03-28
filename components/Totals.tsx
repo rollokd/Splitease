@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
 import Link from 'next/link';
+import { BarChart3 } from 'lucide-react';
 
 export default async function Totals({ userId }: { userId: string }) {
   let own;
@@ -19,8 +20,16 @@ export default async function Totals({ userId }: { userId: string }) {
 
   return (
     <Card className="border-none shadow-none">
-      <CardHeader className='mb-4'>
+      <CardHeader className='flex flex-row justify-between items-center mb-4'>
         <CardTitle>Balances</CardTitle>
+        <div className='translate-y-4'>
+          <Link href="/home/analytics" className='underline'>
+            <Button variant={'outline'}>
+              <BarChart3 className="mr-2" />
+              Analytics
+            </Button>
+          </Link>
+        </div>
       </CardHeader>
      
       <CardContent className='m-2'>

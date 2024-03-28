@@ -19,7 +19,6 @@ import { fetchOneUserBalanceForGroup } from "@/lib/databaseFunctions/fetchOneUse
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserWJunction } from "@/lib/definititions";
 import { redirect } from "next/navigation";
-import { BarChart3 } from "lucide-react";
 
 const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map((user) => user.firstname);
@@ -58,33 +57,18 @@ export default async function Home() {
   return (
     <div className='mt-4 pl-2 pr-2'>
       <Totals userId={userID} />
-      <div className="m-4 flex justify-between items-center">
-        <Link href="/home/analytics" className='underline ml-4'>
-          <Button variant={'outline'}>
-            <BarChart3 className="mr-2" />
-            Analytics
-          </Button>
-        </Link>
-        <Button>
-          <Link href="/home/create">Create Group +</Link>
-        </Button>
-      </div>
       <Card className="border-none shadow-none">
-        <CardHeader className='mb-4'>
+        <CardHeader className='mb-4 flex flex-row justify-between items-center'>
           <CardTitle>Groups</CardTitle>
+          <div className="flex justify-between items-center transform translate-y-4">
+            <Button>
+              <Link href="/home/create">Create Group +</Link>
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
-          <div
-            style={{
-              height: '400px',
-              overflowY: 'auto'
-              // borderColor: 'var(--card)',
-              // borderRadius: '5px',
-              // borderStyle: 'ridge',
-              // borderWidth: '1px'
-            }}
-          >
-            <div className="mb-14">
+          <div className="h-[500px] overflow-y-auto" >
+            <div>
               {userID &&
                 groupBalances.map(( group ) => (
                   <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
@@ -103,9 +87,9 @@ export default async function Home() {
       {/* <div className='flex justify-center pt-5 mt-5 mb-10'>
         {userID && <GroupChart data={groupBalances}></GroupChart>}
       </div> */}
-      <div className="flex justify-center m-4 fixed inset-x-0 bottom-0">
+      <div className="flex justify-center m-4 sticky bg-background bottom-0">
         <Link className="w-full" href={`/home/settle_up_dashboard`}>
-          <Button className="w-full">Settle Up</Button>
+          <Button className="w-full">Settle Up Balances </Button>
         </Link>
       </div>
     </div>

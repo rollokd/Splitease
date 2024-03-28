@@ -13,10 +13,8 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { DashboardCardType } from "@/lib/definititions";
 import { Button } from "./ui/button";
-import { settleUpSplits } from "@/lib/databaseFunctions/settleUpSplits";
 import { settleSplitsDashboard } from "@/lib/serverActions/settleSplitsDashboard";
 import { cn } from "@/lib/utils";
-import { revalidatePath } from "next/cache";
 import { toast } from 'react-hot-toast';
 
 export const DashboardCard: React.FC<DashboardCardType> = async ({ name, debt, other_id, user_id }) => {
@@ -58,7 +56,7 @@ export const DashboardCard: React.FC<DashboardCardType> = async ({ name, debt, o
               </div>
               <Button 
                 onClick={(event) => handleClick(event)} >
-                Settle
+                Pay Now
               </Button>
             </div>
           </div>
