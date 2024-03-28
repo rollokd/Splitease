@@ -53,9 +53,8 @@ export default async function Home() {
       <Totals userId={userID} />
       <Card className="flex flex-col border-none shadow-none h-screen mr-2 ml-2 pt-0">
         <CardHeader className="sticky top-0 bg-card mb-0 flex flex-row justify-between">
-          
-            <CardTitle>Groups</CardTitle>
-         
+          <CardTitle>Groups</CardTitle>
+
           <div className="flex justify-end">
             <Button>
               <Link href="/home/create">Create Group +</Link>
@@ -63,7 +62,7 @@ export default async function Home() {
           </div>
         </CardHeader>
 
-        <CardContent className="flex-1 mt-0">
+        <CardContent className="h-fit mt-0">
           {userID &&
             groupBalances.map((group) => (
               <Link key={group.group_id} href={`/home/group/${group.group_id}`}>
