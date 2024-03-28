@@ -10,31 +10,42 @@ import {
   getGroupNameWithTransId,
   fetchUsersFromTransactionId
 } from "@/lib/transActions/data";
-import { GroupMembers } from "@/lib/definititions";
 
 export default async function Page({ params }: { params: { id: string } }) {
+  const [verifyGroupID, verifyTransID] = await Promise.all([
+    verifyGroupId(params.id),
+    verifyTransId(params.id),
+  ])
 
-  const verifyGroupID = await verifyGroupId(params.id);
-  const verifyTransID = await verifyTransId(params.id);
   let groupMembers, groupName, userID;
+
   if (verifyGroupID) {
     try {
-      userID = await getUserId();
-      console.log("eyeD", userID)
+      const groupDataPromises = [
+        getUserId(),
+        getNamesOfUsersInAGroup(params.id),
+        getGroupsName(params.id),
+      ];
+
+
+      [userID, groupMembers, groupName] = await Promise.all(groupDataPromises);
+
       if (!userID) throw new Error("User ID not found");
     } catch (error) {
       console.log(error);
     }
-
-    groupMembers = await getNamesOfUsersInAGroup(params.id);
-    groupName = await getGroupsName(params.id);
   }
   let getNameTransId, membersOfTrans;
   if (verifyTransID) {
     try {
-      getNameTransId = await getGroupNameWithTransId(params.id)
-      membersOfTrans = await fetchUsersFromTransactionId(params.id)
-      userID = await getUserId();
+      const transDataPromises = [
+        getGroupNameWithTransId(params.id),
+        fetchUsersFromTransactionId(params.id),
+      ];
+      [getNameTransId, membersOfTrans, userID] = await Promise.all([
+        ...transDataPromises,
+        getUserId(),
+      ]);
       if (!userID) throw new Error("User ID not found");
     } catch (e) {
       console.log("error", e);
