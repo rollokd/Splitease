@@ -51,11 +51,11 @@ export default async function Home() {
   const totalBalances = await getTotalDebts(userID);
   const pieChartData = [
     {
-      name: "Pay",
+      name: "Receive",
       value: Number(totalBalances.total_owed_amount)
     },
     {
-      name: "Receive",
+      name: "Pay",
       value: Number(totalBalances.total_lent_amount)
     },
   ];
