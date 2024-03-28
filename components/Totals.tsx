@@ -47,40 +47,24 @@ export default async function Totals({ userId }: { userId: string }) {
         <div className="flex-1">
           <CardTotals
             myColor="text-green-500"
-            title="Owed/Collect"
+            title="Collect"
             amount={moneyFormat(paidbyMeMoney)}
           />
         </div>
         <div className="flex-1">
           <CardTotals
             myColor="text-red-500"
-            title="Owe/Debt"
+            title="Debt"
             amount={moneyFormat(myPortionOfBillsMoney)}
           />
         </div>
         <div className="flex-1">
           <div className="flex-1">
             <CardTotals
-              myColor="text-green-500"
-              title="Collect"
-              amount={moneyFormat(paidbyMeMoney)}
+              myColor={myColor}
+              title={myTitle}
+              amount={moneyFormat(totalMoney)}
             />
-          </div>
-          <div className="flex-1">
-            <CardTotals
-              myColor="text-red-500"
-              title="Debt"
-              amount={moneyFormat(myPortionOfBillsMoney)}
-            />
-          </div>
-          <div className="flex-1">
-            <div className="flex-1">
-              <CardTotals
-                myColor={myColor}
-                title={myTitle}
-                amount={moneyFormat(totalMoney)}
-              />
-            </div>
           </div>
         </div>
       </div>
