@@ -113,9 +113,7 @@ export async function updateTransaction(
   select * from transactions
   WHERE id=${transactionId}
   `
-  console.log(" ======> actions line 116 ", groupID.rows[0].group_id)
-
-
+  
   const value = await sql`
   UPDATE transactions
   SET name = ${name},

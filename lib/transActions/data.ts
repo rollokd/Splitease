@@ -131,7 +131,6 @@ export async function fetchUsersFromTransactionId(
     WHERE
     ug.group_id = ${intermediate.rows[0].group_id}
     `
-    console.log("result.rows", result.rows[0].transaction_name)
     return result.rows
   } catch (e) {
     console.log("could not fetch users based on transaction id", e)

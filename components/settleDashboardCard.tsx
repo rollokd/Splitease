@@ -2,15 +2,10 @@
 import * as React from "react";
 import {
   Card,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getName } from "@/lib/data";
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
 import { DashboardCardType } from "@/lib/definititions";
 import { Button } from "./ui/button";
 import { settleSplitsDashboard } from "@/lib/serverActions/settleSplitsDashboard";
@@ -51,8 +46,6 @@ export const DashboardCard: React.FC<DashboardCardType> = async ({ name, debt, o
               Number(debt) < 0 && "text-red-600",
             )} >$ {debt}</CardDescription>
               <div className="flex items-center">
-                {/* <Switch id="settled-switch" />
-                <Label htmlFor="settled-switch"></Label> */}
               </div>
               <Button className="w-{18}"
                 onClick={(event) => handleClick(event)} >
