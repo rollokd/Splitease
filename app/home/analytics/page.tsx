@@ -17,7 +17,6 @@ import TotalsPieChart from "@/components/pie-chart";
 
 const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map((user) => user.firstname);
-  // console.log(firstnames);
   return firstnames;
 };
 
