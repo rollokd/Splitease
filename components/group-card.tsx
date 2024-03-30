@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
@@ -16,11 +15,6 @@ export const GroupCard: React.FC<GroupCardType> = async ({
   groupTotals,
   listOfUsers,
 }) => {
-  //const groupName = await getNameGroup(user_id, group_id);
-
-  function deleteGroup() {
-    console.log("delete group");
-  }
 
   return (
     <Card className="mb-2">
@@ -28,8 +22,8 @@ export const GroupCard: React.FC<GroupCardType> = async ({
         <div className="flex justify-between">
           <CardTitle className="text-xl font-medium tracking-wide" style={{ margin: '1px' }}>{groupName}</CardTitle>
           <CardDescription className={cn(
-              "font-semibold text-green-500",
-              Number(groupTotals) < 0 && "text-red-500",
+              "min-w-20 text-right font-semibold text-green-500",
+              Number(groupTotals) < 0 && "text-red-500"
             )} style={{ margin: '1px' }}>
             $ {moneyFormat(groupTotals)}{' '}
           </CardDescription>
@@ -40,9 +34,6 @@ export const GroupCard: React.FC<GroupCardType> = async ({
           ? listOfUsers.join(', ')
           : `${listOfUsers.slice(0, 5).join(', ')}...`}
       </CardContent>
-      {/* <CardFooter className="flex justify-between">
-      nothing at the moment
-    </CardFooter> */}
     </Card>
   );
 };

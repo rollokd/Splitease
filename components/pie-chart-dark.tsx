@@ -25,10 +25,9 @@ export default class TotalsPieChart extends PureComponent<PieChartProps> {
       const x = cx + radius * Math.cos(-midAngle * RADIAN);
       const y = cy + radius * Math.sin(-midAngle * RADIAN);
       const name = data[index].name;
-      const isDarkMode = document.documentElement.classList.contains('dark');
 
       return (
-        <text x={x} y={y} fill="Dark" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
           {`${name}: ${(percent * 100).toFixed(0)}%`}
         </text>
       );

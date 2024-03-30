@@ -101,30 +101,11 @@ export async function getNameGroup(userID: string, groupID: string) {
     JOIN groups ON groups.id = user_groups.group_id
     WHERE users.id = ${userID} and group_id = ${groupID}
     `;
-    // console.log('getNameGroup: ', rows);
     return rows[0];
   } catch (error) {
     console.log('Database Error:', error);
   }
 }
-
-// export async function getNamesOfUsersInAGroup(
-//   group_id: string
-// ): Promise<GroupUsersBasic[]> {
-//   noStore()
-//   try {
-//     const data = await sql<GroupUsersBasic>`
-//     SELECT firstname, id From users
-//     LEFT JOIN user_groups ON user_groups.user_id=users.id
-//     WHERE group_id = ${group_id}
-//     `;
-
-//     return data.rows;
-//   } catch (error) {
-//     console.log('Database Error ====> ', error);
-//     throw new Error('Failed to fetch the group data');
-//   }
-// }
 
 export async function fetchOwnDashboardData(
   userID: string
@@ -194,7 +175,6 @@ export async function getUserGroups(userID: string) {
     JOIN groups ON groups.id = user_groups.group_id
     WHERE users.id = ${userID}
     `;
-    // console.log('userGroups result: ', rows);
     return rows;
   } catch (error) {
     console.log('Database Error:', error);
@@ -210,7 +190,6 @@ export async function getDebts(userID: string) {
     WHERE user_id = ${userID} AND paid=false
     GROUP BY paid_by;
     `;
-    // console.log('getDebts result: ', rows);
     return rows;
   } catch (error) {
     console.log('Database Error:', error);
@@ -226,7 +205,6 @@ export async function getSpecificDebt(userID: string, paid_by: string) {
     WHERE transactions.paid_by = ${userID} AND splits.user_id = ${paid_by} AND paid=false
     GROUP BY paid_by, user_id;
     `;
-    // console.log('getSpecificDebt result: ', rows[0].sum);
     return Number(rows[0].sum);
   } catch (error) {
     console.log('Database Error:', error);
@@ -241,7 +219,6 @@ export async function getName(userID: string) {
     FROM users
     WHERE users.id = ${userID}
     `;
-    // console.log('getName Result: ', rows);
     return rows[0].firstname;
   } catch (error) {
     console.log('Database Error:', error);

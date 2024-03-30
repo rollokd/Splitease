@@ -65,14 +65,8 @@ export async function createUser(prevState: any, formData: FormData) {
       RETURNING id, email
     `;
   if (user.rows.length) {
-    console.log('Returned ID:', user.rows[0].id);
-
     redirect('/login');
   }
-
-  // bug redirect } catch (error) {
-  //   console.log(error);
-  // }
 }
 export async function SignOut() {
   try {
@@ -86,7 +80,6 @@ export async function getUserId() {
   try {
     const session = await auth();
     const userId = await getUserIdFromSession(session?.user?.email ?? '');
-    //console.log('User ID from actions: ', userId)
 
     return userId;
   } catch (error) {

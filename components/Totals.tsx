@@ -29,22 +29,25 @@ export default async function Totals({ userId }: { userId: string }) {
   }
 
   return (
-    <Card className="border-none shadow-none m-2">
-      <CardHeader>
-        <div className="transform translate-y-2">
+    <Card className="border-none shadow-none mr-2 ml-2  pt-0">
+      <CardHeader className='flex flex-row justify-between'>
+        
           <CardTitle>Balances</CardTitle>
-        </div>
-        <span className="flex justify-end">
+
+          
           <Link href="/home/analytics" className='underline ml-4'>
             <Button variant={'outline'}>
               <BarChart3 className="mr-2" />
               Analytics
             </Button>
           </Link>
-        </span>
+        
+         
+    
+        
       </CardHeader>
      
-      <CardContent className='m-2'>
+      <CardContent className='pt-0 pb-0'>
       <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-6">
         <div className="flex-1">
           <CardTotals

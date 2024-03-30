@@ -22,7 +22,7 @@ const Navbar = () => {
   };
 
   let display = true;
-  if (pathname === "/login" || pathname === "/sign") {
+  if (pathname === "/login" || pathname === "/sign" || pathname === "/") {
     display = false;
   }
 

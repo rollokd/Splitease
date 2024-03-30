@@ -34,23 +34,23 @@ export default function CreateGroupForm({
     setSearchQuery(query);
     if (!query) {
       setSearchResults([]);
-      return;
+    } else {
+      const filteredResults = users.filter(
+        (user) =>
+          user.id !== userID &&
+          !selectedUsers.find((selectedUser) => selectedUser.id === user.id) &&
+          (user.firstname.toLowerCase().includes(query.toLowerCase()) ||
+            user.lastname.toLowerCase().includes(query.toLowerCase()))
+      );
+      setSearchResults(filteredResults);
     }
-    // Filter users but exclude users that are in the selectedUsers
-    const filteredResults = users.filter(
-      (user) =>
-        user.id !== userID &&
-        !selectedUsers.find((selectedUser) => selectedUser.id === user.id) &&
-        (user.firstname.toLowerCase().includes(query.toLowerCase()) ||
-          user.lastname.toLowerCase().includes(query.toLowerCase()))
-    );
-    setSearchResults(filteredResults);
   };
 
   // Add a user to the selected list
   const handleAddUser = (user: User) => {
     if (!selectedUsers.find((selectedUser) => selectedUser.id === user.id)) {
       setSelectedUsers((prevSelectedUsers) => [...prevSelectedUsers, user]);
+      setSearchQuery('');
     }
     setSearchResults((prevSearchResults) =>
       prevSearchResults.filter((searchResult) => searchResult.id !== user.id)

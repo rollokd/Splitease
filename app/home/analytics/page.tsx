@@ -14,10 +14,10 @@ import { UserWJunction } from '@/lib/definititions';
 import GroupCrumbs from '@/components/group-view/breadcrumbs';
 import { getTotalDebts } from '@/lib/databaseFunctions/getTotalDebts';
 import TotalsPieChart from "@/components/pie-chart";
+import TotalsPieChartDark from "@/components/pie-chart-dark";
 
 const getUsers = (userByGroup: UserWJunction[]) => {
   const firstnames = userByGroup.map((user) => user.firstname);
-  // console.log(firstnames);
   return firstnames;
 };
 
@@ -51,11 +51,11 @@ export default async function Home() {
   const totalBalances = await getTotalDebts(userID);
   const pieChartData = [
     {
-      name: "Pay",
+      name: "Receive",
       value: Number(totalBalances.total_owed_amount)
     },
     {
-      name: "Receive",
+      name: "Pay",
       value: Number(totalBalances.total_lent_amount)
     },
   ];
@@ -81,8 +81,11 @@ export default async function Home() {
             <CardTitle>Group Debts</CardTitle>
           </CardHeader>
           <CardContent >
-            <div className="flex justify-center pt-5 w-full">
-              <TotalsPieChart  data={pieChartData}></TotalsPieChart>
+            <div className="flex justify-center pt-5 w-full block dark:hidden">
+              <TotalsPieChart data={pieChartData}></TotalsPieChart>
+            </div>
+            <div className="flex justify-center pt-5 w-full hidden dark:block">
+              <TotalsPieChartDark data={pieChartData}></TotalsPieChartDark>
             </div>
           </CardContent>
         </Card>

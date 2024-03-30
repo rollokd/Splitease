@@ -24,13 +24,13 @@ interface CardTotalsProps {
 const cardTotals = ({ myColor, title, amount }: CardTotalsProps) => {
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-0">
         <CardTitle className={`text-sm font-medium ${myColor}`}>
           {title}
         </CardTitle>
         {svgIcon}
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-2">
         <div className="text-2xl font-bold">${amount}</div>
       </CardContent>
     </Card>

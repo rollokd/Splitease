@@ -14,8 +14,6 @@ describe('Revised Workflow on Dashboard', () => {
   // });
   before(() => {
     cy.visit('http://localhost:3000/login');
-    // cy.get('input[name="email"]').type('seb@nextmail.com');
-    // cy.get('input[name="password"]').type('admin');
     cy.get('input[name="email"]').type('test@example.com');
     cy.get('input[name="password"]').type('admin');
     cy.get('form').submit();
@@ -26,11 +24,10 @@ describe('Revised Workflow on Dashboard', () => {
   })
   
   it('Create Page Tests', () => {
-    // navigates to group creation and adds a group', () => {
     cy.url().should('include', '/home/dashboard');
     cy.contains('button', 'Create Group').click();
     cy.waitUntil(() => cy.url().then((url) => url.includes('/home/create')), {
-      timeout: 5000, // Wait for navigation to group creation
+      timeout: 5000,
       interval: 500,
     });
     //allows a user to input a group name

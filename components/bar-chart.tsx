@@ -9,7 +9,6 @@ import {
   Cell,
 } from "recharts";
 import { DataBarChart } from "@/lib/definititions";
-import { Title } from "@radix-ui/react-dialog";
 
 export const GroupChart: React.FC<{ data: DataBarChart[] }> = ({ data }) => {
   //Calculate maximum value
@@ -19,9 +18,6 @@ export const GroupChart: React.FC<{ data: DataBarChart[] }> = ({ data }) => {
   const minValue = Math.round(
     Math.min(...data.map((entry) => Number(entry.total)))
   );
-  //Add 10%
-  const upperBound = maxValue > 0 ? maxValue * 1.1 : maxValue / 0.9;
-  const lowerBound = minValue < 0 ? minValue * 1.1 : minValue / 0.9;
   return (
     <ResponsiveContainer width="100%" height={350}>
       <BarChart
@@ -46,7 +42,6 @@ export const GroupChart: React.FC<{ data: DataBarChart[] }> = ({ data }) => {
           tickLine={true}
           axisLine={true}
           tickFormatter={(value) => `$${value.toFixed(0)}`}
-          // domain={[lowerBound, upperBound]}
           domain={[minValue, maxValue]}
         />
         <Bar dataKey="total" radius={[10, 10, 0, 0]}>
