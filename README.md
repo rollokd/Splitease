@@ -6,8 +6,6 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
   <img src="images/screenshot-white.gif" width='270px'/>
 </p>
 
-
-
 ## Tech Stack
 
 ### <div style='display:flex; align-items:center'>Next.JS 14 <img height='30px' src='https://camo.githubusercontent.com/872e9a94ef74366c521442f5570eb5c476511ef596ce42a4bae0699e987647ad/68747470733a2f2f63646e2e73696d706c6569636f6e732e6f72672f6e657874646f746a732f303030303030'/></div >
@@ -21,26 +19,38 @@ git clone https://github.com/rollokd/Splitease
 ```
 
 2. Install dependencies
+
 ```
 npm install
 ```
 
 3. Start development server
+
 ```
 npm run dev
 ```
 
+## Development Process
+
+Splitease is a web application intended to make keep track of expenses within groups simple.
+
+We started development with wiring framing the design in Excalidraw and defining the features and user experience. We then divided up the work by feature and page of the application. Adding all the issues to Linear to keep track of our work. During our morning standups we made sure that we didn't repeat work and didn't block any other work from continuing.
+
+Once we reached our MVP, we had another group meeting to finalise design details, user flow and the priority of newer features to be added. These issues and features became our next sprint and we continued our regular work, revaluating regularly to make sure our features still fit within the main concept of the app.
+
+Our testing started with End-to-end testing using Cypress, later adding some unit tests done with Jest.
+
 ## Features
-- **Dashboard for Quick Overviews:** 
+
+- **Dashboard for Quick Overviews:**
   - A user-friendly dashboard that presents essential information at a glance, helping users keep track of their financial interactions and balances.
   - Includes an Analytics page with comprehensive charts for deeper insights into finances.
-- **Settlements:** 
+- **Settlements:**
   - Allows users to settle their accounts within a group, simplifying the process of balancing expenses. Accounts can also be settled with someone specific, providing a personalized way to manage and clear balances.
-- **Create and Edit Groups:** 
+- **Create and Edit Groups:**
   - Users have the flexibility to create new groups as needed and can edit existing ones to reflect changes.
-- **Manage Group Members:** 
+- **Manage Group Members:**
   - Adding or removing group members is straightforward, also ensuring that the group composition remains up-to-date with real-life changes.
-
 
 ## Contributors ✨
 
