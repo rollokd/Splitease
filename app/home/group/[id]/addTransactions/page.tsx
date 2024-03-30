@@ -2,7 +2,6 @@ import { TransactionForm } from "@/components/addTransactions/Form";
 import { TransEdit } from "@/components/addTransactions/TransEdit"
 import { getNamesOfUsersInAGroup } from "@/lib/transActions/data";
 import { getUserId } from '@/lib/actions';
-import { TransCrumbs } from "@/components/addTransactions/TransCrumbs";
 
 import {
   getGroupsName,
@@ -28,8 +27,6 @@ export default async function Page({ params }: { params: { id: string } }) {
         getNamesOfUsersInAGroup(params.id),
         getGroupsName(params.id),
       ];
-
-
       [userID, groupMembers, groupName] = await Promise.all(groupDataPromises);
 
       if (!userID) throw new Error("User ID not found");
@@ -53,15 +50,10 @@ export default async function Page({ params }: { params: { id: string } }) {
       console.log("error", e);
     }
   }
-
   return (
     <>
       {verifyGroupID ? (
         <>
-          {/* <TransCrumbs
-            name={groupName}
-            edit="false"
-          /> */}
           <GroupCrumbs
             name={groupName}
             group_id={params.id}
@@ -76,10 +68,6 @@ export default async function Page({ params }: { params: { id: string } }) {
         </>
       ) : (
         <>
-          {/* <TransCrumbs
-            name={getNameTransId}
-            edit="true"
-          /> */}
           <GroupCrumbs
             name={getNameTransId}
             group_id={membersOfTrans[0].group_id}
@@ -95,6 +83,4 @@ export default async function Page({ params }: { params: { id: string } }) {
       )}
     </>
   )
-
-
 }

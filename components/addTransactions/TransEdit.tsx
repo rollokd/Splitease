@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { string, z } from "zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -57,16 +57,6 @@ export function TransEdit(
   const { pending } = useFormStatus()
   const [amountChanged, setAmountChanged] = useState(false);
 
-  // useEffect(() => {
-  //   console.log("before 2")
-  //   const idSet = new Set(tableData.map(ele => ele.id));
-  //   if (idSet.size !== tableData.length) {
-  //     console.log("Duplicate IDs detected in tableData");
-  //   } else {
-  //     console.log("there's no duplicate data")
-  //   }
-  // }, [tableData]);
-
   useEffect(() => {
     const newData = membersOfTrans.map((member) => ({
       ...member,
@@ -91,7 +81,6 @@ export function TransEdit(
       amount: membersOfTrans[0].total_amount / 100
     }
   });
-
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     setIsSubmitting(true);
@@ -125,8 +114,6 @@ export function TransEdit(
     });
     setTableData(data)
   }
-
-
 
   function adjustMemberShare(index: number, adjustAmount: number): void {
     let newData = [...tableData];
@@ -200,7 +187,6 @@ export function TransEdit(
   return (
     <Form {...form}>
       <form className="w-full space-y-8 mt-5"
-
         onSubmit={
           pending
             ? (event) => {
@@ -270,7 +256,6 @@ export function TransEdit(
                     setDate(newDate)
                     field.onChange(newDate)
                   }}
-
                 />
               </FormControl>
               <FormMessage />
@@ -356,6 +341,5 @@ export function TransEdit(
         />
       </form>
     </Form >
-
   )
 }

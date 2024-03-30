@@ -1,7 +1,6 @@
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
 import { GroupUsersBasic } from '../definititions';
-import { getNameGroup } from '../data';
 
 export async function getNamesOfUsersInAGroup(
   group_id: string
@@ -13,7 +12,6 @@ export async function getNamesOfUsersInAGroup(
     LEFT JOIN user_groups ON user_groups.user_id=users.id
     WHERE group_id = ${group_id}
     `;
-
     return data.rows;
   } catch (error) {
     console.log('Database Error ====> ', error);
@@ -29,8 +27,7 @@ export async function getGroupsName(
     const data = await sql`
     SELECT name FROM groups
     WHERE id = ${group_id}
-    `
-
+    `;
     return data.rows[0].name
   } catch (e) {
     console.log("database could not fetch group's name", e)
@@ -53,12 +50,10 @@ export async function verifyGroupId(
     WHERE 
       id =${id}
   )
-    `
-    return groupEnquiry.rows[0].exists
-
+    `;
+    return groupEnquiry.rows[0].exists;
   } catch (e) {
-    console.log("database could not verify whether group id exists", e)
-
+    console.log("database could not verify whether group id exists", e);
   }
 }
 
@@ -77,30 +72,28 @@ export async function verifyTransId(
     WHERE 
       id =${id}
   )
-    `
-    return transactionEnquiry.rows[0].exists
+    `;
+    return transactionEnquiry.rows[0].exists;
 
   } catch (e) {
-    console.log("database could not verify whether group id exists", e)
+    console.log("database could not verify whether group id exists", e);
   }
 }
 
 export async function getGroupNameWithTransId(
   id: string
 ) {
-  noStore()
+  noStore();
   try {
     const transactionEnquiry = await sql`
     SELECT group_id FROM transactions
     WHERE id =${id}
     `
-    const groupID = transactionEnquiry.rows[0].group_id
-    const name = await getGroupsName(groupID)
-    return name
-
-
+    const groupID = transactionEnquiry.rows[0].group_id;
+    const name = await getGroupsName(groupID);
+    return name;
   } catch (e) {
-    console.log("database could not verify whether group id exists", e)
+    console.log("database could not verify whether group id exists", e);
   }
 }
 
@@ -112,7 +105,7 @@ export async function fetchUsersFromTransactionId(
     let intermediate = await sql`
     select group_id, amount from splits
     where trans_id=${id}
-    `
+    `;
 
     let result = await sql`
     SELECT 
@@ -130,11 +123,11 @@ export async function fetchUsersFromTransactionId(
     INNER JOIN transactions t ON t.id = ${id}
     WHERE
     ug.group_id = ${intermediate.rows[0].group_id}
-    `
-    console.log("result.rows", result.rows[0].transaction_name)
-    return result.rows
+    `;
+
+    return result.rows;
   } catch (e) {
-    console.log("could not fetch users based on transaction id", e)
-    throw new Error("coudn't fetch trans data")
+    console.log("could not fetch users based on transaction id", e);
+    throw new Error("could not fetch trans data");
   }
 }

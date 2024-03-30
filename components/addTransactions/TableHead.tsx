@@ -17,12 +17,10 @@ export function TableHead() {
         >
           Status
         </th>
-
         <th
           scope="col"
           className="p-4 align-middle"
         >Amount</th>
-
       </tr>
     </thead>
   )

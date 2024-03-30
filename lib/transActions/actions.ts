@@ -1,5 +1,4 @@
 'use server';
-
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
@@ -70,11 +69,10 @@ export async function createTransaction(
         };
       }
       createSplit(bundledUpTableData, bundledUpTransactionValues);
-
     }
   });
-  revalidatePath(`/home/group/${group_id}`)
-  redirect(`/home/group/${group_id}`)
+  revalidatePath(`/home/group/${group_id}`);
+  redirect(`/home/group/${group_id}`);
 }
 
 export async function createSplit(
@@ -89,9 +87,6 @@ export async function createSplit(
   VALUES (${amount}, ${user_amount}, ${paid}, ${user_id}, ${trans_id}, ${group_id})
   `;
 }
-
-
-
 const FormSchemaTransactionUpdate = FormSchemaTransaction.omit({ group_id: true, status: true, id: true });
 
 export async function updateTransaction(
@@ -99,7 +94,6 @@ export async function updateTransaction(
   formData: FormData,
   tableData: TableDataTypeExtended[]
 ) {
-
   const { name, amount, date, paid_by } = FormSchemaTransactionUpdate.parse({
     name: formData.get('name'),
     amount: formData.get('amount'),
@@ -112,11 +106,8 @@ export async function updateTransaction(
   const groupID = await sql`
   select * from transactions
   WHERE id=${transactionId}
-  `
-  console.log(" ======> actions line 116 ", groupID.rows[0].group_id)
-
-
-  const value = await sql`
+  `;
+  await sql`
   UPDATE transactions
   SET name = ${name},
   date = ${dateConverted},
@@ -127,20 +118,6 @@ export async function updateTransaction(
 
   await sql`DELETE FROM splits WHERE trans_id = ${transactionId}`;
 
-  // tableData.forEach(async (ele) => {
-  //   console.log("test 2: ele amount test", ele.user_amount)
-  //   let userAmount = ele.user_amount * 100;
-  //   let paid = ele.id === paid_by;
-  //   await createSplit({
-  //     user_id: ele.id,
-  //     user_amount: userAmount,
-  //     paid: paid,
-  //   }, {
-  //     trans_id: transactionId,
-  //     amount: amountInPennies,
-  //     group_id: groupID.rows[0].group_id
-  //   });
-  // });
   await Promise.all(tableData.map(ele => {
     let userAmount = Number(ele.user_amount.toFixed(2)) * 100;
     let paid = ele.id === paid_by;
@@ -154,7 +131,6 @@ export async function updateTransaction(
       group_id: groupID.rows[0].group_id
     });
   }));
-
 
   revalidatePath(`/home/group/${groupID.rows[0].group_id}`);
   redirect(`/home/group/${groupID.rows[0].group_id}`);

@@ -10,12 +10,10 @@ import {
 export function TransCrumbs({
   name,
   edit
-}
-  :
-  {
-    name: string,
-    edit: string
-  }) {
+}: {
+  name: string,
+  edit: string
+}) {
 
   return (
     <>
@@ -55,5 +53,4 @@ export function TransCrumbs({
       )}
     </>
   )
-
 }

@@ -278,8 +278,6 @@ export function TransactionForm({
             </tbody>
           </table>
         </div>
-
-
         <EditDeleteBtn
           isSubmitting={isSubmitting}
           pending={pending}

@@ -15,7 +15,7 @@ function increment(index: number, fn: AdjustMemberShareType, table: TableDataTyp
   else {
     console.log("Cannot increment beyond the total amount");
   }
-}
+};
 
 function decrement(index: number, fn: AdjustMemberShareType, table: TableDataTypeExtended[]) {
   const decrementAmount = 0.5;
@@ -25,7 +25,7 @@ function decrement(index: number, fn: AdjustMemberShareType, table: TableDataTyp
   } else {
     console.log("Cannot decrement below zero, bud");
   }
-}
+};
 
 function handleStatusClick(index: number, table: TableDataTypeExtended[], setTable: Setter, amount: number) {
   const newData = [...table];
@@ -42,7 +42,7 @@ function handleStatusClick(index: number, table: TableDataTypeExtended[], setTab
     }
   });
   setTable(newData);
-}
+};
 
 
 
