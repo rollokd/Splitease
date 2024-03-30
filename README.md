@@ -2,7 +2,35 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Tech Stack
 
-### <div style='display:flex; align-items:center'>Next.JS 14 <img height='30px' src='https://camo.githubusercontent.com/872e9a94ef74366c521442f5570eb5c476511ef596ce42a4bae0699e987647ad/68747470733a2f2f63646e2e73696d706c6569636f6e732e6f72672f6e657874646f746a732f303030303030'/></div >
+<div style="display: flex; justify-content: space-between; width: 40%;">
+  <div> 
+  <img src="icons/next-js.svg" width="40" height="40" alt="Next.js" />
+  <br>
+  <label>Next.js 14</label>
+  </div>
+  <div> 
+  <img src="icons/typescript.svg" width="40" height="40" alt="Next.js" />
+  <br>
+  <label>Typescript</label>
+  </div>
+  <div> 
+  <img src="icons/nextAuthLogo.png" width="40" height="40" alt="Next.js" />
+  <br>
+  <label>NextAuth.js</label>
+  </div>
+   <div> 
+  <img src="icons/postgresql.svg" width="40" height="40" alt="Next.js" />
+  <br>
+  <label>postgreSQL</label>
+  </div>
+   <div> 
+  <img src="icons/logo-vercel-svgrepo-com.svg" width="40" height="40" alt="Next.js" />
+  <br>
+  <label>Vercel</label>
+  </div>
+</div>
+
+### 
 
 ## Installation
 
