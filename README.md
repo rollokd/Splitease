@@ -1,26 +1,34 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Screenshots
+
+<p align="center">
+  <img src="images/screenshot-white.gif" width=270/>
+</p>
+
+
+
 ## Tech Stack
 
 ### <div style='display:flex; align-items:center'>Next.JS 14 <img height='30px' src='https://camo.githubusercontent.com/872e9a94ef74366c521442f5570eb5c476511ef596ce42a4bae0699e987647ad/68747470733a2f2f63646e2e73696d706c6569636f6e732e6f72672f6e657874646f746a732f303030303030'/></div >
 
 ## Installation
 
-First, run the development server:
+1. Clone the repo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+git clone https://github.com/rollokd/Splitease
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies
+```
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Start development server
+```
+npm run dev
+```
 
 ## Features
 - **Dashboard for Quick Overviews:** 
