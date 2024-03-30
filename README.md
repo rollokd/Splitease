@@ -22,6 +22,12 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## features 
+Dashboard for Quick Overviews: A user-friendly dashboard presents essential information at a glance, helping users keep track of their financial interactions and balances without hassle. Also offers a Analytics page with comprehensive charts.
+Settlements: Allows users to settle their accounts within a group, simplifying the process of balancing expenses or settle accounts on an individual basis, providing a personalized way to manage and clear balances.
+Create and Edit Groups: Users have the flexibility to create new groups as needed and edit existing ones to reflect changes in participation or purpose.
+Manage Group Members: Adding or removing group members is straightforward, ensuring that the group composition remains up-to-date with real-life changes.
+
 ## Contributors ✨
 
 Our amazing team ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
