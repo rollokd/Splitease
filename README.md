@@ -1,3 +1,5 @@
+# Splitease, a full-stack Next.js application, where we turn the chore of managing group expenses into a breeze.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Screenshots
