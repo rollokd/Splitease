@@ -1,4 +1,3 @@
-import TopNav from "@/components/addTransactions/TopNav";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
