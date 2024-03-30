@@ -3,7 +3,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ## Screenshots
 
 <p align="center">
-  <img src="images/screenshot-white.gif" width=270/>
+  <img src="images/screenshot-white.gif" width='270px'/>
 </p>
 
 
