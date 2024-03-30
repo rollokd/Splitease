@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Tech Stack
 
-<div style="display: flex; justify-content: space-between; width: 40%;">
+<div style="display: flex; flex-direction: row; justify-content: space-between; width: 40%;">
   <div> 
   <img src="icons/next-js.svg" width="40" height="40" alt="Next.js" />
   <br>
