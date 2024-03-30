@@ -111,10 +111,6 @@ export async function fetchOwnDashboardData(
   userID: string
 ): Promise<Own | undefined> {
   try {
-    // const paidbyMe = await sql`SELECT SUM(amount) AS total_amount
-    // FROM transactions
-    // WHERE paid_by = ${userID} AND status=false;`;
-
     const SumOfEverybodysSlpitsNotSettle = await sql`
     SELECT SUM(user_amount) AS total_amount
     FROM transactions

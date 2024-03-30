@@ -5,7 +5,7 @@ import TransactionList from "@/components/group-view/transaction-list";
 import { Button } from "@/components/ui/button";
 import { getUserId } from "@/lib/actions";
 import { getGroupById } from "@/lib/data";
-import { Settings, SlidersHorizontal } from "lucide-react";
+import { Settings } from "lucide-react";
 import Link from "next/link";
 
 type Props = { params: { id: string } };

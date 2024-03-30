@@ -1,12 +1,10 @@
 "use client";
 import { cn, prettyMoney } from "@/lib/utils";
-import { Ellipsis, EllipsisVertical, Pencil, Trash2 } from "lucide-react";
+import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 import React, { useMemo } from "react";
-import { Button } from "../ui/button";
 import { deleteTransaction } from "@/lib/actions";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,

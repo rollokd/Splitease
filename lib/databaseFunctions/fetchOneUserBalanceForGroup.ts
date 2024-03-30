@@ -9,7 +9,6 @@ export async function fetchOneUserBalanceForGroup(
 ) {
   noStore();
   try {
-    // i pay 50 quid for dinner - owed 25
     const result = await sql<GroupBalancesByUser>`
     WITH
     BALANCES AS (

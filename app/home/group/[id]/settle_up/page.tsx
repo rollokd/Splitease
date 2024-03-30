@@ -9,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { getUserId } from "@/lib/actions";
 import { getGroupById } from "@/lib/data";
 import { getMyDebtsForGroup } from "@/lib/databaseFunctions/getMyDebtsForGroup";
@@ -35,7 +34,6 @@ const SettleUp = async ({ params }: Props) => {
         <CardHeader>
           <CardTitle>{group?.name}</CardTitle>
         </CardHeader>
-        {/* <Separator /> */}
         <CardContent>
           {debts.map((debt, index) => (
             <SettleCard
