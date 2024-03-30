@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 import { GroupCard } from "@/components/group-card";
 import { getUserGroups, getUsersbyGroup } from "../../../lib/data";
-import Totals from "../../../components/Totals";
+import Totals from "@/components/Totals";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getUserId } from "@/lib/actions";
