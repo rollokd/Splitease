@@ -22,6 +22,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
       <br>postgreSQL
     </td>
     <td align="center">
+      <img src="icons/idySJxmg4h_1711793889436.jpeg" width="40" height="40" alt="Cypress" />
+      <br>Cypress
+      </td>
+    <td align="center">
       <img src="icons/logo-vercel-svgrepo-com.svg" width="40" height="40" alt="Vercel" />
       <br>Vercel
     </td>
