@@ -115,7 +115,7 @@ export async function fetchUsersFromTransactionId(
     t.date AS date,
     t.amount AS total_amount,
     t.name AS transaction_name,
-    t.id AS group_id
+    t.group_id AS group_id
     FROM 
     user_groups ug
     INNER JOIN users u ON ug.user_id = u.id

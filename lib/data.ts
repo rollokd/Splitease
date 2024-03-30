@@ -75,7 +75,7 @@ export async function fetchUserBalance(userID: string, groupID: string) {
   }
 }
 
-// get all groups in a group
+// get all users in a group
 export async function getUsersbyGroup(group_id: string) {
   noStore();
   try {
@@ -145,11 +145,11 @@ export async function fetchOwnDashboardData(
       await sql`SELECT SUM(user_amount) AS total_user_amount FROM splits WHERE user_id=${userID} AND paid=false`;
     return {
       paidbyMe:
-      SumOfEverybodysSlpitsNotSettle.rows[0].total_amount,
+        SumOfEverybodysSlpitsNotSettle.rows[0].total_amount,
       myPortionOfBills: SumOfMySlpitsNotSettle.rows[0].total_user_amount,
       total:
-      SumOfEverybodysSlpitsNotSettle.rows[0].total_amount -
-      SumOfMySlpitsNotSettle.rows[0].total_user_amount
+        SumOfEverybodysSlpitsNotSettle.rows[0].total_amount -
+        SumOfMySlpitsNotSettle.rows[0].total_user_amount
     };
   } catch (error) {
     console.error('Error querying the database:', error);

@@ -131,7 +131,6 @@ export async function updateTransaction(
       group_id: groupID.rows[0].group_id
     });
   }));
-
   revalidatePath(`/home/group/${groupID.rows[0].group_id}`);
   redirect(`/home/group/${groupID.rows[0].group_id}`);
 }

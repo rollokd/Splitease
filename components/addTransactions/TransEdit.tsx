@@ -223,7 +223,8 @@ export function TransEdit(
               <FormControl>
                 <Input
                   placeholder="input an amount"
-                  {...field} value={field.value}
+                  {...field}
+                  value={field.value}
                   onChange={(e) => {
                     const newAmount = Number(e.target.value);
                     setAmountInput(newAmount);

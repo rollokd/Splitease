@@ -174,7 +174,6 @@ export function TransactionForm({
                 <Input
                   placeholder="input an amount to split"
                   {...field}
-
                   value={field.value}
                   onChange={(e) => {
                     const newAmount = Number(e.target.value);
