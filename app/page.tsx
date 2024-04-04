@@ -30,7 +30,7 @@ export default function Home() {
         splitting needs.
       </h1>
       <div className="flex flex-row gap-2">
-        <Link href="/sign" passHref>
+        <Link href="/signup" passHref>
           <Button variant={"outline"}>Sign Up</Button>
         </Link>
         <Link href="/login" passHref>

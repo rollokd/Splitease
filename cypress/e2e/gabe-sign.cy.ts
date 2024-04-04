@@ -1,6 +1,6 @@
 describe('Complete User Journey Test', () => {
   it('signs up a new user, logs them in, and navigates to the dashboard', () => {
-    cy.visit('http://localhost:3000/sign'); 
+    cy.visit('http://localhost:3000/signup'); 
     const testEmail = `test${Date.now()}@example.com`;
     cy.get('input[name="first-name"]').type('Test');
     cy.get('input[name="last-name"]').type('User');
@@ -20,7 +20,7 @@ describe('Complete User Journey Test', () => {
 
   describe('Sign Up Error Handling', () => {
     it('displays an error when signing up with an email that already exists', () => {
-      cy.visit('http://localhost:3000/sign'); 
+      cy.visit('http://localhost:3000/signup'); 
       cy.get('input[name="first-name"]').type('Gabe');
       cy.get('input[name="last-name"]').type('Mata');
       cy.get('input[name="email"]').type('gabemata@gmail.com'); 
