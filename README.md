@@ -8,9 +8,6 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
   <img src="images/screenshot-white.gif" width='270px'/>
 </p>
 
-Hello this is a test for apple support.
-Hello this is another test
-
 ## Tech Stack
 
   <table>
